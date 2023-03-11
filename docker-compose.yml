@@ -1,0 +1,20 @@
+services:
+  # node:
+  #   image: node:lts-hydrogen
+  #   command: sh -c "yarn && yarn start"
+  #   ports:
+  #     - 3000:3000
+  #   working_dir: /app
+  #   volumes:
+  #     - ./:/app
+  mongo:
+    image: mongo:focal
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: selected
+    volumes:
+      - ./data/mongo:/data/db
