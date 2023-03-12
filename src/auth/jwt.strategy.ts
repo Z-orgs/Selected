@@ -15,13 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: ENVConstants.ClientSecret,
     });
   }
-
   /**
-   * The validate function is called by the JWT strategy when a user tries to authenticate. The payload
-   * is the decoded JWT token. The validate function returns the user object that will be attached to the
-   * request object
-   * @param {any} payload - The decoded JWT payload.
-   * @returns The userId, username, and role of the user.
+   * It takes the payload from the JWT and returns an object with the same properties
+   * @param {any} payload - The payload that was sent to the API.
+   * @returns The user's email, first name, last name, and picture.
    */
   async validate(payload: any) {
     return {

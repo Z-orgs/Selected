@@ -4,9 +4,7 @@ import { GoogleAuthGuard } from './google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
-    // eslint-disable-next-line prettier/prettier
-  }
+  constructor(private readonly authService: AuthService) {}
   @Get()
   @UseGuards(GoogleAuthGuard)
   async googleAuth(@Req() req) {

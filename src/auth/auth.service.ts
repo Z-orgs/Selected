@@ -10,6 +10,12 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
+  /**
+   * If the user exists, return the user's information, otherwise create a new user and return the user's
+   * information
+   * @param req - The request object.
+   * @returns The user's email, first name, last name, and picture.
+   */
   async googleLogin(req) {
     if (!req.user) {
       return 'No user from google.';

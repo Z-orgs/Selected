@@ -46,8 +46,6 @@ yarn
 yarn start
 ```
 
-4.  Navigate to localhost:3000 in your browser to view the application
-
 ### Second way
 
 1.  Clone this repository
@@ -61,7 +59,5 @@ git clone https://github.com/Z-orgs/Selected.git
 ```
 yarn docker
 ```
-
-3.  Navigate to localhost:3000 in your browser to view the application
 
 That's it! You have successfully completed the installation of Selected.
