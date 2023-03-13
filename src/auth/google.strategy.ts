@@ -2,13 +2,20 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { ENVConstants } from 'src/env.constants';
+import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from 'src/user/user.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   /**
    * The constructor function is called when a new instance of the class is created
    */
-  constructor() {
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+  ) {
     super({
       clientID: ENVConstants.ClientId,
       clientSecret: ENVConstants.ClientSecret,
@@ -39,8 +46,22 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       firstName: name.givenName,
       lastName: name.familyName,
       picture: photos[0].value,
-      accessToken,
+      jwt: '',
     };
+    const { email, firstName, lastName, picture } = user;
+    const result = await this.userModel.findOne({ email: email });
+    if (!result) {
+      const newUser = new this.userModel({
+        email,
+        firstName,
+        lastName,
+        picture,
+      });
+      newUser.save();
+    }
+    const payload = { email, firstName, lastName, picture };
+    const jwt = this.jwtService.sign(payload);
+    user.jwt = jwt;
     done(null, user);
   }
 }

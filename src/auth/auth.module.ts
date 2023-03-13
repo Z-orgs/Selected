@@ -14,7 +14,7 @@ import { UserModule } from 'src/user/user.module';
     PassportModule,
     JwtModule.register({
       secret: ENVConstants.ClientSecret,
-      signOptions: { expiresIn: ENVConstants.expiresIn },
+      signOptions: { expiresIn: ENVConstants.ExpiresIn },
     }),
   ],
   controllers: [AuthController],
