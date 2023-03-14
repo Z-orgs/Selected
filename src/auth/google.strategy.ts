@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ENVConstants } from 'src/env.constants';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/user/user.schema';
+import { User, UserDocument } from 'src/user/user.model';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -49,6 +49,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       jwt: '',
     };
     const { email, firstName, lastName, picture } = user;
+    const payload = { email, firstName, lastName, picture };
+    const jwt = this.jwtService.sign(payload);
+    user.jwt = jwt;
     const result = await this.userModel.findOne({ email: email });
     if (!result) {
       const newUser = new this.userModel({
@@ -56,12 +59,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         firstName,
         lastName,
         picture,
+        jwt,
       });
       newUser.save();
+    } else {
+      await this.userModel.findOneAndUpdate(
+        { email: email },
+        {
+          jwt: jwt,
+        },
+      );
     }
-    const payload = { email, firstName, lastName, picture };
-    const jwt = this.jwtService.sign(payload);
-    user.jwt = jwt;
     done(null, user);
   }
 }

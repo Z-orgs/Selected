@@ -13,6 +13,8 @@ export class User {
   lastName: string;
   @Prop()
   picture: string;
+  @Prop()
+  jwt: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
