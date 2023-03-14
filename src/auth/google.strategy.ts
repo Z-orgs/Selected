@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ENVConstants } from 'src/env.constants';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/user/user.model';
+import { User, UserDocument } from 'src/user/model/user.model';
 import { Model } from 'mongoose';
 
 @Injectable()

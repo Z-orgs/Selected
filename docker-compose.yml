@@ -1,7 +1,7 @@
 services:
   # node:
   #   image: node:lts-hydrogen
-  #   command: sh -c "yarn && yarn start"
+  #   command: sh -c "npm install && npm start"
   #   ports:
   #     - 3000:3000
   #   working_dir: /app
