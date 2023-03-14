@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 export type TrackDocument = Track & Document;
 
@@ -23,5 +23,7 @@ export class Track {
   uploaded: Date;
   @Prop()
   cluster: number;
+  @Prop()
+  fileId: string;
 }
 export const TrackSchema = SchemaFactory.createForClass(Track);
