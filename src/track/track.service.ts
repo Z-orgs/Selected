@@ -1,26 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Response } from 'express';
+import { MongoGridFS } from 'mongo-gridfs';
+import { GridFSBucket, ObjectId } from 'mongodb';
+import mongoose, { Connection } from 'mongoose';
+import { async } from 'rxjs/internal/scheduler/async';
+import { Socket } from 'socket.io';
+import { FileService } from 'src/file/file.service';
+import { MessagePlayDto } from './dto/message.play.dto';
 
 @Injectable()
 export class TrackService {
-  create(createTrackDto: CreateTrackDto) {
-    return 'This action adds a new track';
+  private fileModel: MongoGridFS;
+  //   private readonly bucket: GridFSBucket;
+  constructor(
+    private readonly fileService: FileService,
+    @InjectConnection() private readonly connection: Connection,
+  ) {
+    this.fileModel = new MongoGridFS(this.connection.db, 'fs');
+    // this.bucket = new mongoose.mongo.GridFSBucket(this.connection.db);
   }
-
-  findAll() {
-    return `This action returns all track`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
-  }
-
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  async getFile(id: string) {
+    const file = await this.fileService.findInfo(id);
+    const fileStream = await this.fileService.readStream(id);
+    return { file, fileStream };
   }
 }

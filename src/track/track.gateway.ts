@@ -1,38 +1,63 @@
 import {
   WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { TrackService } from './track.service';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+import { Logger } from '@nestjs/common';
+import { Socket, Namespace } from 'socket.io';
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketServer,
+} from '@nestjs/websockets/decorators';
+import { MessagePlayDto } from './dto/message.play.dto';
+import { HttpException } from '@nestjs/common/exceptions';
+import { HttpStatus } from '@nestjs/common/enums';
 
-@WebSocketGateway()
-export class TrackGateway {
+@WebSocketGateway({ namespace: 'track', cors: true })
+export class TrackGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  private readonly logger = new Logger(TrackGateway.name);
   constructor(private readonly trackService: TrackService) {}
 
-  @SubscribeMessage('createTrack')
-  create(@MessageBody() createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+  @WebSocketServer() io: Namespace;
+  afterInit(server: any) {
+    this.logger.log('Websocket Gateway initialized');
   }
 
-  @SubscribeMessage('findAllTrack')
-  findAll() {
-    return this.trackService.findAll();
+  handleConnection(client: Socket) {
+    const sockets = this.io.sockets;
+    this.logger.log(`WS Client with id: ${client.id} connected!`);
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
 
-  @SubscribeMessage('findOneTrack')
-  findOne(@MessageBody() id: number) {
-    return this.trackService.findOne(id);
+  handleDisconnect(client: Socket) {
+    const sockets = this.io.sockets;
+    this.logger.log(`Disconnected socket id: ${client.id}`);
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
-
-  @SubscribeMessage('updateTrack')
-  update(@MessageBody() updateTrackDto: UpdateTrackDto) {
-    return this.trackService.update(updateTrackDto.id, updateTrackDto);
-  }
-
-  @SubscribeMessage('removeTrack')
-  remove(@MessageBody() id: number) {
-    return this.trackService.remove(id);
+  @SubscribeMessage('play')
+  async playTrack(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() messagePlay: MessagePlayDto,
+  ) {
+    if (messagePlay.trackId) {
+      // messagePlay.loop = messagePlay.loop || 'no';
+      // messagePlay.speed = messagePlay.speed || 1;
+      const file = this.trackService.getFile(messagePlay.trackId);
+      client.emit('data', (await file).file);
+      (await file).fileStream.on('data', (chunk) => {
+        client.emit('fileChunk', chunk);
+      });
+    } else {
+      this.io.emit(
+        'play',
+        new HttpException('Not found', HttpStatus.NOT_FOUND),
+      );
+    }
   }
 }
