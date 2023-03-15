@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './google.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { ENVConstants } from 'src/env.constants';
+import { mxzASPIRE } from 'src/mxz/mxz.aspire';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
@@ -13,8 +13,8 @@ import { UserModule } from 'src/user/user.module';
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: ENVConstants.ClientSecret,
-      signOptions: { expiresIn: ENVConstants.ExpiresIn },
+      secret: mxzASPIRE.ClientSecret,
+      signOptions: { expiresIn: mxzASPIRE.ExpiresIn },
     }),
   ],
   controllers: [AuthController],

@@ -1,11 +1,11 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
-import { ENVConstants } from 'src/env.constants';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { Model } from 'mongoose';
+import { mxzASPIRE } from 'src/mxz/mxz.aspire';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -17,9 +17,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {
     super({
-      clientID: ENVConstants.ClientId,
-      clientSecret: ENVConstants.ClientSecret,
-      callbackURL: 'http://localhost:3000/auth/redirect',
+      clientID: mxzASPIRE.ClientId,
+      clientSecret: mxzASPIRE.ClientSecret,
+      callbackURL: mxzASPIRE.CallbackURL,
       scope: ['email', 'profile'],
     });
   }

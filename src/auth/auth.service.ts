@@ -1,8 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt/dist';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from 'src/user/model/user.model';
 
 @Injectable()
 export class AuthService {
