@@ -16,13 +16,19 @@ import {
 import { MessagePlayDto } from './dto/message.play.dto';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Track, TrackDocument } from './model/track.model';
 
 @WebSocketGateway({ namespace: 'track', cors: true })
 export class TrackGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   private readonly logger = new Logger(TrackGateway.name);
-  constructor(private readonly trackService: TrackService) {}
+  constructor(
+    private readonly trackService: TrackService,
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+  ) {}
 
   @WebSocketServer() io: Namespace;
   afterInit(server: any) {
@@ -45,13 +51,11 @@ export class TrackGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() messagePlay: MessagePlayDto,
   ) {
+    this.logger.log(`${client.id}: ${messagePlay}`);
     if (messagePlay.trackId) {
-      // messagePlay.loop = messagePlay.loop || 'no';
-      // messagePlay.speed = messagePlay.speed || 1;
-      const file = this.trackService.getFile(messagePlay.trackId);
-      client.emit('data', (await file).file);
-      (await file).fileStream.on('data', (chunk) => {
-        client.emit('fileChunk', chunk);
+      const file = await this.trackService.getFile(messagePlay.trackId);
+      file.fileStream.on('data', (data: Buffer) => {
+        client.send(data);
       });
     } else {
       this.io.emit(
