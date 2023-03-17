@@ -12,13 +12,14 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketServer,
-} from '@nestjs/websockets/decorators';
+} from '@nestjs/websockets';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Track, TrackDocument } from './model/track.model';
+import { MessageInfoDto } from './dto/message.info.dto';
 
 @WebSocketGateway({ namespace: 'track', cors: true })
 export class TrackGateway
@@ -51,25 +52,38 @@ export class TrackGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() messagePlay: MessagePlayDto,
   ) {
-    this.logger.log(`${client.id}: ${messagePlay}`);
     if (messagePlay.trackId) {
-      const file = await this.trackService.getFile(messagePlay.trackId);
+      this.logger.log(`${client.id} is getting track ${messagePlay.trackId}`);
+      const track = await this.trackModel.findById({
+        _id: messagePlay.trackId,
+      });
+      const file = await this.trackService.getFile(track.fileId);
       if (file.fileStream) {
         let position = 0;
         file.fileStream.on('data', (data: Buffer) => {
           client.send({ data, position });
           position += data.length;
         });
-        // file.fileStream.on('data', (data: Buffer) => {
-        //   client.send(data);
-        //   position += data.length;
-        // });
+      } else {
+        client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
       }
-    } else {
-      this.io.emit(
-        'play',
-        new HttpException('Not found', HttpStatus.NOT_FOUND),
-      );
+    }
+  }
+  @SubscribeMessage('info')
+  async infoTrack(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() messageInfo: MessageInfoDto,
+  ) {
+    if (messageInfo.trackId) {
+      this.logger.log(`${client.id} is getting info ${messageInfo.trackId}`);
+      const track = await this.trackModel.findById({
+        _id: messageInfo.trackId,
+      });
+      if (track) {
+        client.send(JSON.stringify(track));
+      } else {
+        client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+      }
     }
   }
 }
