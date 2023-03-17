@@ -54,9 +54,17 @@ export class TrackGateway
     this.logger.log(`${client.id}: ${messagePlay}`);
     if (messagePlay.trackId) {
       const file = await this.trackService.getFile(messagePlay.trackId);
-      file.fileStream.on('data', (data: Buffer) => {
-        client.send(data);
-      });
+      if (file.fileStream) {
+        let position = 0;
+        file.fileStream.on('data', (data: Buffer) => {
+          client.send({ data, position });
+          position += data.length;
+        });
+        // file.fileStream.on('data', (data: Buffer) => {
+        //   client.send(data);
+        //   position += data.length;
+        // });
+      }
     } else {
       this.io.emit(
         'play',
