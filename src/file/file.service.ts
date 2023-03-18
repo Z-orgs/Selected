@@ -89,7 +89,10 @@ export class FileService {
         contentType: file.contentType,
       };
       response.push(fileReponse);
-      new this.trackModel({ fileId: fileReponse.id }).save();
+      new this.trackModel({
+        fileId: fileReponse.id,
+        filename: fileReponse.filename,
+      } as Track).save();
     });
     return response;
   }

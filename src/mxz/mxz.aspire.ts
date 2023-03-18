@@ -5,4 +5,6 @@ export const mxzASPIRE = {
   ClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   ExpiresIn: process.env.EXPIRES_IN,
   CallbackURL: process.env.CALLBACK_URL,
+  Username: process.env.ADMIN,
+  Password: process.env.PASSWORD,
 };

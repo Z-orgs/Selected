@@ -5,6 +5,8 @@ import { UserModule } from '../user/user.module';
 import { TrackModule } from '../track/track.module';
 import { FileModule } from '../file/file.module';
 import { mxzASPIRE } from '../mxz/mxz.aspire';
+import { Admin, AdminSchema } from 'src/admin/model/admin.model';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { mxzASPIRE } from '../mxz/mxz.aspire';
     UserModule,
     TrackModule,
     FileModule,
+    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { GoogleStrategy } from './google.strategy';
+import { GoogleStrategy } from './google/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { mxzASPIRE } from 'src/mxz/mxz.aspire';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Admin, AdminSchema } from 'src/admin/model/admin.model';
+import { AdminStrategy } from './admin/admin-auth.guard';
+import { JwtAdminStrategy } from './admin/jwtadmin-auth.guard';
 
 @Module({
   imports: [
@@ -16,8 +20,15 @@ import { UserModule } from 'src/user/user.module';
       secret: mxzASPIRE.ClientSecret,
       signOptions: { expiresIn: mxzASPIRE.ExpiresIn },
     }),
+    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    JwtStrategy,
+    AdminStrategy,
+    JwtAdminStrategy,
+  ],
 })
 export class AuthModule {}
