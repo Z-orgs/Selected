@@ -11,6 +11,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Admin, AdminSchema } from 'src/admin/model/admin.model';
 import { AdminStrategy } from './admin/admin-auth.guard';
 import { JwtAdminStrategy } from './admin/jwtadmin-auth.guard';
+import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
+import { ArtistStrategy } from './artist/artist-auth.guard';
+import { JwtArtistStrategy } from './artist/jwtartist-auth.guard';
 
 @Module({
   imports: [
@@ -21,6 +24,7 @@ import { JwtAdminStrategy } from './admin/jwtadmin-auth.guard';
       signOptions: { expiresIn: mxzASPIRE.ExpiresIn },
     }),
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
+    MongooseModule.forFeature([{ name: Artist.name, schema: ArtistSchema }]),
   ],
   controllers: [AuthController],
   providers: [
@@ -29,6 +33,8 @@ import { JwtAdminStrategy } from './admin/jwtadmin-auth.guard';
     JwtStrategy,
     AdminStrategy,
     JwtAdminStrategy,
+    ArtistStrategy,
+    JwtArtistStrategy,
   ],
 })
 export class AuthModule {}

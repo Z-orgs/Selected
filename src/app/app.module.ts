@@ -7,6 +7,7 @@ import { FileModule } from '../file/file.module';
 import { mxzASPIRE } from '../mxz/mxz.aspire';
 import { Admin, AdminSchema } from 'src/admin/model/admin.model';
 import { AppController } from './app.controller';
+import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AppController } from './app.controller';
     TrackModule,
     FileModule,
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
+    MongooseModule.forFeature([{ name: Artist.name, schema: ArtistSchema }]),
   ],
   controllers: [AppController],
 })

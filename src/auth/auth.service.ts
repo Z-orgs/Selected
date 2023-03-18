@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Artist } from 'src/artist/model/artist.model';
 import { Admin } from '../admin/model/admin.model';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
   adminLogin(user: Admin) {
-    const { username } = user as Admin;
+    const { username } = user;
     const payload = { username };
     return {
       admin_token: this.jwtService.sign(payload),
+    };
+  }
+  artistLogin(user: Artist) {
+    const { username } = user;
+    const payload = { username };
+    return {
+      artist_token: this.jwtService.sign(payload),
     };
   }
   /**
