@@ -64,6 +64,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         lastName,
         picture,
         jwt,
+        following: [],
+        playList: [],
       });
       newUser.save();
     } else {

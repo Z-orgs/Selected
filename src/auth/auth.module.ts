@@ -18,7 +18,6 @@ import { User, UserSchema } from 'src/user/model/user.model';
 
 @Module({
   imports: [
-    UserModule,
     PassportModule,
     JwtModule.register({
       secret: mxzASPIRE.ClientSecret,

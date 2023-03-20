@@ -12,6 +12,8 @@ import { Track, TrackSchema } from 'src/track/model/track.model';
 import { AdminModule } from 'src/admin/admin.module';
 import { ArtistModule } from 'src/artist/artist.module';
 import { MxzModule } from 'src/mxz/mxz.module';
+import { AlbumModule } from 'src/album/album.module';
+import { PlaylistModule } from 'src/playlist/playlist.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { MxzModule } from 'src/mxz/mxz.module';
     AdminModule,
     ArtistModule,
     MxzModule,
+    AlbumModule,
+    PlaylistModule,
   ],
   controllers: [AppController],
 })

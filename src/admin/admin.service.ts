@@ -75,7 +75,7 @@ export class AdminService {
     if (!admin) {
       return new HttpException(
         `This admin does not exist`,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
     await this.adminModel.findOneAndUpdate(
@@ -96,7 +96,7 @@ export class AdminService {
     if (!track) {
       return new HttpException(
         `This track does not exist`,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
     await this.trackModel.findByIdAndUpdate(

@@ -7,14 +7,45 @@ export type ArtistDocument = HydratedDocument<Artist>;
 export class Artist {
   @Prop()
   firstName: string;
+
   @Prop()
   lastName: string;
+
   @Prop()
   nickName: string;
+
   @Prop()
   username: string;
+
   @Prop()
   password: string;
+
+  @Prop()
+  dob: Date;
+
+  @Prop()
+  email: string;
+
+  @Prop()
+  phone: string;
+
+  @Prop()
+  address: string;
+
+  @Prop()
+  bio: string;
+
+  @Prop()
+  profileImage: string;
+
+  @Prop()
+  genre: string;
+
+  @Prop()
+  followers: number;
+
+  @Prop()
+  socialLinks: { name: string; url: string }[];
 }
 
 export const ArtistSchema = SchemaFactory.createForClass(Artist);

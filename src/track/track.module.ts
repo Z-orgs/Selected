@@ -13,5 +13,6 @@ import { TrackController } from './track.controller';
   ],
   providers: [TrackGateway, TrackService],
   controllers: [TrackController],
+  exports: [TrackService],
 })
 export class TrackModule {}

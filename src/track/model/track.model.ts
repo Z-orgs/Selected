@@ -8,24 +8,22 @@ export class Track {
   @Prop()
   filename: string;
   @Prop()
-  mimeType: string;
-  @Prop()
   title: string;
   @Prop()
   genre?: string;
   @Prop()
   release?: Date;
-  @Prop()
-  duration: number;
-  @Prop()
-  lyrics?: string;
+  // @Prop()
+  // duration: number;
+  // @Prop()
+  // lyrics?: string;
   @Prop()
   uploaded: Date;
-  @Prop()
-  cluster: number;
   @Prop()
   fileId: string;
   @Prop()
   status: string;
+  @Prop()
+  artist: string;
 }
 export const TrackSchema = SchemaFactory.createForClass(Track);

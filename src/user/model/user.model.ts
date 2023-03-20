@@ -15,6 +15,10 @@ export class User {
   picture: string;
   @Prop()
   jwt: string;
+  @Prop()
+  following: [string];
+  @Prop()
+  playList: [string];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
