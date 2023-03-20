@@ -9,6 +9,9 @@ import { Admin, AdminSchema } from 'src/admin/model/admin.model';
 import { AppController } from './app.controller';
 import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
 import { Track, TrackSchema } from 'src/track/model/track.model';
+import { AdminModule } from 'src/admin/admin.module';
+import { ArtistModule } from 'src/artist/artist.module';
+import { MxzModule } from 'src/mxz/mxz.module';
 
 @Module({
   imports: [
@@ -17,9 +20,14 @@ import { Track, TrackSchema } from 'src/track/model/track.model';
     UserModule,
     TrackModule,
     FileModule,
-    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
-    MongooseModule.forFeature([{ name: Artist.name, schema: ArtistSchema }]),
-    MongooseModule.forFeature([{ name: Track.name, schema: TrackSchema }]),
+    MongooseModule.forFeature([
+      { name: Admin.name, schema: AdminSchema },
+      { name: Artist.name, schema: ArtistSchema },
+      { name: Track.name, schema: TrackSchema },
+    ]),
+    AdminModule,
+    ArtistModule,
+    MxzModule,
   ],
   controllers: [AppController],
 })

@@ -12,9 +12,9 @@ import { Admin, AdminDocument } from './model/admin.model';
 
 @Injectable()
 export class AdminService {
+  private readonly level = 'admin';
   constructor(
     @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
-    private readonly level = 'admin',
     private readonly mxzService: MxzService,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
   ) {}

@@ -14,6 +14,7 @@ import { ArtistStrategy } from './artist/artist-auth.guard';
 import { JwtArtistStrategy } from './artist/jwtartist-auth.guard';
 import { GoogleStrategy } from './google/google-auth.guard';
 import { JwtStrategy } from './google/jwt-auth.guard';
+import { User, UserSchema } from 'src/user/model/user.model';
 
 @Module({
   imports: [
@@ -23,8 +24,11 @@ import { JwtStrategy } from './google/jwt-auth.guard';
       secret: mxzASPIRE.ClientSecret,
       signOptions: { expiresIn: mxzASPIRE.ExpiresIn },
     }),
-    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
-    MongooseModule.forFeature([{ name: Artist.name, schema: ArtistSchema }]),
+    MongooseModule.forFeature([
+      { name: Admin.name, schema: AdminSchema },
+      { name: Artist.name, schema: ArtistSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
   ],
   controllers: [AuthController],
   providers: [
