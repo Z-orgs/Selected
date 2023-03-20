@@ -10,33 +10,33 @@ import { mxzASPIRE } from 'src/mxz/mxz.aspire';
 
 @Controller()
 export class AppController {
-  constructor(
-    @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
-    @InjectModel(Artist.name)
-    private readonly artistModel: Model<ArtistDocument>,
-  ) {}
-  @Get()
-  // @UseGuards(JwtAdminAuthGuard)
-  async initAdmin() {
-    const admin = await this.adminModel.findOne({
-      username: mxzASPIRE.Username,
-    });
-    if (!admin) {
-      const initAdmin = new this.adminModel({
-        username: mxzASPIRE.Username,
-        password: mxzASPIRE.Password,
-      });
-      initAdmin.save();
-    }
-    const initArtist = new this.artistModel({
-      username: mxzASPIRE.Username,
-      password: mxzASPIRE.Password,
-    });
-    initArtist.save();
-  }
-  @Get('test')
-  @UseGuards(JwtAuthGuard)
-  testRoute() {
-    return '/';
-  }
+  // constructor(
+  //   @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
+  //   @InjectModel(Artist.name)
+  //   private readonly artistModel: Model<ArtistDocument>,
+  // ) {}
+  // @Get()
+  // // @UseGuards(JwtAdminAuthGuard)
+  // async initAdmin() {
+  //   const admin = await this.adminModel.findOne({
+  //     username: mxzASPIRE.Username,
+  //   });
+  //   if (!admin) {
+  //     const initAdmin = new this.adminModel({
+  //       username: mxzASPIRE.Username,
+  //       password: mxzASPIRE.Password,
+  //     });
+  //     initAdmin.save();
+  //   }
+  //   const initArtist = new this.artistModel({
+  //     username: mxzASPIRE.Username,
+  //     password: mxzASPIRE.Password,
+  //   });
+  //   initArtist.save();
+  // }
+  // @Get('test')
+  // @UseGuards(JwtAuthGuard)
+  // testRoute() {
+  //   return '/';
+  // }
 }

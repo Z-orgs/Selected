@@ -7,4 +7,5 @@ export const mxzASPIRE = {
   CallbackURL: process.env.CALLBACK_URL,
   Username: process.env.ADMIN,
   Password: process.env.PASSWORD,
+  DefaultPassword: process.env.DEFAULTPASSWORD,
 };

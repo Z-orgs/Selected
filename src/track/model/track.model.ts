@@ -25,5 +25,7 @@ export class Track {
   cluster: number;
   @Prop()
   fileId: string;
+  @Prop()
+  status: string;
 }
 export const TrackSchema = SchemaFactory.createForClass(Track);

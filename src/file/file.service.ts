@@ -92,6 +92,7 @@ export class FileService {
       new this.trackModel({
         fileId: fileReponse.id,
         filename: fileReponse.filename,
+        status: 'pending',
       } as Track).save();
     });
     return response;
