@@ -5,13 +5,8 @@ import { MongoGridFS } from 'mongo-gridfs';
 import { GridFSBucket, GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './file-info-vm.model';
 import { FileResponseVm } from './file-response.modal';
-import { Track, TrackDocument } from 'src/track/model/track.model';
 import { Response } from 'express';
 import { Image, ImageDocument } from './model/image.model';
-import { UpdateStatusTrack } from 'src/track/dto/update-status-track.dto';
-import { Admin } from 'src/admin/model/admin.model';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
-import { MxzService } from 'src/mxz/mxz.service';
 
 @Injectable()
 export class FileService {

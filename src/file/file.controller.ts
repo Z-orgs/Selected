@@ -2,7 +2,6 @@ import {
   Controller,
   FileTypeValidator,
   Get,
-  MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Post,
@@ -14,7 +13,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FileResponseVm } from './file-response.modal';
 import { FileService } from './file.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 @Controller('file')
 export class FileController {
