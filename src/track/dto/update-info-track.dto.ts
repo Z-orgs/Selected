@@ -3,4 +3,5 @@ export class UpdateInfoTrackDto {
   genre?: string;
   release?: Date;
   duration: number;
+  public: boolean;
 }

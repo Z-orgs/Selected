@@ -8,4 +8,7 @@ export const mxzASPIRE = {
   Username: process.env.ADMIN,
   Password: process.env.PASSWORD,
   DefaultPassword: process.env.DEFAULTPASSWORD,
+  TmpUri: process.env.TMPURI,
+  Artist: 'ARTIST',
+  Admin: 'ADMIN',
 };

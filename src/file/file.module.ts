@@ -5,13 +5,17 @@ import { FileController } from './file.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FileService } from './file.service';
 import { Track, TrackSchema } from 'src/track/model/track.model';
+import { Image, ImageSchema } from './model/image.model';
 
 @Module({
   imports: [
     MulterModule.registerAsync({
       useClass: GridFsMulterConfigService,
     }),
-    MongooseModule.forFeature([{ name: Track.name, schema: TrackSchema }]),
+    MongooseModule.forFeature([
+      { name: Track.name, schema: TrackSchema },
+      { name: Image.name, schema: ImageSchema },
+    ]),
   ],
   controllers: [FileController],
   providers: [GridFsMulterConfigService, FileService],

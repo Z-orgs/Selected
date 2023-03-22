@@ -57,19 +57,25 @@ export class TrackGateway
       const track = await this.trackModel.findById({
         _id: messagePlay.trackId,
       });
-      if (track.status !== 'approved') {
-        client.send('This track is still waiting for approval');
-        return;
-      }
-      const file = await this.trackService.getFile(track.fileId);
-      if (file.fileStream) {
-        let position = 0;
-        file.fileStream.on('data', (data: Buffer) => {
-          client.send({ data, position });
-          position += data.length;
-        });
-      } else {
-        client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+      if (track) {
+        if (track.status !== 'approved') {
+          client.send('This track is still waiting for approval');
+          return;
+        }
+        if (!track.public) {
+          client.send('This track is in private mode.');
+          return;
+        }
+        const file = await this.trackService.getFile(track.fileId);
+        if (file.fileStream) {
+          let position = 0;
+          file.fileStream.on('data', (data: Buffer) => {
+            client.send({ data, position });
+            position += data.length;
+          });
+        } else {
+          client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+        }
       }
     }
   }
@@ -86,6 +92,10 @@ export class TrackGateway
       if (track) {
         if (track.status !== 'approved') {
           client.send('This track is still waiting for approval');
+          return;
+        }
+        if (!track.public) {
+          client.send('This track is in private mode.');
           return;
         }
         client.send(JSON.stringify(track));

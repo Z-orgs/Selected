@@ -25,5 +25,7 @@ export class Track {
   status: string;
   @Prop()
   artist: string;
+  @Prop()
+  public: boolean;
 }
 export const TrackSchema = SchemaFactory.createForClass(Track);

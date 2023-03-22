@@ -9,10 +9,7 @@ import { MxzModule } from 'src/mxz/mxz.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Admin.name, schema: AdminSchema },
-      { name: Track.name, schema: TrackSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
     MxzModule,
   ],
   controllers: [AdminController],

@@ -7,13 +7,18 @@ import { FileInfoVm } from './file-info-vm.model';
 import { FileResponseVm } from './file-response.modal';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { Response } from 'express';
+import { Image, ImageDocument } from './model/image.model';
+import { UpdateStatusTrack } from 'src/track/dto/update-status-track.dto';
+import { Admin } from 'src/admin/model/admin.model';
+import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { MxzService } from 'src/mxz/mxz.service';
 
 @Injectable()
 export class FileService {
   private fileModel: MongoGridFS;
   constructor(
     @InjectConnection() private readonly connection: Connection,
-    @InjectModel(Track.name) private trackModel: Model<TrackDocument>,
+    @InjectModel(Image.name) private imageModel: Model<ImageDocument>,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
@@ -116,5 +121,10 @@ export class FileService {
     res.header('Content-Type', file.contentType);
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
     return filestream.pipe(res);
+  }
+  async uploadImage(file: Express.Multer.File) {
+    const image = new this.imageModel({ fileId: file.id } as Image);
+    image.save();
+    return image._id;
   }
 }

@@ -13,7 +13,6 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Request } from 'express';
 import { Admin } from './model/admin.model';
-import { UpdateStatusTrack } from './dto/update-status-track.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -35,16 +34,5 @@ export class AdminController {
   @UseGuards(JwtAdminAuthGuard)
   resetPassword(@Req() req: Request, @Param('username') username: string) {
     return this.adminService.resetPassword(req.user as Admin, username);
-  }
-  @Put('track/:trackId')
-  @UseGuards(JwtAdminAuthGuard)
-  updateStatusTrack(
-    @Req() req: Request,
-    @Body() updateStatusTrack: UpdateStatusTrack,
-  ) {
-    return this.adminService.updateStatusTrack(
-      req.user as Admin,
-      updateStatusTrack,
-    );
   }
 }

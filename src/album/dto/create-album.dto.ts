@@ -1,14 +1,14 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateTrackDto {
+export class CreateAlbumDto {
   @IsNotEmpty()
   title: string;
   @IsNotEmpty()
   genre?: string;
   @IsNotEmpty()
   release?: Date;
-  //   @IsNotEmpty()
-  //   duration: number;
-  //   @IsNotEmpty()
-  //   lyrics?: string;
+  @IsNotEmpty()
+  tracks: string[];
+  @IsNotEmpty()
+  public: boolean;
 }
