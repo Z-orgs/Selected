@@ -23,6 +23,10 @@ export class UserService {
       { email: user.email },
       { $addToSet: { following: artistId } },
     );
+    await this.artistModel.updateOne(
+      { _id: artistId },
+      { $inc: { followers: 1 } },
+    );
     return new HttpException(
       `${user.email} has followed artist ${artistId}`,
       HttpStatus.ACCEPTED,
@@ -39,6 +43,10 @@ export class UserService {
     await this.userModel.findOneAndUpdate(
       { email: user.email },
       { $pull: { following: artistId } },
+    );
+    await this.artistModel.updateOne(
+      { _id: artistId },
+      { $inc: { followers: -1 } },
     );
     return new HttpException(
       `${user.email} has unfollowed artist ${artistId}`,

@@ -1,7 +1,6 @@
 export class UpdateInfoTrackDto {
   title: string;
-  genre?: string;
-  release?: Date;
-  duration: number;
+  genre: string;
+  release: Date;
   public: boolean;
 }

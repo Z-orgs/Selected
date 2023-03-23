@@ -15,18 +15,14 @@ export class AlbumService {
     private readonly mxzService: MxzService,
   ) {}
   createAlbum(
-    imageId: Promise<Types.ObjectId>,
+    imageId: Types.ObjectId,
     user: Artist,
     createAlbum: CreateAlbumDto,
   ) {
     const album = new this.albumModel({
       coverArtUrl: imageId.toString(),
-      title: createAlbum.title,
       artist: user.username,
-      genre: createAlbum.genre,
-      release: createAlbum.release,
-      tracks: createAlbum.tracks,
-      public: createAlbum.public,
+      ...createAlbum,
     } as Album);
     album.save();
     this.mxzService.createMxz({
@@ -38,7 +34,7 @@ export class AlbumService {
   }
   async updateAlbum(
     id: string,
-    image: Promise<Types.ObjectId>,
+    image: Types.ObjectId,
     user: Artist,
     updateAlbum: UpdateAlbumDto,
   ) {
@@ -50,12 +46,8 @@ export class AlbumService {
       );
     }
     await this.albumModel.updateOne({ _id: id }, {
-      title: updateAlbum?.title ?? album.title,
+      ...updateAlbum,
       coverArtUrl: image ? image : album.coverArtUrl,
-      public: updateAlbum?.public ?? album.public,
-      release: updateAlbum?.release ?? album.release,
-      tracks: updateAlbum?.tracks ?? album.tracks,
-      genre: updateAlbum?.genre ?? album.genre,
     } as Album);
     this.mxzService.createMxz({
       level: mxzASPIRE.Artist,

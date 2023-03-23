@@ -41,10 +41,7 @@ export class TrackService {
       fileId: responses[0].id,
       status: 'pending',
       artist: user.username,
-      release: createTrack.release,
-      genre: createTrack.genre,
-      title: createTrack.title,
-      public: createTrack.public,
+      ...createTrack,
     } as Track);
     track.save();
     this.mxzService.createMxz({
@@ -64,7 +61,9 @@ export class TrackService {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
     try {
-      await this.trackModel.findByIdAndUpdate({ _id: id }, updateInfoTrack);
+      await this.trackModel.updateOne({ _id: id }, {
+        ...updateInfoTrack,
+      } as Track);
       this.mxzService.createMxz({
         level: mxzASPIRE.Artist,
         username: user.username,

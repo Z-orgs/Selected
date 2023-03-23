@@ -117,7 +117,7 @@ export class FileService {
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
     return filestream.pipe(res);
   }
-  async uploadImage(file: Express.Multer.File) {
+  uploadImage(file: Express.Multer.File) {
     const image = new this.imageModel({ fileId: file.id } as Image);
     image.save();
     return image._id;

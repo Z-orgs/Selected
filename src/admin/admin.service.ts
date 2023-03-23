@@ -32,12 +32,6 @@ export class AdminService {
     return new HttpException('Admin already exist', HttpStatus.BAD_REQUEST);
   }
   async changePassword(user: Admin, changePassword: ChangePasswordDto) {
-    if (user.username !== changePassword.username) {
-      return new HttpException(
-        `You cannot change someone else’s password`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     if (changePassword.newPassword !== changePassword.confirmNewPassword) {
       return new HttpException(
         `The new password and the password confirmation do not match`,
@@ -45,7 +39,7 @@ export class AdminService {
       );
     }
     const admin = await this.adminModel.findOne({
-      username: changePassword.username,
+      username: user.username,
       password: changePassword.password,
     });
     if (!admin) {

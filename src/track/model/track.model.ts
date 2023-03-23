@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
-export type TrackDocument = Track & Document;
+export type TrackDocument = HydratedDocument<Track>;
 
 @Schema()
 export class Track {
@@ -10,13 +10,9 @@ export class Track {
   @Prop()
   title: string;
   @Prop()
-  genre?: string;
+  genre: string;
   @Prop()
-  release?: Date;
-  // @Prop()
-  // duration: number;
-  // @Prop()
-  // lyrics?: string;
+  release: Date;
   @Prop()
   uploaded: Date;
   @Prop()
