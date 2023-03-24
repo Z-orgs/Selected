@@ -6,7 +6,7 @@ import { MxzModule } from './mxz/mxz.module';
   const app = await NestFactory.create(MxzModule);
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
   app.enableCors({
-    origin: 'http://localhost/',
+    origin: 'http://localhost:3006/',
     credentials: true,
   });
   await app.listen(3000);

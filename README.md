@@ -22,11 +22,9 @@ We welcome your pull requests, bug reports, and feature requests. If you find an
 Before you install and use the Selected project, you'll need the following:
 
 - [NodeJS](https://nodejs.org/en/)
-- [Yarn](https://yarnpkg.com/)
+- [Pnpm](https://pnpm.io/)
 
 ## Installation
-
-### First way
 
 1.  Clone this repository
 
@@ -37,27 +35,13 @@ git clone https://github.com/Z-orgs/Selected.git
 2.  Install all dependencies
 
 ```
-yarn
+pnpm install
 ```
 
 3.  Start the Selected server
 
 ```
-yarn start
-```
-
-### Second way
-
-1.  Clone this repository
-
-```
-git clone https://github.com/Z-orgs/Selected.git
-```
-
-2. Using docker
-
-```
-yarn docker
+pnpm start
 ```
 
 That's it! You have successfully completed the installation of Selected.
