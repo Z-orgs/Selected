@@ -14,7 +14,6 @@ import { AdminModule } from '../admin/admin.module';
 import { ArtistModule } from '../artist/artist.module';
 import { AlbumModule } from '../album/album.module';
 import { PlaylistModule } from '../playlist/playlist.module';
-import { GetMachineModule } from '../get-machine/get-machine.module';
 import { LoggerModule } from '../logger/logger.module';
 
 @Module({
@@ -33,7 +32,6 @@ import { LoggerModule } from '../logger/logger.module';
     ArtistModule,
     AlbumModule,
     PlaylistModule,
-    GetMachineModule,
     LoggerModule,
   ],
   controllers: [MxzController],
