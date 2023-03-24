@@ -4,13 +4,13 @@ import { AlbumController } from './album.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Album, AlbumSchema } from './model/album.model';
 import { FileModule } from 'src/file/file.module';
-import { MxzModule } from 'src/mxz/mxz.module';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Album.name, schema: AlbumSchema }]),
     FileModule,
-    MxzModule,
+    LoggerModule,
   ],
   controllers: [AlbumController],
   providers: [AlbumService],

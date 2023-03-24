@@ -5,15 +5,16 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album-dto';
 import { Album, AlbumDocument } from './model/album.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { MxzService } from 'src/mxz/mxz.service';
 import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
-    private readonly mxzService: MxzService,
+    private readonly loggerService: LoggerService,
   ) {}
+
   createAlbum(
     imageId: Types.ObjectId,
     user: Artist,
@@ -25,13 +26,14 @@ export class AlbumService {
       ...createAlbum,
     } as Album);
     album.save();
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Artist,
       username: user.username,
       log: `${user.username} has created album ${album._id}`,
     });
     return album;
   }
+
   async updateAlbum(
     id: string,
     image: Types.ObjectId,
@@ -49,7 +51,7 @@ export class AlbumService {
       ...updateAlbum,
       coverArtUrl: image ? image : album.coverArtUrl,
     } as Album);
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Artist,
       username: user.username,
       log: `${user.username} has updated the information of album ${id}`,

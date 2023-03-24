@@ -5,13 +5,13 @@ import { FileModule } from 'src/file/file.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Track, TrackSchema } from './model/track.model';
 import { TrackController } from './track.controller';
-import { MxzModule } from 'src/mxz/mxz.module';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
     FileModule,
     MongooseModule.forFeature([{ name: Track.name, schema: TrackSchema }]),
-    MxzModule,
+    LoggerModule,
   ],
   providers: [TrackGateway, TrackService],
   controllers: [TrackController],

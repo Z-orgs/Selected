@@ -1,28 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Mxz, MxzDocument } from 'src/mxz/model/mxz.model';
 import { mxzASPIRE } from 'src/mxz/mxz.aspire';
-import { MxzService } from 'src/mxz/mxz.service';
-import { Track, TrackDocument } from 'src/track/model/track.model';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateStatusTrack } from '../track/dto/update-status-track.dto';
 import { Admin, AdminDocument } from './model/admin.model';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
-    private readonly mxzService: MxzService,
+    private readonly loggerService: LoggerService,
   ) {}
+
   async createAdmin(user: Admin, createAdmin: CreateAdminDto) {
     const admin = await this.adminModel.findOne({
       username: createAdmin.username,
     });
     if (!admin) {
       new this.adminModel({ ...createAdmin } as Admin).save();
-      this.mxzService.createMxz({
+      this.loggerService.createLogger({
         level: mxzASPIRE.Admin,
         username: user.username,
         log: `${user.username} created admin ${createAdmin.username}`,
@@ -31,6 +29,7 @@ export class AdminService {
     }
     return new HttpException('Admin already exist', HttpStatus.BAD_REQUEST);
   }
+
   async changePassword(user: Admin, changePassword: ChangePasswordDto) {
     if (changePassword.newPassword !== changePassword.confirmNewPassword) {
       return new HttpException(
@@ -52,7 +51,7 @@ export class AdminService {
       { username: user.username },
       { password: changePassword.newPassword },
     );
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Admin,
       username: user.username,
       log: `${user.username} changed password.`,
@@ -62,6 +61,7 @@ export class AdminService {
       HttpStatus.ACCEPTED,
     );
   }
+
   async resetPassword(user: Admin, username: string) {
     const admin = await this.adminModel.findOne({ username });
     if (!admin) {
@@ -74,7 +74,7 @@ export class AdminService {
       { username },
       { password: mxzASPIRE.DefaultPassword },
     );
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Admin,
       username: user.username,
       log: `${user.username} reset password for ${username}`,

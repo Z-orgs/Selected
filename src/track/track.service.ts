@@ -9,31 +9,35 @@ import { User } from 'src/user/model/user.model';
 import { UpdateInfoTrackDto } from './dto/update-info-track.dto';
 import { Track, TrackDocument } from './model/track.model';
 import { Artist } from 'src/artist/model/artist.model';
-import { MxzService } from 'src/mxz/mxz.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { mxzASPIRE } from 'src/mxz/mxz.aspire';
 import { UpdateStatusTrack } from 'src/track/dto/update-status-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class TrackService {
   private fileModel: MongoGridFS;
+
   constructor(
     private readonly fileService: FileService,
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
-    private readonly mxzService: MxzService,
+    private readonly loggerService: LoggerService,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
+
   async getFile(id: string) {
     const file = await this.fileService.findInfo(id);
     const fileStream = await this.fileService.readStream(id);
     return { file, fileStream };
   }
+
   getHomeTrack(user: User) {
     return [];
   }
+
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
     const track = new this.trackModel({
       filename: responses[0].filename,
@@ -44,13 +48,14 @@ export class TrackService {
       ...createTrack,
     } as Track);
     track.save();
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Artist,
       username: user.username,
       log: `${user.username} has uploaded track ${track._id}`,
     });
     return track;
   }
+
   async updateInfoTrack(
     user: Artist,
     id: string,
@@ -64,7 +69,7 @@ export class TrackService {
       await this.trackModel.updateOne({ _id: id }, {
         ...updateInfoTrack,
       } as Track);
-      this.mxzService.createMxz({
+      this.loggerService.createLogger({
         level: mxzASPIRE.Artist,
         username: user.username,
         log: `${user.username} has updated the information of track ${id}`,
@@ -77,6 +82,7 @@ export class TrackService {
       );
     }
   }
+
   async updateStatusTrack(user: Admin, updateStatusTrack: UpdateStatusTrack) {
     const track = await this.trackModel.findById({
       _id: updateStatusTrack.trackId,
@@ -91,7 +97,7 @@ export class TrackService {
       { _id: updateStatusTrack.trackId },
       { status: updateStatusTrack.status },
     );
-    this.mxzService.createMxz({
+    this.loggerService.createLogger({
       level: mxzASPIRE.Admin,
       username: user.username,
       log: `${user.username} has updated the status of the track ${updateStatusTrack.trackId} from ${track.status} to ${updateStatusTrack.status}`,

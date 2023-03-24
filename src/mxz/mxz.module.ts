@@ -2,10 +2,40 @@ import { Module } from '@nestjs/common';
 import { MxzService } from './mxz.service';
 import { MxzController } from './mxz.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Mxz, MxzSchema } from './model/mxz.model';
+import { AuthModule } from '../auth/auth.module';
+import { mxzASPIRE } from './mxz.aspire';
+import { UserModule } from '../user/user.module';
+import { TrackModule } from '../track/track.module';
+import { FileModule } from '../file/file.module';
+import { Admin, AdminSchema } from '../admin/model/admin.model';
+import { Artist, ArtistSchema } from '../artist/model/artist.model';
+import { Track, TrackSchema } from '../track/model/track.model';
+import { AdminModule } from '../admin/admin.module';
+import { ArtistModule } from '../artist/artist.module';
+import { AlbumModule } from '../album/album.module';
+import { PlaylistModule } from '../playlist/playlist.module';
+import { GetMachineModule } from '../get-machine/get-machine.module';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Mxz.name, schema: MxzSchema }])],
+  imports: [
+    AuthModule,
+    MongooseModule.forRoot(mxzASPIRE.MongoURI),
+    UserModule,
+    TrackModule,
+    FileModule,
+    MongooseModule.forFeature([
+      { name: Admin.name, schema: AdminSchema },
+      { name: Artist.name, schema: ArtistSchema },
+      { name: Track.name, schema: TrackSchema },
+    ]),
+    AdminModule,
+    ArtistModule,
+    AlbumModule,
+    PlaylistModule,
+    GetMachineModule,
+    LoggerModule,
+  ],
   controllers: [MxzController],
   providers: [MxzService],
   exports: [MxzService],

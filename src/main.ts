@@ -1,9 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
+import { MxzModule } from './mxz/mxz.module';
 
 (async () => {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(MxzModule);
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
   app.enableCors({
     origin: 'http://localhost/',

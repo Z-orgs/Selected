@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Post,
   Put,
@@ -16,6 +17,7 @@ import { User } from 'src/user/model/user.model';
 @Controller('playlist')
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
+
   @Post()
   @UseGuards(JwtAuthGuard)
   createPlaylist(
@@ -27,6 +29,7 @@ export class PlaylistController {
       createPlaylist,
     );
   }
+
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   addTrackToPlaylist(
@@ -39,5 +42,11 @@ export class PlaylistController {
       trackId,
       id,
     );
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  deletePlaylist(@Req() req: Request, @Param('id') id: string) {
+    return this.playlistService.deletePlaylist(req.user as User, id);
   }
 }

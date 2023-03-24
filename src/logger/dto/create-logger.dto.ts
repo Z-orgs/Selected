@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateMxzDto {
+export class CreateLoggerDto {
   @IsNotEmpty()
   username: string;
   @IsNotEmpty()
