@@ -18,4 +18,14 @@ export class UserController {
   unFollowArtist(@Req() req: Request, @Param('artistId') artistId: string) {
     return this.userService.unfollowArtist(req.user as User, artistId);
   }
+  @Put('like/:trackId')
+  @UseGuards(JwtAuthGuard)
+  likeTrack(@Req() req: Request, @Param('trackId') id: string) {
+    return this.userService.likeTrack(req.user as User, id);
+  }
+  @Put('unlike/:trackId')
+  @UseGuards(JwtAuthGuard)
+  unlikeTrack(@Req() req: Request, @Param('trackId') id: string) {
+    return this.userService.unlikeTrack(req.user as User, id);
+  }
 }

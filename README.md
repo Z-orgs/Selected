@@ -22,7 +22,6 @@ We welcome your pull requests, bug reports, and feature requests. If you find an
 Before you install and use the Selected project, you'll need the following:
 
 - [NodeJS](https://nodejs.org/en/)
-- [Pnpm](https://pnpm.io/)
 
 ## Installation
 
@@ -35,13 +34,13 @@ git clone https://github.com/Z-orgs/Selected.git
 2.  Install all dependencies
 
 ```
-pnpm install
+npx yarn install
 ```
 
 3.  Start the Selected server
 
 ```
-pnpm start
+npm start
 ```
 
 That's it! You have successfully completed the installation of Selected.

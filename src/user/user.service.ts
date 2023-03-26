@@ -53,4 +53,26 @@ export class UserService {
       HttpStatus.ACCEPTED,
     );
   }
+  async unlikeTrack(user: User, id: string) {
+    const track = await this.userModel.findOne({ email: user.email });
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    await this.userModel.updateOne(
+      { email: user.email },
+      { $pull: { liked: id } },
+    );
+    return new HttpException('unliked', HttpStatus.ACCEPTED);
+  }
+  async likeTrack(user: User, id: string) {
+    const track = await this.userModel.findOne({ email: user.email });
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    await this.userModel.updateOne(
+      { email: user.email },
+      { $addToSet: { liked: id } },
+    );
+    return new HttpException('liked', HttpStatus.ACCEPTED);
+  }
 }

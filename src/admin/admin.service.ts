@@ -1,17 +1,32 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Admin, AdminDocument } from './model/admin.model';
 import { LoggerService } from '../logger/logger.service';
+import { Artist, ArtistDocument } from '../artist/model/artist.model';
+import { Track, TrackDocument } from '../track/model/track.model';
+import { Album, AlbumDocument } from '../album/model/album.model';
+import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
+import { Logger, LoggerDocument } from '../logger/model/logger.model';
+import { User, UserDocument } from '../user/model/user.model';
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
     private readonly loggerService: LoggerService,
+    @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
+    @InjectModel(Artist.name)
+    private readonly artistModel: Model<ArtistDocument>,
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+    @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
+    @InjectModel(Playlist.name)
+    private readonly playlistModel: Model<PlaylistDocument>,
+    @InjectModel(Logger.name)
+    private readonly loggerModel: Model<LoggerDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   async createAdmin(user: Admin, createAdmin: CreateAdminDto) {
@@ -19,9 +34,9 @@ export class AdminService {
       username: createAdmin.username,
     });
     if (!admin) {
-      new this.adminModel({ ...createAdmin } as Admin).save();
+      await new this.adminModel({ ...createAdmin } as Admin).save();
       this.loggerService.createLogger({
-        level: mxzASPIRE.Admin,
+        level: env.Admin,
         username: user.username,
         log: `${user.username} created admin ${createAdmin.username}`,
       });
@@ -52,7 +67,7 @@ export class AdminService {
       { password: changePassword.newPassword },
     );
     this.loggerService.createLogger({
-      level: mxzASPIRE.Admin,
+      level: env.Admin,
       username: user.username,
       log: `${user.username} changed password.`,
     });
@@ -72,13 +87,41 @@ export class AdminService {
     }
     await this.adminModel.findOneAndUpdate(
       { username },
-      { password: mxzASPIRE.DefaultPassword },
+      { password: env.DefaultPassword },
     );
     this.loggerService.createLogger({
-      level: mxzASPIRE.Admin,
+      level: env.Admin,
       username: user.username,
       log: `${user.username} reset password for ${username}`,
     });
     return new HttpException(`Password reset successful`, HttpStatus.ACCEPTED);
+  }
+
+  getAllAdmins() {
+    return this.adminModel.find();
+  }
+
+  getAllArtists() {
+    return this.artistModel.find();
+  }
+
+  getAllTracks() {
+    return this.trackModel.find();
+  }
+
+  getAllAlbums() {
+    return this.albumModel.find();
+  }
+
+  getAllPlaylists() {
+    return this.playlistModel.find();
+  }
+
+  getAllLoggers() {
+    return this.loggerModel.find();
+  }
+
+  getALlUsers() {
+    return this.userModel.find();
   }
 }

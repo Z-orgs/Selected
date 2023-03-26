@@ -4,14 +4,15 @@ import {
   MulterOptionsFactory,
 } from '@nestjs/platform-express';
 import { GridFsStorage } from 'multer-gridfs-storage/lib/gridfs';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 
 @Injectable()
 export class GridFsMulterConfigService implements MulterOptionsFactory {
   gridFsStorage: GridFsStorage;
+
   constructor() {
     this.gridFsStorage = new GridFsStorage({
-      url: mxzASPIRE.MongoURI,
+      url: env.MongoURI,
       file: (req, file) => {
         return new Promise((resolve, reject) => {
           const filename = file.originalname.trim();

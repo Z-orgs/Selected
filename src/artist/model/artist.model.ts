@@ -46,6 +46,11 @@ export class Artist {
 
   @Prop()
   socialLinks: { name: string; url: string }[];
+
+  @Prop({
+    default: 0,
+  })
+  revenue: number;
 }
 
 export const ArtistSchema = SchemaFactory.createForClass(Artist);

@@ -22,7 +22,6 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { FileService } from 'src/file/file.service';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 import { Admin } from 'src/admin/model/admin.model';
-import { UpdateStatusTrack } from './dto/update-status-track.dto';
 
 @Controller('track')
 export class TrackController {
@@ -64,13 +63,7 @@ export class TrackController {
   }
   @Put('approved/:id')
   @UseGuards(JwtAdminAuthGuard)
-  updateStatusTrack(
-    @Req() req: Request,
-    @Body() updateStatusTrack: UpdateStatusTrack,
-  ) {
-    return this.trackService.updateStatusTrack(
-      req.user as Admin,
-      updateStatusTrack,
-    );
+  updateStatusTrack(@Param('id') id: string, @Req() req: Request) {
+    return this.trackService.updateStatusTrack(id, req.user as Admin);
   }
 }

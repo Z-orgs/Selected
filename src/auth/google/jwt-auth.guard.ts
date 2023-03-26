@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {}
@@ -16,9 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: mxzASPIRE.ClientSecret,
+      secretOrKey: env.ClientSecret,
     });
   }
+
   /**
    * It takes the payload from the JWT and returns an object with the same properties
    * @param {any} payload - The payload that was sent to the API.

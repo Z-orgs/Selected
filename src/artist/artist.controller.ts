@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
+  Param,
   ParseFilePipe,
   Post,
   Put,
@@ -21,6 +23,7 @@ import { Artist } from './model/artist.model';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from 'src/file/file.service';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
+import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 
 @Controller('artist')
 export class ArtistController {
@@ -64,5 +67,10 @@ export class ArtistController {
       req.user as Artist,
       changePassword,
     );
+  }
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  getArtistById(@Param('id') id: string) {
+    return this.artistService.getArtistById(id);
   }
 }

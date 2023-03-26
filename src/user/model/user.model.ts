@@ -15,10 +15,12 @@ export class User {
   picture: string;
   @Prop()
   jwt: string;
-  @Prop()
+  @Prop({ default: [] })
   following: [string];
-  @Prop()
+  @Prop({ default: [] })
   playList: [string];
+  @Prop({ default: [] })
+  liked: [string];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

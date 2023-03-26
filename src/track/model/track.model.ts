@@ -18,10 +18,15 @@ export class Track {
   @Prop()
   fileId: string;
   @Prop()
-  status: string;
+  status: boolean;
   @Prop()
   artist: string;
   @Prop()
   public: boolean;
+  @Prop({
+    default: 0,
+  })
+  listens: number;
 }
+
 export const TrackSchema = SchemaFactory.createForClass(Track);

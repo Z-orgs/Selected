@@ -1,5 +1,6 @@
 import 'dotenv/config';
-export const mxzASPIRE = {
+
+export const env = {
   MongoURI: process.env.MONGO_URI,
   ClientId: process.env.GOOGLE_CLIENT_ID,
   ClientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -11,4 +12,5 @@ export const mxzASPIRE = {
   TmpUri: process.env.TMPURI,
   Artist: 'ARTIST',
   Admin: 'ADMIN',
+  UnitPrice: process.env.UNITPRICE,
 };

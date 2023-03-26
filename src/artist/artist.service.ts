@@ -4,16 +4,20 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Artist, ArtistDocument } from './model/artist.model';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { LoggerService } from '../logger/logger.service';
+import { Album, AlbumDocument } from 'src/album/model/album.model';
+import { Track, TrackDocument } from 'src/track/model/track.model';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
+    @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -32,7 +36,7 @@ export class ArtistService {
     } as Artist);
     artist.save();
     this.loggerService.createLogger({
-      level: mxzASPIRE.Admin,
+      level: env.Admin,
       username: user.username,
       log: `${user.username} has created artist ${artist._id}`,
     });
@@ -50,7 +54,7 @@ export class ArtistService {
       profileImage: imageId ? imageId : artist.profileImage,
     } as Artist);
     this.loggerService.createLogger({
-      level: mxzASPIRE.Artist,
+      level: env.Artist,
       username: user.username,
       log: `${user.username} has updated information`,
     });
@@ -72,7 +76,7 @@ export class ArtistService {
       password: changePassword.newPassword,
     } as Artist);
     this.loggerService.createLogger({
-      level: mxzASPIRE.Artist,
+      level: env.Artist,
       username: user.username,
       log: `${user.username} has changed password`,
     });
@@ -80,5 +84,18 @@ export class ArtistService {
       'Password changed successfully',
       HttpStatus.ACCEPTED,
     );
+  }
+  async getArtistById(id: string) {
+    const artist = await this.artistModel.findById(id);
+    const albums = await this.albumModel
+      .find({ artist: id, public: true })
+      .sort({ createdAt: 'desc' });
+    const tracks = await this.trackModel
+      .find({
+        artist: id,
+        status: true,
+      })
+      .sort({ createdAt: 'desc' });
+    return { artist, albums, tracks };
   }
 }

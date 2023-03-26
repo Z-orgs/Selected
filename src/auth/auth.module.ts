@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -20,8 +20,8 @@ import { User, UserSchema } from 'src/user/model/user.model';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: mxzASPIRE.ClientSecret,
-      signOptions: { expiresIn: mxzASPIRE.ExpiresIn },
+      secret: env.ClientSecret,
+      signOptions: { expiresIn: env.ExpiresIn },
     }),
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },

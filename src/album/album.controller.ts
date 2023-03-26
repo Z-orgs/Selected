@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   Param,
   ParseFilePipe,
   Post,
@@ -19,6 +20,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album-dto';
 import { FileService } from 'src/file/file.service';
 import { Request } from 'express';
+import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 
 @Controller('album')
 export class AlbumController {
@@ -69,5 +71,10 @@ export class AlbumController {
       req.user as Artist,
       updateAlbum,
     );
+  }
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  getAlbumById(@Param('id') id: string) {
+    return this.albumService.getAlbumsById(id);
   }
 }

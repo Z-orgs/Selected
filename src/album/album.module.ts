@@ -5,10 +5,22 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Album, AlbumSchema } from './model/album.model';
 import { FileModule } from 'src/file/file.module';
 import { LoggerModule } from '../logger/logger.module';
+import { Track, TrackSchema } from 'src/track/model/track.model';
+import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Album.name, schema: AlbumSchema }]),
+    MongooseModule.forFeature([
+      { name: Album.name, schema: AlbumSchema },
+      {
+        name: Track.name,
+        schema: TrackSchema,
+      },
+      {
+        name: Artist.name,
+        schema: ArtistSchema,
+      },
+    ]),
     FileModule,
     LoggerModule,
   ],

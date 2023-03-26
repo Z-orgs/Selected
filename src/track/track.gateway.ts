@@ -20,18 +20,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Track, TrackDocument } from './model/track.model';
 import { MessageInfoDto } from './dto/message.info.dto';
+import { Artist, ArtistDocument } from '../artist/model/artist.model';
+import { env } from '../m/x/z/a/s/p/i/r/e/env';
 
 @WebSocketGateway({ namespace: 'track', cors: true })
 export class TrackGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   private readonly logger = new Logger(TrackGateway.name);
+
   constructor(
     private readonly trackService: TrackService,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+    @InjectModel(Artist.name)
+    private readonly artistModel: Model<ArtistDocument>,
   ) {}
 
   @WebSocketServer() io: Namespace;
+
   afterInit(server: any) {
     this.logger.log('Websocket Gateway initialized');
   }
@@ -47,6 +53,7 @@ export class TrackGateway
     this.logger.log(`Disconnected socket id: ${client.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
+
   @SubscribeMessage('play')
   async playTrack(
     @ConnectedSocket() client: Socket,
@@ -58,7 +65,7 @@ export class TrackGateway
         _id: messagePlay.trackId,
       });
       if (track) {
-        if (track.status !== 'approved') {
+        if (!track.status) {
           client.send('This track is still waiting for approval');
           return;
         }
@@ -66,6 +73,16 @@ export class TrackGateway
           client.send('This track is in private mode.');
           return;
         }
+        await this.trackModel.updateOne(
+          { _id: messagePlay.trackId },
+          { $inc: { listens: 1 } },
+        );
+        await this.artistModel.updateOne(
+          { _id: track.artist },
+          {
+            $inc: { revenue: env.UnitPrice },
+          },
+        );
         const file = await this.trackService.getFile(track.fileId);
         if (file.fileStream) {
           let position = 0;
@@ -79,6 +96,7 @@ export class TrackGateway
       }
     }
   }
+
   @SubscribeMessage('info')
   async infoTrack(
     @ConnectedSocket() client: Socket,
@@ -90,7 +108,7 @@ export class TrackGateway
         _id: messageInfo.trackId,
       });
       if (track) {
-        if (track.status !== 'approved') {
+        if (!track.status) {
           client.send('This track is still waiting for approval');
           return;
         }

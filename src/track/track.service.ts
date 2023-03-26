@@ -10,10 +10,9 @@ import { UpdateInfoTrackDto } from './dto/update-info-track.dto';
 import { Track, TrackDocument } from './model/track.model';
 import { Artist } from 'src/artist/model/artist.model';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { mxzASPIRE } from 'src/mxz/mxz.aspire';
-import { UpdateStatusTrack } from 'src/track/dto/update-status-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
+import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 
 @Injectable()
 export class TrackService {
@@ -43,13 +42,13 @@ export class TrackService {
       filename: responses[0].filename,
       uploaded: new Date(),
       fileId: responses[0].id,
-      status: 'pending',
+      status: false,
       artist: user.username,
       ...createTrack,
     } as Track);
     track.save();
     this.loggerService.createLogger({
-      level: mxzASPIRE.Artist,
+      level: env.Artist,
       username: user.username,
       log: `${user.username} has uploaded track ${track._id}`,
     });
@@ -70,7 +69,7 @@ export class TrackService {
         ...updateInfoTrack,
       } as Track);
       this.loggerService.createLogger({
-        level: mxzASPIRE.Artist,
+        level: env.Artist,
         username: user.username,
         log: `${user.username} has updated the information of track ${id}`,
       });
@@ -83,9 +82,9 @@ export class TrackService {
     }
   }
 
-  async updateStatusTrack(user: Admin, updateStatusTrack: UpdateStatusTrack) {
+  async updateStatusTrack(id: string, user: Admin) {
     const track = await this.trackModel.findById({
-      _id: updateStatusTrack.trackId,
+      _id: id,
     });
     if (!track) {
       return new HttpException(
@@ -93,15 +92,26 @@ export class TrackService {
         HttpStatus.NOT_FOUND,
       );
     }
-    await this.trackModel.findByIdAndUpdate(
-      { _id: updateStatusTrack.trackId },
-      { status: updateStatusTrack.status },
-    );
-    this.loggerService.createLogger({
-      level: mxzASPIRE.Admin,
-      username: user.username,
-      log: `${user.username} has updated the status of the track ${updateStatusTrack.trackId} from ${track.status} to ${updateStatusTrack.status}`,
-    });
-    return new HttpException('Status update successful', HttpStatus.ACCEPTED);
+    if (!track.status) {
+      await this.trackModel.findByIdAndUpdate({ _id: id }, { status: true });
+      this.loggerService.createLogger({
+        level: env.Admin,
+        username: user.username,
+        log: `${user.username} has updated the status of the track ${id} from ${
+          track.status
+        } to ${!track.status}`,
+      });
+      return new HttpException('Status update successful', HttpStatus.ACCEPTED);
+    } else {
+      await this.trackModel.findByIdAndUpdate({ _id: id }, { status: false });
+      this.loggerService.createLogger({
+        level: env.Admin,
+        username: user.username,
+        log: `${user.username} has updated the status of the track ${id} from ${
+          track.status
+        } to ${!track.status}`,
+      });
+      return new HttpException('Status update successful', HttpStatus.ACCEPTED);
+    }
   }
 }
