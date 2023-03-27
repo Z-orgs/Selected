@@ -29,11 +29,6 @@ export class TrackController {
     private readonly trackService: TrackService,
     private readonly fileService: FileService,
   ) {}
-  @Get('all')
-  @UseGuards(JwtAuthGuard)
-  getHomeTrack(@Req() req: Request) {
-    return this.trackService.getHomeTrack(req.user as User);
-  }
   @Post('')
   @UseGuards(JwtArtistAuthGuard)
   @UseInterceptors(FilesInterceptor('file'))
@@ -65,5 +60,10 @@ export class TrackController {
   @UseGuards(JwtAdminAuthGuard)
   updateStatusTrack(@Param('id') id: string, @Req() req: Request) {
     return this.trackService.updateStatusTrack(id, req.user as Admin);
+  }
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  getTrackById(@Param('id') id: string) {
+    return this.trackService.getTrackById(id);
   }
 }

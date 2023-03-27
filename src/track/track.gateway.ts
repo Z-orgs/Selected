@@ -97,29 +97,29 @@ export class TrackGateway
     }
   }
 
-  @SubscribeMessage('info')
-  async infoTrack(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() messageInfo: MessageInfoDto,
-  ) {
-    if (messageInfo.trackId) {
-      this.logger.log(`${client.id} is getting info ${messageInfo.trackId}`);
-      const track = await this.trackModel.findById({
-        _id: messageInfo.trackId,
-      });
-      if (track) {
-        if (!track.status) {
-          client.send('This track is still waiting for approval');
-          return;
-        }
-        if (!track.public) {
-          client.send('This track is in private mode.');
-          return;
-        }
-        client.send(JSON.stringify(track));
-      } else {
-        client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
-      }
-    }
-  }
+  // @SubscribeMessage('info')
+  // async infoTrack(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() messageInfo: MessageInfoDto,
+  // ) {
+  //   if (messageInfo.trackId) {
+  //     this.logger.log(`${client.id} is getting info ${messageInfo.trackId}`);
+  //     const track = await this.trackModel.findById({
+  //       _id: messageInfo.trackId,
+  //     });
+  //     if (track) {
+  //       if (!track.status) {
+  //         client.send('This track is still waiting for approval');
+  //         return;
+  //       }
+  //       if (!track.public) {
+  //         client.send('This track is in private mode.');
+  //         return;
+  //       }
+  //       client.send(JSON.stringify(track));
+  //     } else {
+  //       client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+  //     }
+  //   }
+  // }
 }

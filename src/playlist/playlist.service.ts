@@ -5,12 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Playlist, PlaylistDocument } from './model/playlist.model';
 import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
+import { Track, TrackDocument } from 'src/track/model/track.model';
 
 @Injectable()
 export class PlaylistService {
   constructor(
     @InjectModel(Playlist.name)
     private readonly playlistModel: Model<PlaylistDocument>,
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -71,5 +73,18 @@ export class PlaylistService {
       log: `${user.email} has deleted playlist ${id}`,
     });
     return new HttpException('Deleted', HttpStatus.ACCEPTED);
+  }
+  async getPlaylistById(id: string) {
+    const playlist = await this.playlistModel.findById(id);
+    const tracks = await Promise.all(
+      playlist.tracks.map(async (track) => {
+        return await this.trackModel.findOne({
+          _id: track,
+          status: true,
+          public: true,
+        });
+      }),
+    );
+    return { ...playlist, tracks };
   }
 }

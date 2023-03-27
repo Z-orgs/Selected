@@ -97,31 +97,71 @@ export class AdminService {
     return new HttpException(`Password reset successful`, HttpStatus.ACCEPTED);
   }
 
-  getAllAdmins() {
-    return this.adminModel.find();
+  async getAllAdmins() {
+    const admins = await this.adminModel.find().sort({ createdAt: 'desc' });
+    return await Promise.all(
+      admins.map((admin) => {
+        return { ...admin, id: admin._id };
+      }),
+    );
   }
 
-  getAllArtists() {
-    return this.artistModel.find();
+  async getAllArtists() {
+    const artists = await this.artistModel.find().sort({ createdAt: 'desc' });
+    return await Promise.all(
+      artists.map((artist) => {
+        return {
+          id: artist.id,
+          profileImage: artist.profileImage,
+          nickName: artist.nickName,
+        };
+      }),
+    );
   }
 
-  getAllTracks() {
-    return this.trackModel.find();
+  async getAllTracks() {
+    const tracks = await this.trackModel.find().sort({ createdAt: 'desc' });
+    return await Promise.all(
+      tracks.map(async (track) => {
+        const artist = await this.artistModel.findById(track.artist);
+        return { id: track.id, artist: artist.nickName, title: track };
+      }),
+    );
   }
 
-  getAllAlbums() {
-    return this.albumModel.find();
+  async getAllAlbums() {
+    const albums = await this.albumModel.find().sort({ createdAt: 'desc' });
+    return await Promise.all(
+      albums.map(async (album) => {
+        return {
+          id: album._id,
+          title: album.title,
+          tracks: album.tracks.length,
+        };
+      }),
+    );
   }
 
-  getAllPlaylists() {
-    return this.playlistModel.find();
+  async getAllPlaylists() {
+    const playlists = await this.playlistModel
+      .find()
+      .sort({ createdAt: 'desc' });
+    return await Promise.all(
+      playlists.map(async (playlist) => {
+        return {
+          id: playlist._id,
+          title: playlist.title,
+          owner: playlist.owner,
+        };
+      }),
+    );
   }
 
   getAllLoggers() {
-    return this.loggerModel.find();
+    return this.loggerModel.find().sort({ createdAt: 'desc' });
   }
 
   getALlUsers() {
-    return this.userModel.find();
+    return this.userModel.find().sort({ createdAt: 'desc' });
   }
 }

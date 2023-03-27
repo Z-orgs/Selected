@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Put,
@@ -48,5 +49,10 @@ export class PlaylistController {
   @UseGuards(JwtAuthGuard)
   deletePlaylist(@Req() req: Request, @Param('id') id: string) {
     return this.playlistService.deletePlaylist(req.user as User, id);
+  }
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  getPlaylistById(@Param('id') id: string) {
+    return this.playlistService.getPlaylistById(id);
   }
 }

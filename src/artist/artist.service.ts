@@ -94,6 +94,7 @@ export class ArtistService {
       .find({
         artist: id,
         status: true,
+        public: true,
       })
       .sort({ createdAt: 'desc' });
     return { artist, albums, tracks };

@@ -5,10 +5,9 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
 import { Connection, Model } from 'mongoose';
 import { FileService } from 'src/file/file.service';
-import { User } from 'src/user/model/user.model';
 import { UpdateInfoTrackDto } from './dto/update-info-track.dto';
 import { Track, TrackDocument } from './model/track.model';
-import { Artist } from 'src/artist/model/artist.model';
+import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
@@ -22,6 +21,8 @@ export class TrackService {
     private readonly fileService: FileService,
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+    @InjectModel(Artist.name)
+    private readonly artistModel: Model<ArtistDocument>,
     private readonly loggerService: LoggerService,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
@@ -31,10 +32,6 @@ export class TrackService {
     const file = await this.fileService.findInfo(id);
     const fileStream = await this.fileService.readStream(id);
     return { file, fileStream };
-  }
-
-  getHomeTrack(user: User) {
-    return [];
   }
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
@@ -113,5 +110,14 @@ export class TrackService {
       });
       return new HttpException('Status update successful', HttpStatus.ACCEPTED);
     }
+  }
+  async getTrackById(id: string) {
+    const track = await this.trackModel.findOne({
+      _id: id,
+      status: true,
+      public: true,
+    });
+    const artist = await this.artistModel.findById(track.artist);
+    return { ...track, artist };
   }
 }

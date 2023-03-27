@@ -19,4 +19,7 @@ export class LoggerService {
       log: logger.log,
     }).save();
   }
+  async getLoggerById(id: string) {
+    return await this.loggerModel.findById(id);
+  }
 }

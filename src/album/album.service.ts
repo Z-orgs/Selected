@@ -63,10 +63,17 @@ export class AlbumService {
     return new HttpException('Updated album', HttpStatus.ACCEPTED);
   }
   async getAlbumsById(id: string) {
-    const album = await this.albumModel.findById(id);
+    const album = await this.albumModel.findOne({ _id: id, public: true });
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
     const tracks = await Promise.all(
       album.tracks.map(async (track) => {
-        return await this.trackModel.findById(track);
+        return await this.trackModel.findOne({
+          _id: track,
+          public: true,
+          status: true,
+        });
       }),
     );
     const artist = await this.artistModel.findById(album.artist);
