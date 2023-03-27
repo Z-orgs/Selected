@@ -9,6 +9,7 @@ import { LoggerModule } from '../logger/logger.module';
 import { Artist, ArtistSchema } from '../artist/model/artist.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfigService } from 'src/file/multer.service';
+import { Album, AlbumSchema } from 'src/album/model/album.model';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GridFsMulterConfigService } from 'src/file/multer.service';
     MongooseModule.forFeature([
       { name: Track.name, schema: TrackSchema },
       { name: Artist.name, schema: ArtistSchema },
+      { name: Album.name, schema: AlbumSchema },
     ]),
     LoggerModule,
   ],

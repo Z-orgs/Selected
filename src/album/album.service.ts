@@ -79,4 +79,72 @@ export class AlbumService {
     const artist = await this.artistModel.findById(album.artist);
     return { ...album.toObject(), tracks, artist };
   }
+  async addTrackToAlbum(id: string, trackId: string, user: Artist) {
+    const album = await this.albumModel.findById(id);
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+    const artist = await this.artistModel.findOne({ username: user.username });
+    if (album.artist !== artist._id.toString()) {
+      return new HttpException('No permission', HttpStatus.CONFLICT);
+    }
+    const track = await this.trackModel.findOne({
+      _id: trackId,
+      status: true,
+      public: true,
+    });
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    await this.trackModel.updateOne(
+      { _id: trackId },
+      {
+        album: id,
+      },
+    );
+    await this.trackModel.updateOne(
+      { _id: id },
+      { $addToSet: { tracks: trackId } },
+    );
+    this.loggerService.createLogger({
+      level: env.Artist,
+      username: user.username,
+      log: `${user.username} has added track ${trackId} to album ${id}`,
+    });
+    return new HttpException('Added', HttpStatus.ACCEPTED);
+  }
+  async deleteTrackToAlbum(id: string, trackId: string, user: Artist) {
+    const album = await this.albumModel.findById(id);
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
+    const artist = await this.artistModel.findOne({ username: user.username });
+    if (album.artist !== artist._id.toString()) {
+      return new HttpException('No permission', HttpStatus.CONFLICT);
+    }
+    const track = await this.trackModel.findOne({
+      _id: trackId,
+      status: true,
+      public: true,
+    });
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    await this.trackModel.updateOne(
+      { _id: trackId },
+      {
+        album: null,
+      },
+    );
+    await this.trackModel.updateOne(
+      { _id: id },
+      { $pull: { tracks: trackId } },
+    );
+    this.loggerService.createLogger({
+      level: env.Artist,
+      username: user.username,
+      log: `${user.username} has deleted track ${trackId} from album ${id}`,
+    });
+    return new HttpException('deleted', HttpStatus.ACCEPTED);
+  }
 }

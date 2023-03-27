@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
@@ -12,6 +13,9 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
 import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { MessagePlayDto } from './dto/message.play.dto';
+import { NextMessageDto } from './dto/message.next.dto';
+import { Album, AlbumDocument } from 'src/album/model/album.model';
 
 @Injectable()
 export class TrackService {
@@ -23,6 +27,7 @@ export class TrackService {
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
+    @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
     private readonly loggerService: LoggerService,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
@@ -119,5 +124,65 @@ export class TrackService {
     });
     const artist = await this.artistModel.findById(track.artist);
     return { ...track.toObject(), artist };
+  }
+  async playTrack(client: Socket, playMessage: MessagePlayDto) {
+    if (playMessage.trackId) {
+      const track = await this.trackModel.findById({
+        _id: playMessage.trackId,
+      });
+      if (track) {
+        if (!track.status) {
+          client.send('This track is still waiting for approval');
+          return;
+        }
+        if (!track.public) {
+          client.send('This track is in private mode.');
+          return;
+        }
+        await this.trackModel.updateOne(
+          { _id: playMessage.trackId },
+          { $inc: { listens: 1 } },
+        );
+        await this.artistModel.updateOne(
+          { _id: track.artist },
+          {
+            $inc: { revenue: env.UnitPrice },
+          },
+        );
+        const file = await this.getFile(track.fileId);
+        if (file.fileStream) {
+          let position = 0;
+          file.fileStream.on('data', (data: Buffer) => {
+            client.send({ data, position });
+            position += data.length;
+          });
+        } else {
+          client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+        }
+      }
+    }
+  }
+  async nextTrack(client: Socket, nextMessage: NextMessageDto) {
+    let nextTrack: string = nextMessage.currentTrackId;
+    const currentTrack = await this.trackModel.findById(
+      nextMessage.currentTrackId,
+    );
+    if (currentTrack.album) {
+      const album = await this.albumModel.findById(currentTrack.album);
+      while (nextMessage.currentTrackId === nextTrack) {
+        nextTrack =
+          album.tracks[Math.floor(Math.random() * album.tracks.length)];
+      }
+    } else {
+      const tracks = await this.trackModel.find({
+        status: true,
+        public: true,
+      });
+      while (nextMessage.currentTrackId === nextTrack) {
+        const randomIndex = Math.floor(Math.random() * tracks.length);
+        nextTrack = tracks[randomIndex]._id.toString();
+      }
+    }
+    return this.playTrack(client, { trackId: nextTrack } as MessagePlayDto);
   }
 }

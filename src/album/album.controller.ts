@@ -72,6 +72,28 @@ export class AlbumController {
       updateAlbum,
     );
   }
+  @Put('add/:id')
+  @UseGuards(JwtArtistAuthGuard)
+  addTrackToAlbum(
+    @Param('id') id: string,
+    @Body('trackId') trackId: string,
+    @Req() req: Request,
+  ) {
+    return this.albumService.addTrackToAlbum(id, trackId, req.user as Artist);
+  }
+  @Put('delete/:id')
+  @UseGuards(JwtArtistAuthGuard)
+  deleteTrackToAlbum(
+    @Param('id') id: string,
+    @Body('trackId') trackId: string,
+    @Req() req: Request,
+  ) {
+    return this.albumService.deleteTrackToAlbum(
+      id,
+      trackId,
+      req.user as Artist,
+    );
+  }
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   getAlbumById(@Param('id') id: string) {

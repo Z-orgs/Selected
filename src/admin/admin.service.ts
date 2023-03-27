@@ -124,7 +124,7 @@ export class AdminService {
     return await Promise.all(
       tracks.map(async (track) => {
         const artist = await this.artistModel.findById(track.artist);
-        return { _id: track._id, artist: artist.nickName, title: track };
+        return { _id: track._id, artist: artist.nickName, title: track.title };
       }),
     );
   }

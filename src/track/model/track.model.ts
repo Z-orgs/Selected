@@ -27,6 +27,8 @@ export class Track {
     default: 0,
   })
   listens: number;
+  @Prop()
+  album: string;
 }
 
 export const TrackSchema = SchemaFactory.createForClass(Track);
