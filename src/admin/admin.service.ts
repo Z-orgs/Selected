@@ -101,7 +101,7 @@ export class AdminService {
     const admins = await this.adminModel.find().sort({ createdAt: 'desc' });
     return await Promise.all(
       admins.map((admin) => {
-        return { ...admin, id: admin._id };
+        return { ...admin.toObject() };
       }),
     );
   }
@@ -111,7 +111,7 @@ export class AdminService {
     return await Promise.all(
       artists.map((artist) => {
         return {
-          id: artist.id,
+          _id: artist._id,
           profileImage: artist.profileImage,
           nickName: artist.nickName,
         };
@@ -124,7 +124,7 @@ export class AdminService {
     return await Promise.all(
       tracks.map(async (track) => {
         const artist = await this.artistModel.findById(track.artist);
-        return { id: track.id, artist: artist.nickName, title: track };
+        return { _id: track._id, artist: artist.nickName, title: track };
       }),
     );
   }
@@ -134,7 +134,7 @@ export class AdminService {
     return await Promise.all(
       albums.map(async (album) => {
         return {
-          id: album._id,
+          _id: album._id,
           title: album.title,
           tracks: album.tracks.length,
         };
@@ -149,7 +149,7 @@ export class AdminService {
     return await Promise.all(
       playlists.map(async (playlist) => {
         return {
-          id: playlist._id,
+          _id: playlist._id,
           title: playlist.title,
           owner: playlist.owner,
         };
@@ -163,5 +163,36 @@ export class AdminService {
 
   getALlUsers() {
     return this.userModel.find().sort({ createdAt: 'desc' });
+  }
+
+  async getTrackById(id: string) {
+    const track = await this.trackModel.findById(id);
+    return {
+      ...track.toObject(),
+      link: `${env.UrlServer}/file/${track.fileId}`,
+    };
+  }
+
+  async getAlbumById(id: string) {
+    const album = await this.albumModel.findById(id);
+    const tracks = await Promise.all(
+      album.tracks.map((track) => {
+        return this.getTrackById(track);
+      }),
+    );
+    return { ...album.toObject(), tracks };
+  }
+  async getPlaylistById(id: string) {
+    const playlist = await this.playlistModel.findById(id);
+    const tracks = await Promise.all(
+      playlist.tracks.map((track) => {
+        return this.getTrackById(track);
+      }),
+    );
+    return { ...playlist.toObject(), tracks };
+  }
+  async getAdminById(id: string) {
+    const admin = await this.adminModel.findById(id);
+    return { ...admin.toObject() };
   }
 }

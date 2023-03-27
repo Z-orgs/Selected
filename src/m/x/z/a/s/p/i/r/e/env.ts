@@ -13,4 +13,5 @@ export const env = {
   Artist: 'ARTIST',
   Admin: 'ADMIN',
   UnitPrice: process.env.UNITPRICE,
+  UrlServer: '',
 };

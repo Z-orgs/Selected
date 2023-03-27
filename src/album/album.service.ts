@@ -77,6 +77,6 @@ export class AlbumService {
       }),
     );
     const artist = await this.artistModel.findById(album.artist);
-    return { ...album, tracks, artist };
+    return { ...album.toObject(), tracks, artist };
   }
 }

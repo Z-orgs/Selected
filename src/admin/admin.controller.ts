@@ -5,6 +5,7 @@ import {
   Post,
   Put,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common/decorators';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
@@ -45,16 +46,34 @@ export class AdminController {
     return this.adminService.getAllAdmins();
   }
 
+  @Get('admin/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  getAdminById(@Param('id') id: string) {
+    return this.adminService.getAdminById(id);
+  }
+
   @Get('playlist')
   @UseGuards(JwtAdminAuthGuard)
   getAllPlaylists() {
     return this.adminService.getAllPlaylists();
   }
 
+  @Get('playlist/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  getPlaylistById(@Param('id') id: string) {
+    return this.adminService.getPlaylistById(id);
+  }
+
   @Get('album')
   @UseGuards(JwtAdminAuthGuard)
   getAllAlbums() {
     return this.adminService.getAllAlbums();
+  }
+
+  @Get('album/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  getAlbumById(@Param('id') id: string) {
+    return this.adminService.getAlbumById(id);
   }
 
   @Get('user')
@@ -67,6 +86,12 @@ export class AdminController {
   @UseGuards(JwtAdminAuthGuard)
   getAllTracks() {
     return this.adminService.getAllTracks();
+  }
+
+  @Get('track/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  getTrackById(@Param('id') id: string) {
+    return this.adminService.getTrackById(id);
   }
 
   @Get('logger')

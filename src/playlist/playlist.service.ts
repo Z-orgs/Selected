@@ -85,6 +85,6 @@ export class PlaylistService {
         });
       }),
     );
-    return { ...playlist, tracks };
+    return { ...playlist.toObject(), tracks };
   }
 }

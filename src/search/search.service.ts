@@ -44,21 +44,21 @@ export class SearchService {
 
     return {
       tracks: tracks.map((track) => ({
-        id: track._id,
+        _id: track._id,
         title: track.title,
         artist: track.artist,
       })),
       albums: albums.map((album) => ({
-        id: album._id,
+        _id: album._id,
         title: album.title,
         artist: album.artist,
       })),
       artists: artists.map((artist) => ({
-        id: artist._id,
+        _id: artist._id,
         nickName: artist.nickName,
       })),
       playlists: playlists.map((playlist) => ({
-        id: playlist._id,
+        _id: playlist._id,
         title: playlist.title,
       })),
     };

@@ -118,6 +118,6 @@ export class TrackService {
       public: true,
     });
     const artist = await this.artistModel.findById(track.artist);
-    return { ...track, artist };
+    return { ...track.toObject(), artist };
   }
 }
