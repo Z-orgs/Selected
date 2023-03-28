@@ -8,7 +8,7 @@ export class CreateAlbumDto {
   @IsNotEmpty()
   release?: Date;
   @IsNotEmpty()
-  tracks: string[];
+  tracks: string;
   @IsNotEmpty()
   public: boolean;
 }

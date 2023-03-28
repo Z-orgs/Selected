@@ -12,6 +12,7 @@ import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AdminService {
@@ -114,6 +115,7 @@ export class AdminService {
           _id: artist._id,
           profileImage: artist.profileImage,
           nickName: artist.nickName,
+          username: artist.username,
         };
       }),
     );
@@ -123,7 +125,9 @@ export class AdminService {
     const tracks = await this.trackModel.find().sort({ createdAt: 'desc' });
     return await Promise.all(
       tracks.map(async (track) => {
-        const artist = await this.artistModel.findById(track.artist);
+        const artist = await this.artistModel.findOne({
+          username: track.artist,
+        });
         return { _id: track._id, artist: artist.nickName, title: track.title };
       }),
     );

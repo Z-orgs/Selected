@@ -16,17 +16,17 @@ export class MxzController {
   @Get()
   async initAdmin() {
     const admin = await this.adminModel.findOne({
-      username: env.Username,
+      username: env.Admin,
     });
     if (!admin) {
       const initAdmin = new this.adminModel({
-        username: env.Username,
+        username: env.Admin,
         password: env.Password,
       });
       initAdmin.save();
     }
     const initArtist = new this.artistModel({
-      username: env.Username,
+      username: env.Artist,
       password: env.Password,
     });
     initArtist.save();

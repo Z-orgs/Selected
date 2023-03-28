@@ -12,5 +12,4 @@ import { env } from './m/x/z/a/s/p/i/r/e/env';
   });
   await app.listen(3000);
   env.UrlServer = await app.getUrl();
-  console.log(env.UrlServer);
 })();

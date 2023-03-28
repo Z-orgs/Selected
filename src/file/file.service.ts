@@ -1,20 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Connection, Model } from 'mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
 import { GridFSBucket, GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './file-info-vm.model';
 import { FileResponseVm } from './file-response.modal';
 import { Response } from 'express';
-import { Image, ImageDocument } from './model/image.model';
 
 @Injectable()
 export class FileService {
   private fileModel: MongoGridFS;
-  constructor(
-    @InjectConnection() private readonly connection: Connection,
-    @InjectModel(Image.name) private imageModel: Model<ImageDocument>,
-  ) {
+  constructor(@InjectConnection() private readonly connection: Connection) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
 
@@ -118,8 +114,6 @@ export class FileService {
     return filestream.pipe(res);
   }
   uploadImage(file: Express.Multer.File) {
-    const image = new this.imageModel({ fileId: file.id } as Image);
-    image.save();
-    return image._id;
+    return file.id;
   }
 }

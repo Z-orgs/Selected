@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { SocialLink } from '../dto/social.links';
 
 export type ArtistDocument = HydratedDocument<Artist>;
 
@@ -41,11 +42,13 @@ export class Artist {
   @Prop()
   genre: string;
 
-  @Prop()
+  @Prop({
+    default: 0,
+  })
   followers: number;
 
   @Prop()
-  socialLinks: { name: string; url: string }[];
+  socialLinks: SocialLink[];
 
   @Prop({
     default: 0,

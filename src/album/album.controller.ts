@@ -30,7 +30,7 @@ export class AlbumController {
   ) {}
   @Post('')
   @UseGuards(JwtArtistAuthGuard)
-  @UseInterceptors(FileInterceptor('covertAlbum'))
+  @UseInterceptors(FileInterceptor('image'))
   createAlbum(
     @UploadedFile(
       new ParseFilePipe({
@@ -51,7 +51,7 @@ export class AlbumController {
   }
   @Put(':id')
   @UseGuards(JwtArtistAuthGuard)
-  @UseInterceptors(FileInterceptor('covertAlbum'))
+  @UseInterceptors(FileInterceptor('image'))
   updateAlbum(
     @Param('id') id: string,
     @UploadedFile(

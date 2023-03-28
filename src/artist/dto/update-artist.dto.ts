@@ -1,3 +1,5 @@
+import { SocialLink } from './social.links';
+
 export class UpdateArtistDto {
   firstName: string;
 
@@ -17,7 +19,5 @@ export class UpdateArtistDto {
 
   genre: string;
 
-  followers: number;
-
-  socialLinks: { name: string; url: string }[];
+  socialLinks: string;
 }

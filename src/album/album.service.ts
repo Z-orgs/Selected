@@ -19,15 +19,12 @@ export class AlbumService {
     private readonly loggerService: LoggerService,
   ) {}
 
-  createAlbum(
-    imageId: Types.ObjectId,
-    user: Artist,
-    createAlbum: CreateAlbumDto,
-  ) {
+  createAlbum(imageId: string, user: Artist, createAlbum: CreateAlbumDto) {
     const album = new this.albumModel({
       coverArtUrl: imageId.toString(),
       artist: user.username,
       ...createAlbum,
+      tracks: JSON.parse(createAlbum.tracks) as string[],
     } as Album);
     album.save();
     this.loggerService.createLogger({
@@ -40,7 +37,7 @@ export class AlbumService {
 
   async updateAlbum(
     id: string,
-    image: Types.ObjectId,
+    image: string,
     user: Artist,
     updateAlbum: UpdateAlbumDto,
   ) {
@@ -84,8 +81,7 @@ export class AlbumService {
     if (!album) {
       return new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    const artist = await this.artistModel.findOne({ username: user.username });
-    if (album.artist !== artist._id.toString()) {
+    if (album.artist !== user.username) {
       return new HttpException('No permission', HttpStatus.CONFLICT);
     }
     const track = await this.trackModel.findOne({
@@ -96,15 +92,21 @@ export class AlbumService {
     if (!track) {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
+    if (album.tracks.includes(trackId)) {
+      return new HttpException(
+        'Track already exist in this album',
+        HttpStatus.CONFLICT,
+      );
+    }
     await this.trackModel.updateOne(
       { _id: trackId },
       {
         album: id,
       },
     );
-    await this.trackModel.updateOne(
+    await this.albumModel.updateOne(
       { _id: id },
-      { $addToSet: { tracks: trackId } },
+      { $push: { tracks: trackId } },
     );
     this.loggerService.createLogger({
       level: env.Artist,
@@ -118,8 +120,7 @@ export class AlbumService {
     if (!album) {
       return new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    const artist = await this.artistModel.findOne({ username: user.username });
-    if (album.artist !== artist._id.toString()) {
+    if (album.artist !== user.username) {
       return new HttpException('No permission', HttpStatus.CONFLICT);
     }
     const track = await this.trackModel.findOne({
@@ -136,7 +137,7 @@ export class AlbumService {
         album: null,
       },
     );
-    await this.trackModel.updateOne(
+    await this.albumModel.updateOne(
       { _id: id },
       { $pull: { tracks: trackId } },
     );

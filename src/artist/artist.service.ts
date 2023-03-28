@@ -10,6 +10,8 @@ import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { LoggerService } from '../logger/logger.service';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
+import { json } from 'stream/consumers';
+import { SocialLink } from './dto/social.links';
 
 @Injectable()
 export class ArtistService {
@@ -22,9 +24,7 @@ export class ArtistService {
   ) {}
 
   async createArtist(user: Admin, createArtist: CreateArtistDto) {
-    if (
-      !(await this.artistModel.findOne({ username: createArtist.username }))
-    ) {
+    if (await this.artistModel.findOne({ username: createArtist.username })) {
       return new HttpException(
         `Username already exist`,
         HttpStatus.BAD_REQUEST,
@@ -46,11 +46,12 @@ export class ArtistService {
   async updateArtist(
     user: Artist,
     updateArtist: UpdateArtistDto,
-    imageId: Types.ObjectId,
+    imageId: string,
   ) {
     const artist = await this.artistModel.findOne({ username: user.username });
     await this.artistModel.updateOne({ username: user.username }, {
       ...updateArtist,
+      socialLinks: JSON.parse(updateArtist.socialLinks) as SocialLink[],
       profileImage: imageId ? imageId : artist.profileImage,
     } as Artist);
     this.loggerService.createLogger({
