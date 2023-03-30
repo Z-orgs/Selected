@@ -12,7 +12,6 @@ import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class AdminService {

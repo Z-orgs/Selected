@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Param, Put, Req, UseGuards } from '@nestjs/common/decorators';
+import { Get, Param, Put, Req, UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 import { UserService } from './user.service';
 import { Request } from 'express';
@@ -27,5 +27,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   unlikeTrack(@Req() req: Request, @Param('trackId') id: string) {
     return this.userService.unlikeTrack(req.user as User, id);
+  }
+  @Get('likes')
+  @UseGuards(JwtAuthGuard)
+  getLikeList(@Req() req: Request) {
+    return this.userService.getLikeList(req.user as User);
   }
 }

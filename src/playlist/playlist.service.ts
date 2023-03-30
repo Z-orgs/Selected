@@ -6,6 +6,8 @@ import { Playlist, PlaylistDocument } from './model/playlist.model';
 import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
+import { clean } from 'diacritic';
+import { deburr, toLower } from 'lodash';
 
 @Injectable()
 export class PlaylistService {
@@ -19,7 +21,9 @@ export class PlaylistService {
   createPlaylist(user: User, createPlaylist: CreatePlaylistDto) {
     const playlist = new this.playlistModel({
       ...createPlaylist,
+      tracks: JSON.parse(createPlaylist.tracks) as string[],
       owner: user.email,
+      titleUnaccented: toLower(deburr(clean(createPlaylist.title))),
     } as Playlist);
     playlist.save();
     this.loggerService.createLogger({
@@ -86,5 +90,32 @@ export class PlaylistService {
       }),
     );
     return { ...playlist.toObject(), tracks };
+  }
+  async deleteTrackFromPlaylist(user: User, trackId: string, id: string) {
+    const playlist = await this.playlistModel.findById(id);
+    if (!playlist) {
+      return new HttpException('Playlist not found', HttpStatus.NOT_FOUND);
+    }
+    if (playlist.owner !== user.email) {
+      return new HttpException(
+        `You’re not the owner of this playlist`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    await this.playlistModel.updateOne(
+      { _id: id },
+      {
+        $pull: { tracks: trackId },
+      },
+    );
+    this.loggerService.createLogger({
+      level: 'user',
+      username: user.email,
+      log: `${user.email} has added track ${trackId} to playlist ${id}`,
+    });
+    return new HttpException('Deleted', HttpStatus.ACCEPTED);
+  }
+  async getAllPlaylistAsUser(user: User) {
+    return await this.playlistModel.find({ owner: user.email });
   }
 }

@@ -10,6 +10,8 @@ export class Track {
   @Prop()
   title: string;
   @Prop()
+  titleUnaccented: string;
+  @Prop()
   genre: string;
   @Prop()
   release: Date;

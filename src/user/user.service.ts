@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { User, UserDocument } from './model/user.model';
+import { Track, TrackDocument } from 'src/track/model/track.model';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,7 @@ export class UserService {
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
   ) {}
   async followArtist(user: User, artistId: string) {
     const artist = await this.artistModel.findById({ _id: artistId });
@@ -74,5 +76,15 @@ export class UserService {
       { $addToSet: { liked: id } },
     );
     return new HttpException('liked', HttpStatus.ACCEPTED);
+  }
+  async getLikeList(user: User) {
+    const tracks = (
+      await this.userModel.findOne({ email: user.email }).select('liked')
+    ).toObject().liked;
+    return await Promise.all(
+      tracks.map(async (track) => {
+        return await this.trackModel.findById(track);
+      }),
+    );
   }
 }

@@ -8,6 +8,8 @@ export class Album {
   @Prop()
   title: string;
   @Prop()
+  titleUnaccented: string;
+  @Prop()
   artist: string;
   @Prop()
   genre?: string;

@@ -83,7 +83,7 @@ export class AlbumController {
   }
   @Put('delete/:id')
   @UseGuards(JwtArtistAuthGuard)
-  deleteTrackToAlbum(
+  deleteTrackFromAlbum(
     @Param('id') id: string,
     @Body('trackId') trackId: string,
     @Req() req: Request,

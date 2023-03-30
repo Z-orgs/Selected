@@ -1,7 +1,7 @@
 services:
   #  node:
   #    image: node:lts-hydrogen
-  #    command: sh -c "npx pnpm install && npm start"
+  #    command: sh -c "npx yarn install && npm start"
   #    ports:
   #      - 3000:3000
   #    working_dir: /app

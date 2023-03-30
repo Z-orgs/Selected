@@ -8,6 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
+import { clean } from 'diacritic';
+import { toLower, deburr } from 'lodash';
 
 @Injectable()
 export class AlbumService {
@@ -25,6 +27,7 @@ export class AlbumService {
       artist: user.username,
       ...createAlbum,
       tracks: JSON.parse(createAlbum.tracks) as string[],
+      titleUnaccented: toLower(deburr(clean(createAlbum.title))),
     } as Album);
     album.save();
     this.loggerService.createLogger({
@@ -48,9 +51,13 @@ export class AlbumService {
         HttpStatus.NOT_FOUND,
       );
     }
+    if (album.artist !== user.username) {
+      return new HttpException('No permission', HttpStatus.CONFLICT);
+    }
     await this.albumModel.updateOne({ _id: id }, {
       ...updateAlbum,
       coverArtUrl: image ? image : album.coverArtUrl,
+      titleUnaccented: toLower(deburr(clean(updateAlbum.title))),
     } as Album);
     this.loggerService.createLogger({
       level: env.Artist,
@@ -73,7 +80,9 @@ export class AlbumService {
         });
       }),
     );
-    const artist = await this.artistModel.findById(album.artist);
+    const artist = await this.artistModel
+      .findOne({ artist: album.artist })
+      .select('-password');
     return { ...album.toObject(), tracks, artist };
   }
   async addTrackToAlbum(id: string, trackId: string, user: Artist) {
@@ -88,6 +97,7 @@ export class AlbumService {
       _id: trackId,
       status: true,
       public: true,
+      artist: user.username,
     });
     if (!track) {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);
@@ -106,7 +116,7 @@ export class AlbumService {
     );
     await this.albumModel.updateOne(
       { _id: id },
-      { $push: { tracks: trackId } },
+      { $addToSet: { tracks: trackId } },
     );
     this.loggerService.createLogger({
       level: env.Artist,
@@ -127,6 +137,7 @@ export class AlbumService {
       _id: trackId,
       status: true,
       public: true,
+      artist: user.username,
     });
     if (!track) {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);

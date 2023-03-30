@@ -31,14 +31,28 @@ export class PlaylistController {
     );
   }
 
-  @Put(':id')
+  @Put('add/:id')
   @UseGuards(JwtAuthGuard)
   addTrackToPlaylist(
+    @Req() req: Request,
+    @Body('trackId') trackId: string,
+    @Param('id') id: string,
+  ) {
+    return this.playlistService.addTrackToPlaylist(
+      req.user as User,
+      trackId,
+      id,
+    );
+  }
+
+  @Put('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  deleteTrackFromPlaylist(
     @Req() req: Request,
     @Body() trackId: string,
     @Param('id') id: string,
   ) {
-    return this.playlistService.addTrackToPlaylist(
+    return this.playlistService.deleteTrackFromPlaylist(
       req.user as User,
       trackId,
       id,
@@ -54,5 +68,10 @@ export class PlaylistController {
   @UseGuards(JwtAuthGuard)
   getPlaylistById(@Param('id') id: string) {
     return this.playlistService.getPlaylistById(id);
+  }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getAllPlaylistAsUser(@Req() req: Request) {
+    return this.playlistService.getAllPlaylistAsUser(req.user as User);
   }
 }

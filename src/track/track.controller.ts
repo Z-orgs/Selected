@@ -61,7 +61,7 @@ export class TrackController {
   updateStatusTrack(@Param('id') id: string, @Req() req: Request) {
     return this.trackService.updateStatusTrack(id, req.user as Admin);
   }
-  @Get(':id')
+  @Get('info/:id')
   @UseGuards(JwtAuthGuard)
   getTrackById(@Param('id') id: string) {
     return this.trackService.getTrackById(id);

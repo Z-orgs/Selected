@@ -68,9 +68,33 @@ export class ArtistController {
       changePassword,
     );
   }
-  @Get(':id')
+  @Get('artist/:id')
   @UseGuards(JwtAuthGuard)
   getArtistById(@Param('id') id: string) {
     return this.artistService.getArtistById(id);
+  }
+
+  @Get('album')
+  @UseGuards(JwtArtistAuthGuard)
+  getAllAlbums(@Req() req: Request) {
+    return this.artistService.getAllAlbums(req.user as Artist);
+  }
+
+  @Get('album/:id')
+  @UseGuards(JwtArtistAuthGuard)
+  getAlbumById(@Param('id') id: string) {
+    return this.artistService.getAlbumById(id);
+  }
+
+  @Get('track')
+  @UseGuards(JwtAdminAuthGuard)
+  getAllTracks(@Req() req: Request) {
+    return this.artistService.getAllTracks(req.user as Artist);
+  }
+
+  @Get('track/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  getTrackById(@Param('id') id: string) {
+    return this.artistService.getTrackById(id);
   }
 }

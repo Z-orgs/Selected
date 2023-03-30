@@ -16,6 +16,8 @@ import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
+import { clean } from 'diacritic';
+import { toLower, deburr } from 'lodash';
 
 @Injectable()
 export class TrackService {
@@ -47,6 +49,7 @@ export class TrackService {
       status: false,
       artist: user.username,
       ...createTrack,
+      titleUnaccented: toLower(deburr(clean(createTrack.title))),
     } as Track);
     track.save();
     this.loggerService.createLogger({
@@ -69,6 +72,7 @@ export class TrackService {
     try {
       await this.trackModel.updateOne({ _id: id }, {
         ...updateInfoTrack,
+        titleUnaccented: toLower(deburr(clean(updateInfoTrack.title))),
       } as Track);
       this.loggerService.createLogger({
         level: env.Artist,
@@ -122,7 +126,9 @@ export class TrackService {
       status: true,
       public: true,
     });
-    const artist = await this.artistModel.findById(track.artist);
+    const artist = await this.artistModel
+      .findOne({ username: track.artist })
+      .select('-password');
     return { ...track.toObject(), artist };
   }
   async playTrack(client: Socket, playMessage: MessagePlayDto) {

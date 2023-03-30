@@ -14,6 +14,8 @@ export class Artist {
 
   @Prop()
   nickName: string;
+  @Prop()
+  nickNameUnaccented: string;
 
   @Prop()
   username: string;

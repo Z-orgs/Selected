@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Admin } from 'src/admin/model/admin.model';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from './model/artist.model';
 import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -10,8 +10,9 @@ import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { LoggerService } from '../logger/logger.service';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
-import { json } from 'stream/consumers';
 import { SocialLink } from './dto/social.links';
+import { clean } from 'diacritic';
+import { toLower, deburr } from 'lodash';
 
 @Injectable()
 export class ArtistService {
@@ -33,6 +34,7 @@ export class ArtistService {
     const artist = new this.artistModel({
       ...createArtist,
       followers: 0,
+      nickNameUnaccented: toLower(deburr(clean(createArtist.nickName))),
     } as Artist);
     artist.save();
     this.loggerService.createLogger({
@@ -53,6 +55,7 @@ export class ArtistService {
       ...updateArtist,
       socialLinks: JSON.parse(updateArtist.socialLinks) as SocialLink[],
       profileImage: imageId ? imageId : artist.profileImage,
+      nickNameUnaccented: toLower(deburr(clean(updateArtist.nickName))),
     } as Artist);
     this.loggerService.createLogger({
       level: env.Artist,
@@ -87,17 +90,60 @@ export class ArtistService {
     );
   }
   async getArtistById(id: string) {
-    const artist = await this.artistModel.findById(id);
+    const artist = await this.artistModel.findById(id).select('-password');
     const albums = await this.albumModel
-      .find({ artist: id, public: true })
+      .find({ artist: artist.username, public: true })
       .sort({ createdAt: 'desc' });
     const tracks = await this.trackModel
       .find({
-        artist: id,
+        artist: artist.username,
         status: true,
         public: true,
       })
       .sort({ createdAt: 'desc' });
     return { artist, albums, tracks };
+  }
+  async getAllAlbums(user: Artist) {
+    const albums = await this.albumModel
+      .find({ artist: user.username })
+      .sort({ createdAt: 'desc' });
+    return await Promise.all(
+      albums.map((album) => {
+        return {
+          _id: album._id,
+          title: album.title,
+          tracks: album.tracks.length,
+        };
+      }),
+    );
+  }
+  async getAlbumById(id: string) {
+    const album = await this.albumModel.findById(id);
+    const tracks = await Promise.all(
+      album.tracks.map((track) => {
+        return this.getTrackById(track);
+      }),
+    );
+    return { ...album.toObject(), tracks };
+  }
+  async getTrackById(id: string) {
+    const track = await this.trackModel.findById(id);
+    return {
+      ...track.toObject(),
+      link: `${env.UrlServer}/file/${track.fileId}`,
+    };
+  }
+  async getAllTracks(user: Artist) {
+    const tracks = await this.trackModel
+      .find({ artist: user.username })
+      .sort({ createdAt: 'desc' });
+    return await Promise.all(
+      tracks.map(async (track) => {
+        const artist = await this.artistModel.findOne({
+          username: track.artist,
+        });
+        return { _id: track._id, artist: artist.nickName, title: track.title };
+      }),
+    );
   }
 }

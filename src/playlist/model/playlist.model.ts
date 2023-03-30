@@ -8,6 +8,8 @@ export class Playlist {
   @Prop()
   title: string;
   @Prop()
+  titleUnaccented: string;
+  @Prop()
   owner: string;
   @Prop()
   tracks: string[];

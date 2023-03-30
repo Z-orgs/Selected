@@ -5,6 +5,8 @@ import { Artist, ArtistDocument } from '../artist/model/artist.model';
 import { Track, TrackDocument } from '../track/model/track.model';
 import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
+import { clean } from 'diacritic';
+import { toLower, deburr } from 'lodash';
 
 @Injectable()
 export class SearchService {
@@ -18,26 +20,26 @@ export class SearchService {
   ) {}
 
   async search(keyword: string) {
-    const regex = new RegExp(keyword, 'i');
+    const regex = new RegExp(toLower(deburr(clean(keyword))), 'gi');
 
     const [tracks, albums, artists, playlists] = await Promise.all([
       this.trackModel
-        .find({ title: regex, status: 'approved' })
+        .find({ titleUnaccented: regex, status: true, public: true })
         .sort({ createdAt: 'desc' })
         .select('_id title artist'),
 
       this.albumModel
-        .find({ title: regex, public: true })
+        .find({ titleUnaccented: regex, public: true })
         .sort({ createdAt: 'desc' })
         .select('_id title artist'),
 
       this.artistModel
-        .find({ nickName: regex })
+        .find({ nickNameUnaccented: regex })
         .sort({ createdAt: 'desc' })
         .select('_id nickName'),
 
       this.playlistModel
-        .find({ title: regex })
+        .find({ titleUnaccented: regex })
         .sort({ createdAt: 'desc' })
         .select('_id title'),
     ]);
@@ -62,5 +64,24 @@ export class SearchService {
         title: playlist.title,
       })),
     };
+  }
+  async searchTrack(user: Artist, keyword: string) {
+    const regex = new RegExp(toLower(deburr(clean(keyword))), 'gi');
+    const tracks = await this.trackModel
+      .find({
+        titleUnaccented: regex,
+        status: true,
+        public: true,
+        artist: user.username,
+      })
+      .sort({ createdAt: 'desc' })
+      .select('_id title artist');
+    return await Promise.all(
+      tracks.map((track) => ({
+        _id: track._id,
+        title: track.title,
+        artist: track.artist,
+      })),
+    );
   }
 }
