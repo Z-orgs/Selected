@@ -31,5 +31,6 @@ import { MulterModule } from '@nestjs/platform-express';
   ],
   controllers: [AlbumController],
   providers: [AlbumService, GridFsMulterConfigService],
+  exports: [AlbumService],
 })
 export class AlbumModule {}

@@ -6,8 +6,7 @@ import { Playlist, PlaylistDocument } from './model/playlist.model';
 import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
-import { clean } from 'diacritic';
-import { deburr, toLower } from 'lodash';
+import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class PlaylistService {
@@ -23,7 +22,7 @@ export class PlaylistService {
       ...createPlaylist,
       tracks: JSON.parse(createPlaylist.tracks) as string[],
       owner: user.email,
-      titleUnaccented: toLower(deburr(clean(createPlaylist.title))),
+      titleUnaccented: MXZ(createPlaylist.title),
     } as Playlist);
     playlist.save();
     this.loggerService.createLogger({

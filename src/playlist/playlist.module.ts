@@ -16,5 +16,6 @@ import { Track, TrackSchema } from 'src/track/model/track.model';
   ],
   controllers: [PlaylistController],
   providers: [PlaylistService],
+  exports: [PlaylistService],
 })
 export class PlaylistModule {}

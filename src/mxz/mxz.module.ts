@@ -16,6 +16,7 @@ import { AlbumModule } from '../album/album.module';
 import { PlaylistModule } from '../playlist/playlist.module';
 import { LoggerModule } from '../logger/logger.module';
 import { SearchModule } from '../search/search.module';
+import { HomeModule } from 'src/home/home.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SearchModule } from '../search/search.module';
     PlaylistModule,
     LoggerModule,
     SearchModule,
+    HomeModule,
   ],
   controllers: [MxzController],
   providers: [MxzService],

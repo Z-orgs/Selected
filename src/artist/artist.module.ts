@@ -28,5 +28,6 @@ import { GridFsMulterConfigService } from 'src/file/multer.service';
   ],
   controllers: [ArtistController],
   providers: [ArtistService, GridFsMulterConfigService],
+  exports: [ArtistService],
 })
 export class ArtistModule {}

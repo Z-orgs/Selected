@@ -11,8 +11,7 @@ import { LoggerService } from '../logger/logger.service';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SocialLink } from './dto/social.links';
-import { clean } from 'diacritic';
-import { toLower, deburr } from 'lodash';
+import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class ArtistService {
@@ -34,7 +33,7 @@ export class ArtistService {
     const artist = new this.artistModel({
       ...createArtist,
       followers: 0,
-      nickNameUnaccented: toLower(deburr(clean(createArtist.nickName))),
+      nickNameUnaccented: MXZ(createArtist.nickName),
     } as Artist);
     artist.save();
     this.loggerService.createLogger({
@@ -55,7 +54,7 @@ export class ArtistService {
       ...updateArtist,
       socialLinks: JSON.parse(updateArtist.socialLinks) as SocialLink[],
       profileImage: imageId ? imageId : artist.profileImage,
-      nickNameUnaccented: toLower(deburr(clean(updateArtist.nickName))),
+      nickNameUnaccented: MXZ(updateArtist.nickName),
     } as Artist);
     this.loggerService.createLogger({
       level: env.Artist,

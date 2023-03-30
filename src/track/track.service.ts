@@ -16,8 +16,7 @@ import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
-import { clean } from 'diacritic';
-import { toLower, deburr } from 'lodash';
+import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class TrackService {
@@ -49,7 +48,7 @@ export class TrackService {
       status: false,
       artist: user.username,
       ...createTrack,
-      titleUnaccented: toLower(deburr(clean(createTrack.title))),
+      titleUnaccented: MXZ(createTrack.title),
     } as Track);
     track.save();
     this.loggerService.createLogger({
@@ -72,7 +71,7 @@ export class TrackService {
     try {
       await this.trackModel.updateOne({ _id: id }, {
         ...updateInfoTrack,
-        titleUnaccented: toLower(deburr(clean(updateInfoTrack.title))),
+        titleUnaccented: MXZ(updateInfoTrack.title),
       } as Track);
       this.loggerService.createLogger({
         level: env.Artist,
