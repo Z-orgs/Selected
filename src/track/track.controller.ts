@@ -13,7 +13,6 @@ import {
 import { Request } from 'express';
 import { JwtArtistAuthGuard } from 'src/auth/artist/jwtartist-auth.guard';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
-import { User } from 'src/user/model/user.model';
 import { UpdateInfoTrackDto } from './dto/update-info-track.dto';
 import { TrackService } from './track.service';
 import { FilesInterceptor } from '@nestjs/platform-express';

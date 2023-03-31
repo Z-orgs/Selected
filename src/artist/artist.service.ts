@@ -4,14 +4,13 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from './model/artist.model';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { LoggerService } from '../logger/logger.service';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SocialLink } from './dto/social.links';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class ArtistService {

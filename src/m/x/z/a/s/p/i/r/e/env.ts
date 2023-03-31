@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import { clean } from 'diacritic';
+import { toLower, deburr } from 'lodash';
 
 export const env = {
   MongoURI: process.env.MONGO_URI,
@@ -14,3 +16,5 @@ export const env = {
   UnitPrice: process.env.UNITPRICE,
   UrlServer: '',
 };
+
+export const MXZ = (input: string) => toLower(deburr(clean(input)));

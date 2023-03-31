@@ -5,9 +5,7 @@ import { Artist, ArtistDocument } from '../artist/model/artist.model';
 import { Track, TrackDocument } from '../track/model/track.model';
 import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
-import { clean } from 'diacritic';
-import { toLower, deburr } from 'lodash';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
+import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/env';
 
 @Injectable()
 export class SearchService {

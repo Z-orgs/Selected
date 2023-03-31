@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
-import { ArtistService } from 'src/artist/artist.service';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
-import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { User, UserDocument } from 'src/user/model/user.model';
 

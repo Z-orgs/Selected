@@ -12,11 +12,10 @@ import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class TrackService {

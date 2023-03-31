@@ -5,7 +5,6 @@ import {
   Post,
   Put,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common/decorators';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';

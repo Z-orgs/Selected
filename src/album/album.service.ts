@@ -1,14 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album-dto';
 import { Album, AlbumDocument } from './model/album.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class AlbumService {

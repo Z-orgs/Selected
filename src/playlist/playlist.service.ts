@@ -6,7 +6,6 @@ import { Playlist, PlaylistDocument } from './model/playlist.model';
 import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class PlaylistService {
@@ -117,4 +116,7 @@ export class PlaylistService {
   async getAllPlaylistAsUser(user: User) {
     return await this.playlistModel.find({ owner: user.email });
   }
+}
+function MXZ(title: string): string {
+  throw new Error('Function not implemented.');
 }
