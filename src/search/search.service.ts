@@ -7,6 +7,7 @@ import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { clean } from 'diacritic';
 import { toLower, deburr } from 'lodash';
+import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/defunc';
 
 @Injectable()
 export class SearchService {
@@ -20,7 +21,7 @@ export class SearchService {
   ) {}
 
   async search(keyword: string) {
-    const regex = new RegExp(toLower(deburr(clean(keyword))), 'gi');
+    const regex = new RegExp(MXZ(keyword), 'gi');
 
     const [tracks, albums, artists, playlists] = await Promise.all([
       this.trackModel
@@ -66,7 +67,7 @@ export class SearchService {
     };
   }
   async searchTrack(user: Artist, keyword: string) {
-    const regex = new RegExp(toLower(deburr(clean(keyword))), 'gi');
+    const regex = new RegExp(MXZ(keyword), 'gi');
     const tracks = await this.trackModel
       .find({
         titleUnaccented: regex,
