@@ -127,7 +127,12 @@ export class AdminService {
         const artist = await this.artistModel.findOne({
           username: track.artist,
         });
-        return { _id: track._id, artist: artist.nickName, title: track.title };
+        return {
+          _id: track._id,
+          artist: artist.nickName,
+          title: track.title,
+          status: track.status,
+        };
       }),
     );
   }
