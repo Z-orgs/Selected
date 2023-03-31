@@ -15,10 +15,7 @@ export class HomeService {
     private readonly artistModel: Model<ArtistDocument>,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
-    @InjectModel(Playlist.name)
-    private readonly playlistModel: Model<PlaylistDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    private readonly artistService: ArtistService,
   ) {}
   async getHomePage(user: User) {
     const following = (
