@@ -1,39 +1,17 @@
 services:
-  # node:
-  #   env_file:
-  #     - .env
-  #   image: node:lts-hydrogen
-  #   command: sh -c "npx yarn install && npm start"
-  #   ports:
-  #     - 3000:3000
-  #   working_dir: /app
-  #   volumes:
-  #     - ./:/app
-  #   environment:
-  #     MONGO_URI: ${MONGO_URI}
-  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-  #     GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-  #     EXPIRES_IN: ${EXPIRES_IN}
-  #     CALLBACK_URL: ${CALLBACK_URL}
-  #     PASSWORD: ${PASSWORD}
-  #     DEFAULTPASSWORD: ${DEFAULTPASSWORD}
-  #     UNITPRICE: ${UNITPRICE}
-  selected:
+  node:
     env_file:
       - selected.env
-    build: .
-    command: npm start
-    volumes:
-      - .:/myapp
+    image: node:lts-hydrogen
+    command: sh -c "npx yarn install && npm start"
     ports:
-      - '3000:3000'
-    depends_on:
-      - mongo
-    links:
-      - mongo
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
   mongo:
     env_file:
-      - mongo.env
+      - selected.env
     image: mongo:focal
     restart: always
     ports:
