@@ -3,6 +3,8 @@
 /node_modules
 .env
 data
+selected.env
+mongo.env
 
 # Logs
 logs

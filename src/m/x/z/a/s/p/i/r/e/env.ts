@@ -10,10 +10,9 @@ export const env = {
   CallbackURL: process.env.CALLBACK_URL,
   Password: process.env.PASSWORD,
   DefaultPassword: process.env.DEFAULTPASSWORD,
-  TmpUri: process.env.TMPURI,
   Artist: 'artist',
   Admin: 'admin',
-  UnitPrice: process.env.UNITPRICE,
+  UnitPrice: Number(process.env.UNITPRICE),
   UrlServer: '',
 };
 

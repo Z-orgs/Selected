@@ -1,30 +1,42 @@
 services:
-  #  node:
-  #    image: node:lts-hydrogen
-  #    command: sh -c "npx yarn install && npm start"
-  #    ports:
-  #      - 3000:3000
-  #    working_dir: /app
-  #    volumes:
-  #      - ./:/app
-  #    environment:
-  #      MONGO_URI: mongodb://admin:example@mongo:27017/?retryWrites=true&w=majority
-  #      GOOGLE_CLIENT_ID:
-  #      GOOGLE_CLIENT_SECRET:
-  #      EXPIRES_IN:
-  #      CALLBACK_URL:
-  #      ADMIN:
-  #      PASSWORD:
-  #      DEFAULTPASSWORD:
-  #      TMPURI:
+  # node:
+  #   env_file:
+  #     - .env
+  #   image: node:lts-hydrogen
+  #   command: sh -c "npx yarn install && npm start"
+  #   ports:
+  #     - 3000:3000
+  #   working_dir: /app
+  #   volumes:
+  #     - ./:/app
+  #   environment:
+  #     MONGO_URI: ${MONGO_URI}
+  #     GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+  #     GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+  #     EXPIRES_IN: ${EXPIRES_IN}
+  #     CALLBACK_URL: ${CALLBACK_URL}
+  #     PASSWORD: ${PASSWORD}
+  #     DEFAULTPASSWORD: ${DEFAULTPASSWORD}
+  #     UNITPRICE: ${UNITPRICE}
+  selected:
+    env_file:
+      - selected.env
+    build: .
+    command: npm start
+    volumes:
+      - .:/myapp
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongo
+    links:
+      - mongo
   mongo:
+    env_file:
+      - mongo.env
     image: mongo:focal
     restart: always
     ports:
       - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: selected
     volumes:
       - ./data/mongo:/data/db
