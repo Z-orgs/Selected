@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0c9570b8-af96-46d4-b2b5-8ca077bdb073",
+		"_postman_id": "3e9b9b98-ff3f-41cc-9308-a6e493cb3fc5",
 		"name": "Selected",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20764163"
@@ -372,6 +372,42 @@
 									"port": "3000",
 									"path": [
 										"artist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset password artist",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjc5ODEwODg2LCJleHAiOjE2ODc1ODY4ODZ9.qtt6q7x6WUXhpb-OIEqo41ugb_cn66DBON--D-Abrmw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/artist/reset/:username",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"artist",
+										"reset",
+										":username"
+									],
+									"variable": [
+										{
+											"key": "username",
+											"value": "artist"
+										}
 									]
 								}
 							},

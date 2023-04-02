@@ -144,4 +144,16 @@ export class ArtistService {
       }),
     );
   }
+  async resetPassword(user: Admin, username: string) {
+    await this.artistModel.updateOne(
+      { username },
+      { password: env.DefaultPassword },
+    );
+    this.loggerService.createLogger({
+      level: env.Admin,
+      username: user.username,
+      log: `${user.username} has reset password for artist ${username}`,
+    });
+    return new HttpException('Reset', HttpStatus.ACCEPTED);
+  }
 }
