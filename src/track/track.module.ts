@@ -10,6 +10,7 @@ import { Artist, ArtistSchema } from '../artist/model/artist.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfigService } from 'src/file/multer.service';
 import { Album, AlbumSchema } from 'src/album/model/album.model';
+import { Playlist, PlaylistSchema } from 'src/playlist/model/playlist.model';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Album, AlbumSchema } from 'src/album/model/album.model';
       { name: Track.name, schema: TrackSchema },
       { name: Artist.name, schema: ArtistSchema },
       { name: Album.name, schema: AlbumSchema },
+      { name: Playlist.name, schema: PlaylistSchema },
     ]),
     LoggerModule,
   ],

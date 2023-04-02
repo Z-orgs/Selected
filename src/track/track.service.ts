@@ -16,6 +16,7 @@ import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
+import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 
 @Injectable()
 export class TrackService {
@@ -29,6 +30,8 @@ export class TrackService {
     private readonly artistModel: Model<ArtistDocument>,
     @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
     private readonly loggerService: LoggerService,
+    @InjectModel(Playlist.name)
+    private readonly playlistModel: Model<PlaylistDocument>,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
@@ -168,14 +171,45 @@ export class TrackService {
   }
   async nextTrack(client: Socket, nextMessage: NextMessageDto) {
     let nextTrack: string = nextMessage.currentTrackId;
-    const currentTrack = await this.trackModel.findById(
-      nextMessage.currentTrackId,
-    );
-    if (currentTrack.album) {
-      const album = await this.albumModel.findById(currentTrack.album);
-      while (nextMessage.currentTrackId === nextTrack) {
-        nextTrack =
-          album.tracks[Math.floor(Math.random() * album.tracks.length)];
+    if (nextMessage.album) {
+      try {
+        const album = await this.albumModel.findById(nextMessage.album);
+        const nextIndex =
+          album.tracks.length - 1 ===
+          album.tracks.indexOf(nextMessage.currentTrackId)
+            ? 0
+            : album.tracks.indexOf(nextMessage.currentTrackId) + 1;
+        nextTrack = album.tracks[nextIndex];
+      } catch (err) {
+        const tracks = await this.trackModel.find({
+          status: true,
+          public: true,
+        });
+        while (nextMessage.currentTrackId === nextTrack) {
+          const randomIndex = Math.floor(Math.random() * tracks.length);
+          nextTrack = tracks[randomIndex]._id.toString();
+        }
+      }
+    } else if (nextMessage.playlist) {
+      try {
+        const playlist = await this.playlistModel.findById(
+          nextMessage.playlist,
+        );
+        const nextIndex =
+          playlist.tracks.length - 1 ===
+          playlist.tracks.indexOf(nextMessage.currentTrackId)
+            ? 0
+            : playlist.tracks.indexOf(nextMessage.currentTrackId) + 1;
+        nextTrack = playlist.tracks[nextIndex];
+      } catch (err) {
+        const tracks = await this.trackModel.find({
+          status: true,
+          public: true,
+        });
+        while (nextMessage.currentTrackId === nextTrack) {
+          const randomIndex = Math.floor(Math.random() * tracks.length);
+          nextTrack = tracks[randomIndex]._id.toString();
+        }
       }
     } else {
       const tracks = await this.trackModel.find({
