@@ -43,4 +43,8 @@ npx yarn install
 npm start
 ```
 
+## Documentation
+
+- API: [v1](https://documenter.getpostman.com/view/20764163/2s93RWMq5a)
+
 That's it! You have successfully completed the installation of Selected.
