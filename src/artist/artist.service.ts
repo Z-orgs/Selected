@@ -38,7 +38,7 @@ export class ArtistService {
     this.loggerService.createLogger({
       level: env.Admin,
       username: user.username,
-      log: `${user.username} has created artist ${artist._id}`,
+      log: `${user.username} has created artist ${artist.username}`,
     });
     return new HttpException('Created artist.', HttpStatus.ACCEPTED);
   }

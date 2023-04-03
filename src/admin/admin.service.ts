@@ -115,6 +115,7 @@ export class AdminService {
           profileImage: artist.profileImage,
           nickName: artist.nickName,
           username: artist.username,
+          revenue: artist.revenue,
         };
       }),
     );
@@ -202,5 +203,23 @@ export class AdminService {
   async getAdminById(id: string) {
     const admin = await this.adminModel.findById(id);
     return { ...admin.toObject() };
+  }
+  async paymentArtist(user: Admin, id: string) {
+    const artist = await this.artistModel.findById(id);
+    if (!artist) {
+      return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    if (artist.revenue < 30) {
+      return new HttpException(
+        'Revenue must be greater than or equal to 30$',
+        HttpStatus.CONFLICT,
+      );
+    }
+    this.loggerService.createLogger({
+      level: env.Admin,
+      username: user.username,
+      log: `${user.username} paid artist ${artist.username} ${artist.revenue}`,
+    });
+    return new HttpException('Paid', HttpStatus.ACCEPTED);
   }
 }

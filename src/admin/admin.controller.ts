@@ -104,4 +104,9 @@ export class AdminController {
   getAllArtists() {
     return this.adminService.getAllArtists();
   }
+  @Put('payment/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  paymentArtist(@Req() req: Request, @Param('id') id: string) {
+    return this.adminService.paymentArtist(req.user as Admin, id);
+  }
 }
