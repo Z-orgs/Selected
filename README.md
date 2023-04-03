@@ -6,13 +6,6 @@
 
 Welcome to Selected, the online music streaming website developed by [mxz](https://github.com/mxzxm). With this application, you can stream and enjoy your favorite music from all around the world.
 
-## Features
-
-- Streamable audio from various sources
-- Multiple filter options
-- Social sharing capabilities
-- Easy navigation and intuitive user interface
-
 ## Contributing
 
 We welcome your pull requests, bug reports, and feature requests. If you find any issues or would like to suggest a feature, please feel free to open an issue in our [GitHub repository](https://github.com/Z-orgs/Selected).
