@@ -23,6 +23,10 @@ Before you install and use the Selected project, you'll need the following:
 
 - [NodeJS](https://nodejs.org/en/)
 
+## Docker repository
+
+- [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
+
 ## Installation
 
 1.  Clone this repository
