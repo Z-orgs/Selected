@@ -7,7 +7,7 @@ import { env } from './m/x/z/a/s/p/i/r/e/env';
   const app = await NestFactory.create(MxzModule);
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
   app.enableCors({
-    origin: 'http://localhost:3006/',
+    origin: '*',
     credentials: true,
   });
   await app.listen(3000);
