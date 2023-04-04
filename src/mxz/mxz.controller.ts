@@ -25,10 +25,13 @@ export class MxzController {
       });
       initAdmin.save();
     }
-    const initArtist = new this.artistModel({
-      username: env.Artist,
-      password: env.Password,
-    });
-    initArtist.save();
+    const artist = await this.artistModel.findOne({ username: env.Artist });
+    if (!artist) {
+      const initArtist = new this.artistModel({
+        username: env.Artist,
+        password: env.Password,
+      });
+      initArtist.save();
+    }
   }
 }
