@@ -16,10 +16,6 @@ Before you install and use the Selected project, you'll need the following:
 
 - [NodeJS](https://nodejs.org/en/)
 
-## Docker repository
-
-- [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
-
 ## Installation
 
 1.  Clone this repository
@@ -43,5 +39,57 @@ npm start
 ## Documentation
 
 - API: [v1](https://documenter.getpostman.com/view/20764163/2s93RWMq5a)
+
+## Docker repository
+
+- [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
+
+## Docker-compose.yml
+
+- Example:
+
+```
+services:
+    nest:
+        env_file:
+            - selected.env
+        image: vuongsyhanh/selected
+        command: sh -c "yarn start"
+        ports:
+            - 3000:3000
+        networks:
+            - selected
+    mongo:
+        env_file:
+            - selected.env
+        image: mongo:focal
+        restart: always
+        ports:
+            - 27017:27017
+        volumes:
+            - ./data/mongo:/data/db
+        networks:
+            - selected
+networks:
+    selected:
+```
+
+## .env
+
+- Example:
+
+```
+MONGO_URI=mongodb://admin:example@mongo:27017/?retryWrites=true&w=majority
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+EXPIRES_IN=
+CALLBACK_URL=http://localhost:3000/auth/redirect
+PASSWORD=
+DEFAULTPASSWORD=
+UNITPRICE=
+MONGO_INITDB_ROOT_USERNAME=admin
+MONGO_INITDB_ROOT_PASSWORD=example
+MONGO_INITDB_DATABASE=selected
+```
 
 That's it! You have successfully completed the installation of Selected.
