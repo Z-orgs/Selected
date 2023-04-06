@@ -44,7 +44,7 @@ npm start
 
 - [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
 
-## Docker-compose.yml
+## docker-compose.yml
 
 - Example:
 
@@ -74,7 +74,7 @@ networks:
     selected:
 ```
 
-## .env
+## selected.env
 
 - Example:
 
