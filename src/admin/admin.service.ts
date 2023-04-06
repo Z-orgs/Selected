@@ -101,7 +101,7 @@ export class AdminService {
     const admins = await this.adminModel.find().sort({ createdAt: 'desc' });
     return await Promise.all(
       admins.map((admin) => {
-        return { ...admin.toObject() };
+        return { ...admin.toObject(), password: undefined };
       }),
     );
   }
