@@ -42,7 +42,7 @@ npm start
 
 ## Docker image
 
-- [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
+- [vuongsyhanh/selected](https://hub.docker.com/r/vuongsyhanh/selected)
 
 ## docker-compose.yml
 
