@@ -40,7 +40,7 @@ npm start
 
 - API: [v1](https://documenter.getpostman.com/view/20764163/2s93RWMq5a)
 
-## Docker repository
+## Docker image
 
 - [Selected](https://hub.docker.com/r/vuongsyhanh/selected)
 
