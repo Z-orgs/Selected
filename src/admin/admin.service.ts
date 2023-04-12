@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Admin, AdminDocument } from './model/admin.model';
@@ -12,6 +11,7 @@ import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
+import { SELECTED } from 'src/constants';
 
 @Injectable()
 export class AdminService {
@@ -36,7 +36,7 @@ export class AdminService {
     if (!admin) {
       await new this.adminModel({ ...createAdmin } as Admin).save();
       this.loggerService.createLogger({
-        level: env.Admin,
+        level: SELECTED.Admin,
         username: user.username,
         log: `${user.username} created admin ${createAdmin.username}`,
       });
@@ -67,7 +67,7 @@ export class AdminService {
       { password: changePassword.newPassword },
     );
     this.loggerService.createLogger({
-      level: env.Admin,
+      level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} changed password.`,
     });
@@ -87,10 +87,10 @@ export class AdminService {
     }
     await this.adminModel.findOneAndUpdate(
       { username },
-      { password: env.DefaultPassword },
+      { password: SELECTED.DefaultPassword },
     );
     this.loggerService.createLogger({
-      level: env.Admin,
+      level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} reset password for ${username}`,
     });
@@ -178,7 +178,7 @@ export class AdminService {
     const track = await this.trackModel.findById(id);
     return {
       ...track.toObject(),
-      link: `${env.UrlServer}/file/${track.fileId}`,
+      link: `${SELECTED.UrlServer}/file/${track.fileId}`,
     };
   }
 
@@ -216,7 +216,7 @@ export class AdminService {
       );
     }
     this.loggerService.createLogger({
-      level: env.Admin,
+      level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} paid artist ${artist.username} ${artist.revenue}`,
     });

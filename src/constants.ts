@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { clean } from 'diacritic';
 import { toLower, deburr } from 'lodash';
 
-export const env = {
+export const SELECTED = {
   MongoURI: process.env.MONGO_URI,
   ClientId: process.env.GOOGLE_CLIENT_ID,
   ClientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -16,4 +16,4 @@ export const env = {
   UrlServer: '',
 };
 
-export const MXZ = (input: string) => toLower(deburr(clean(input)));
+export const normalString = (input: string) => toLower(deburr(clean(input)));

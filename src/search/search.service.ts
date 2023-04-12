@@ -5,7 +5,7 @@ import { Artist, ArtistDocument } from '../artist/model/artist.model';
 import { Track, TrackDocument } from '../track/model/track.model';
 import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
-import { MXZ } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { normalString } from 'src/constants';
 
 @Injectable()
 export class SearchService {
@@ -19,7 +19,7 @@ export class SearchService {
   ) {}
 
   async search(keyword: string) {
-    const regex = new RegExp(MXZ(keyword), 'gi');
+    const regex = new RegExp(normalString(keyword), 'gi');
 
     const [tracks, albums, artists, playlists] = await Promise.all([
       this.trackModel
@@ -65,7 +65,7 @@ export class SearchService {
     };
   }
   async searchTrack(user: Artist, keyword: string) {
-    const regex = new RegExp(MXZ(keyword), 'gi');
+    const regex = new RegExp(normalString(keyword), 'gi');
     const tracks = await this.trackModel
       .find({
         titleUnaccented: regex,

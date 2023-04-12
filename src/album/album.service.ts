@@ -5,9 +5,9 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album-dto';
 import { Album, AlbumDocument } from './model/album.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
+import { SELECTED, normalString } from 'src/constants';
 
 @Injectable()
 export class AlbumService {
@@ -25,11 +25,11 @@ export class AlbumService {
       artist: user.username,
       ...createAlbum,
       tracks: JSON.parse(createAlbum.tracks) as string[],
-      titleUnaccented: MXZ(createAlbum.title),
+      titleUnaccented: normalString(createAlbum.title),
     } as Album);
     album.save();
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has created album ${album._id}`,
     });
@@ -55,10 +55,10 @@ export class AlbumService {
     await this.albumModel.updateOne({ _id: id }, {
       ...updateAlbum,
       coverArtUrl: image ? image : album.coverArtUrl,
-      titleUnaccented: MXZ(updateAlbum.title),
+      titleUnaccented: normalString(updateAlbum.title),
     } as Album);
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has updated the information of album ${id}`,
     });
@@ -117,7 +117,7 @@ export class AlbumService {
       { $addToSet: { tracks: trackId } },
     );
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has added track ${trackId} to album ${id}`,
     });
@@ -151,7 +151,7 @@ export class AlbumService {
       { $pull: { tracks: trackId } },
     );
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has deleted track ${trackId} from album ${id}`,
     });

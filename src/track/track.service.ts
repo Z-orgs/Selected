@@ -12,11 +12,11 @@ import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
-import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { MessagePlayDto } from './dto/message.play.dto';
 import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
+import { SELECTED, normalString } from 'src/constants';
 
 @Injectable()
 export class TrackService {
@@ -50,11 +50,11 @@ export class TrackService {
       status: false,
       artist: user.username,
       ...createTrack,
-      titleUnaccented: MXZ(createTrack.title),
+      titleUnaccented: normalString(createTrack.title),
     } as Track);
     track.save();
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has uploaded track ${track._id}`,
     });
@@ -73,10 +73,10 @@ export class TrackService {
     try {
       await this.trackModel.updateOne({ _id: id }, {
         ...updateInfoTrack,
-        titleUnaccented: MXZ(updateInfoTrack.title),
+        titleUnaccented: normalString(updateInfoTrack.title),
       } as Track);
       this.loggerService.createLogger({
-        level: env.Artist,
+        level: SELECTED.Artist,
         username: user.username,
         log: `${user.username} has updated the information of track ${id}`,
       });
@@ -102,7 +102,7 @@ export class TrackService {
     if (!track.status) {
       await this.trackModel.findByIdAndUpdate({ _id: id }, { status: true });
       this.loggerService.createLogger({
-        level: env.Admin,
+        level: SELECTED.Admin,
         username: user.username,
         log: `${user.username} has updated the status of the track ${id} from ${
           track.status
@@ -112,7 +112,7 @@ export class TrackService {
     } else {
       await this.trackModel.findByIdAndUpdate({ _id: id }, { status: false });
       this.loggerService.createLogger({
-        level: env.Admin,
+        level: SELECTED.Admin,
         username: user.username,
         log: `${user.username} has updated the status of the track ${id} from ${
           track.status
@@ -153,7 +153,7 @@ export class TrackService {
         await this.artistModel.updateOne(
           { _id: track.artist },
           {
-            $inc: { revenue: env.UnitPrice },
+            $inc: { revenue: SELECTED.UnitPrice },
           },
         );
         const file = await this.getFile(track.fileId);

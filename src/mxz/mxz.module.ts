@@ -3,7 +3,6 @@ import { MxzService } from './mxz.service';
 import { MxzController } from './mxz.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
-import { env } from '../m/x/z/a/s/p/i/r/e/env';
 import { UserModule } from '../user/user.module';
 import { TrackModule } from '../track/track.module';
 import { FileModule } from '../file/file.module';
@@ -17,11 +16,12 @@ import { PlaylistModule } from '../playlist/playlist.module';
 import { LoggerModule } from '../logger/logger.module';
 import { SearchModule } from '../search/search.module';
 import { HomeModule } from 'src/home/home.module';
+import { SELECTED } from 'src/constants';
 
 @Module({
   imports: [
     AuthModule,
-    MongooseModule.forRoot(env.MongoURI),
+    MongooseModule.forRoot(SELECTED.MongoURI),
     UserModule,
     TrackModule,
     FileModule,

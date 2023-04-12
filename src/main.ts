@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MxzModule } from './mxz/mxz.module';
-import { env } from './m/x/z/a/s/p/i/r/e/env';
+import { SELECTED } from './constants';
 
 (async () => {
   const app = await NestFactory.create(MxzModule);
@@ -11,5 +11,5 @@ import { env } from './m/x/z/a/s/p/i/r/e/env';
     credentials: true,
   });
   await app.listen(3000);
-  env.UrlServer = await app.getUrl();
+  SELECTED.UrlServer = await app.getUrl();
 })();

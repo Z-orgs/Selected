@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Admin, AdminDocument } from '../admin/model/admin.model';
 import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from '../artist/model/artist.model';
-import { env } from '../m/x/z/a/s/p/i/r/e/env';
+import { SELECTED } from 'src/constants';
 
 @Controller('mxz')
 export class MxzController {
@@ -16,20 +16,22 @@ export class MxzController {
   @Get()
   async initAdmin() {
     const admin = await this.adminModel.findOne({
-      username: env.Admin,
+      username: SELECTED.Admin,
     });
     if (!admin) {
       const initAdmin = new this.adminModel({
-        username: env.Admin,
-        password: env.Password,
+        username: SELECTED.Admin,
+        password: SELECTED.Password,
       });
       initAdmin.save();
     }
-    const artist = await this.artistModel.findOne({ username: env.Artist });
+    const artist = await this.artistModel.findOne({
+      username: SELECTED.Artist,
+    });
     if (!artist) {
       const initArtist = new this.artistModel({
-        username: env.Artist,
-        password: env.Password,
+        username: SELECTED.Artist,
+        password: SELECTED.Password,
       });
       initArtist.save();
     }

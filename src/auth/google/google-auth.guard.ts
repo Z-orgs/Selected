@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { Model } from 'mongoose';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { SELECTED } from 'src/constants';
 
 @Injectable()
 export class GoogleAuthGuard extends AuthGuard('google') {}
@@ -21,9 +21,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {
     super({
-      clientID: env.ClientId,
-      clientSecret: env.ClientSecret,
-      callbackURL: env.CallbackURL,
+      clientID: SELECTED.ClientId,
+      clientSecret: SELECTED.ClientSecret,
+      callbackURL: SELECTED.CallbackURL,
       scope: ['email', 'profile'],
     });
   }

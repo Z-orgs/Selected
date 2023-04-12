@@ -4,7 +4,7 @@ import {
   MulterOptionsFactory,
 } from '@nestjs/platform-express';
 import { GridFsStorage } from 'multer-gridfs-storage/lib/gridfs';
-import { env } from 'src/m/x/z/a/s/p/i/r/e/env';
+import { SELECTED } from 'src/constants';
 
 @Injectable()
 export class GridFsMulterConfigService implements MulterOptionsFactory {
@@ -12,7 +12,7 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
 
   constructor() {
     this.gridFsStorage = new GridFsStorage({
-      url: env.MongoURI,
+      url: SELECTED.MongoURI,
       file: (req, file) => {
         return new Promise((resolve, reject) => {
           const filename = file.originalname.trim();

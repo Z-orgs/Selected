@@ -4,13 +4,13 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from './model/artist.model';
-import { MXZ, env } from 'src/m/x/z/a/s/p/i/r/e/env';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { LoggerService } from '../logger/logger.service';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SocialLink } from './dto/social.links';
+import { SELECTED, normalString } from 'src/constants';
 
 @Injectable()
 export class ArtistService {
@@ -32,11 +32,11 @@ export class ArtistService {
     const artist = new this.artistModel({
       ...createArtist,
       followers: 0,
-      nickNameUnaccented: MXZ(createArtist.nickName),
+      nickNameUnaccented: normalString(createArtist.nickName),
     } as Artist);
     artist.save();
     this.loggerService.createLogger({
-      level: env.Admin,
+      level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} has created artist ${artist.username}`,
     });
@@ -53,10 +53,10 @@ export class ArtistService {
       ...updateArtist,
       socialLinks: JSON.parse(updateArtist.socialLinks) as SocialLink[],
       profileImage: imageId ? imageId : artist.profileImage,
-      nickNameUnaccented: MXZ(updateArtist.nickName),
+      nickNameUnaccented: normalString(updateArtist.nickName),
     } as Artist);
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has updated information`,
     });
@@ -78,7 +78,7 @@ export class ArtistService {
       password: changePassword.newPassword,
     } as Artist);
     this.loggerService.createLogger({
-      level: env.Artist,
+      level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has changed password`,
     });
@@ -128,7 +128,7 @@ export class ArtistService {
     const track = await this.trackModel.findById(id);
     return {
       ...track.toObject(),
-      link: `${env.UrlServer}/file/${track.fileId}`,
+      link: `${SELECTED.UrlServer}/file/${track.fileId}`,
     };
   }
   async getAllTracks(user: Artist) {
@@ -147,10 +147,10 @@ export class ArtistService {
   async resetPassword(user: Admin, username: string) {
     await this.artistModel.updateOne(
       { username },
-      { password: env.DefaultPassword },
+      { password: SELECTED.DefaultPassword },
     );
     this.loggerService.createLogger({
-      level: env.Admin,
+      level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} has reset password for artist ${username}`,
     });
