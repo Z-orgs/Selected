@@ -4,7 +4,7 @@
 
 # Selected
 
-Welcome to Selected, the online music streaming website developed by [mxz](https://github.com/mxzxm). With this application, you can stream and enjoy your favorite music from all around the world.
+Welcome to Selected, the online music streaming website developed by [mxz](https://github.com/mxz4). With this application, you can stream and enjoy your favorite music from all around the world.
 
 ## Contributing
 
