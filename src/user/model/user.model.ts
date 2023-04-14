@@ -12,6 +12,8 @@ export class User {
   @Prop()
   lastName: string;
   @Prop()
+  name: string;
+  @Prop()
   picture: string;
   @Prop()
   jwt: string;

@@ -4,6 +4,7 @@ import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import { User } from './model/user.model';
+import { GoogleAuthGuard } from 'src/auth/google/google-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -32,5 +33,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   getLikeList(@Req() req: Request) {
     return this.userService.getLikeList(req.user as User);
+  }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Req() req: Request) {
+    return req.user;
   }
 }
