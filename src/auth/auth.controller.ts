@@ -22,7 +22,7 @@ export class AuthController {
   // @Get()
   // @UseGuards(GoogleAuthGuard)
   // async googleAuth(@Req() req) {
-  //   return 'GEN mxz';
+  //   return 'GEN Kwzng';
   // }
 
   // @Get('redirect')

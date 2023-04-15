@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MxzService } from './mxz.service';
-import { MxzController } from './mxz.controller';
+import { KwzngService } from './Kwzng.service';
+import { KwzngController } from './Kwzng.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
@@ -38,8 +38,8 @@ import { SELECTED } from 'src/constants';
     SearchModule,
     HomeModule,
   ],
-  controllers: [MxzController],
-  providers: [MxzService],
-  exports: [MxzService],
+  controllers: [KwzngController],
+  providers: [KwzngService],
+  exports: [KwzngService],
 })
-export class MxzModule {}
+export class KwzngModule {}
