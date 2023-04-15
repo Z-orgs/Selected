@@ -15,7 +15,7 @@ export class JwtAdminStrategy extends PassportStrategy(Strategy, 'jwtadmin') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       secretOrKey: SELECTED.ClientSecret,
     });
   }
