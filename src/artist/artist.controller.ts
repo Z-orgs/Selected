@@ -68,10 +68,10 @@ export class ArtistController {
       changePassword,
     );
   }
-  @Put('reset/:username')
+  @Put('reset/:id')
   @UseGuards(JwtAdminAuthGuard)
-  resetPassword(@Req() req: Request, @Param('username') username: string) {
-    return this.artistService.resetPassword(req.user as Admin, username);
+  resetPassword(@Req() req: Request, @Param('id') id: string) {
+    return this.artistService.resetPassword(req.user as Admin, id);
   }
   @Get('artist/:id')
   @UseGuards(JwtAuthGuard)

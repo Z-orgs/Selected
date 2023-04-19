@@ -144,15 +144,18 @@ export class ArtistService {
       }),
     );
   }
-  async resetPassword(user: Admin, username: string) {
-    await this.artistModel.updateOne(
-      { username },
-      { password: SELECTED.DefaultPassword },
-    );
+  async resetPassword(user: Admin, id: string) {
+    const artist = await this.artistModel.findById(id);
+    if (!artist) {
+      return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    await this.artistModel.findByIdAndUpdate(id, {
+      password: SELECTED.DefaultPassword,
+    });
     this.loggerService.createLogger({
       level: SELECTED.Admin,
       username: user.username,
-      log: `${user.username} has reset password for artist ${username}`,
+      log: `${user.username} has reset password for artist ${artist.username}`,
     });
     return new HttpException('Reset', HttpStatus.ACCEPTED);
   }

@@ -77,22 +77,21 @@ export class AdminService {
     );
   }
 
-  async resetPassword(user: Admin, username: string) {
-    const admin = await this.adminModel.findOne({ username });
+  async resetPassword(user: Admin, id: string) {
+    const admin = await this.adminModel.findById(id);
     if (!admin) {
       return new HttpException(
         `This admin does not exist`,
         HttpStatus.NOT_FOUND,
       );
     }
-    await this.adminModel.findOneAndUpdate(
-      { username },
-      { password: SELECTED.DefaultPassword },
-    );
+    await this.adminModel.findByIdAndUpdate(id, {
+      password: SELECTED.DefaultPassword,
+    });
     this.loggerService.createLogger({
       level: SELECTED.Admin,
       username: user.username,
-      log: `${user.username} reset password for ${username}`,
+      log: `${user.username} reset password for ${admin.username}`,
     });
     return new HttpException(`Password reset successful`, HttpStatus.ACCEPTED);
   }

@@ -33,10 +33,10 @@ export class AdminController {
     return this.adminService.changePassword(req.user as Admin, changePassword);
   }
 
-  @Put(':username')
+  @Put(':id')
   @UseGuards(JwtAdminAuthGuard)
-  resetPassword(@Req() req: Request, @Param('username') username: string) {
-    return this.adminService.resetPassword(req.user as Admin, username);
+  resetPassword(@Req() req: Request, @Param('id') id: string) {
+    return this.adminService.resetPassword(req.user as Admin, id);
   }
 
   @Get('admin')
