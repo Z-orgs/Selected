@@ -6,6 +6,7 @@ import { Playlist, PlaylistDocument } from './model/playlist.model';
 import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
+import { normalString } from 'src/constants';
 
 @Injectable()
 export class PlaylistService {
@@ -21,7 +22,7 @@ export class PlaylistService {
       ...createPlaylist,
       tracks: JSON.parse(createPlaylist.tracks) as string[],
       owner: user.email,
-      titleUnaccented: MXZ(createPlaylist.title),
+      titleUnaccented: normalString(createPlaylist.title),
     } as Playlist);
     playlist.save();
     this.loggerService.createLogger({
@@ -116,7 +117,4 @@ export class PlaylistService {
   async getAllPlaylistAsUser(user: User) {
     return await this.playlistModel.find({ owner: user.email });
   }
-}
-function MXZ(title: string): string {
-  throw new Error('Function not implemented.');
 }
