@@ -45,11 +45,11 @@ export class AdminController {
     return this.adminService.getAllAdmins();
   }
 
-  @Get('admin/:id')
-  @UseGuards(JwtAdminAuthGuard)
-  getAdminById(@Param('id') id: string) {
-    return this.adminService.getAdminById(id);
-  }
+  // @Get('admin/:id')
+  // @UseGuards(JwtAdminAuthGuard)
+  // getAdminById(@Param('id') id: string) {
+  //   return this.adminService.getAdminById(id);
+  // }
 
   @Get('playlist')
   @UseGuards(JwtAdminAuthGuard)

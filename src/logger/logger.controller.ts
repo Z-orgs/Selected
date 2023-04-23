@@ -6,9 +6,9 @@ import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 export class LoggerController {
   constructor(private readonly loggerService: LoggerService) {}
 
-  @Get(':id')
-  @UseGuards(JwtAdminAuthGuard)
-  getLoggerById(@Param('id') id: string) {
-    return this.loggerService.getLoggerById(id);
-  }
+  // @Get(':id')
+  // @UseGuards(JwtAdminAuthGuard)
+  // getLoggerById(@Param('id') id: string) {
+  //   return this.loggerService.getLoggerById(id);
+  // }
 }
