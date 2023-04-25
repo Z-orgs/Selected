@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
@@ -19,10 +19,7 @@ export class HomeService {
     const following = (
       await this.userModel.findOne({ email: user.email })
     ).toObject().following;
-    let randomAlbums,
-      randomTracks,
-      albums = [],
-      tracks = [];
+    let randomAlbums: any, randomTracks: any, albums: any[], tracks: any[];
     if (following.length) {
       const artists = await Promise.all(
         following.map(async (artist) => {
@@ -48,20 +45,40 @@ export class HomeService {
         }),
       );
       tracks = tracks.flat();
-    } else {
-      albums = await this.albumModel.find({ public: true });
-      tracks = await this.trackModel.find({ public: true, status: true });
+      if (albums.length <= 5) {
+        randomAlbums = albums;
+      } else {
+        randomAlbums = albums.sort(() => 0.5 - Math.random()).slice(0, 5);
+      }
+      if (tracks.length <= 5) {
+        randomTracks = tracks;
+      } else {
+        randomTracks = tracks.sort(() => 0.5 - Math.random()).slice(0, 5);
+      }
     }
-    if (albums.length <= 5) {
-      randomAlbums = albums;
+
+    const albumsNF = await this.albumModel.find({ public: true });
+    const tracksNF = await this.trackModel.find({ public: true, status: true });
+    let randomAlbumsNF: (Document<unknown, any, Album> &
+        Omit<Album & { _id: Types.ObjectId }, never> &
+        Required<{ _id: Types.ObjectId }>)[],
+      randomTracksNF: (Document<unknown, any, Track> &
+        Omit<Track & { _id: Types.ObjectId }, never> &
+        Required<{ _id: Types.ObjectId }>)[];
+    if (albumsNF.length <= 5) {
+      randomAlbumsNF = albumsNF;
     } else {
-      randomAlbums = albums.sort(() => 0.5 - Math.random()).slice(0, 5);
+      randomAlbumsNF = albumsNF.sort(() => 0.5 - Math.random()).slice(0, 5);
     }
-    if (tracks.length <= 5) {
-      randomTracks = tracks;
+    if (tracksNF.length <= 5) {
+      randomTracksNF = tracksNF;
     } else {
-      randomTracks = tracks.sort(() => 0.5 - Math.random()).slice(0, 5);
+      randomTracksNF = tracksNF.sort(() => 0.5 - Math.random()).slice(0, 5);
     }
-    return { randomAlbums, randomTracks };
+
+    return {
+      Following: { randomAlbums, randomTracks },
+      NoFollowing: { randomAlbumsNF, randomTracksNF },
+    };
   }
 }
