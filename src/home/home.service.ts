@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
