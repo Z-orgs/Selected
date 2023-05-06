@@ -7,5 +7,5 @@ export class UpdateAlbumDto {
 
   tracks: string[];
 
-  public: boolean;
+  isPublic: boolean;
 }

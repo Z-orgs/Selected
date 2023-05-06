@@ -30,7 +30,7 @@ export class HomeService {
   //       artists.map(async (artist) => {
   //         return await this.albumModel.find({
   //           artist: artist.username,
-  //           public: true,
+  //           isPublic: true,
   //         });
   //       }),
   //     );
@@ -39,7 +39,7 @@ export class HomeService {
   //       artists.map(async (artist) => {
   //         return await this.trackModel.find({
   //           artist: artist.username,
-  //           public: true,
+  //           isPublic: true,
   //           status: true,
   //         });
   //       }),
@@ -57,8 +57,8 @@ export class HomeService {
   //     }
   //   }
 
-  //   const albumsNF = await this.albumModel.find({ public: true });
-  //   const tracksNF = await this.trackModel.find({ public: true, status: true });
+  //   const albumsNF = await this.albumModel.find({ isPublic: true });
+  //   const tracksNF = await this.trackModel.find({ isPublic: true, status: true });
   //   let randomAlbumsNF: (Document<unknown, any, Album> &
   //       Omit<Album & { _id: Types.ObjectId }, never> &
   //       Required<{ _id: Types.ObjectId }>)[],
@@ -101,14 +101,14 @@ export class HomeService {
         this.albumModel
           .find({
             artist: { $in: artists.map((a) => a.username) },
-            public: true,
+            isPublic: true,
           })
           .lean(),
 
         this.trackModel
           .find({
             artist: { $in: artists.map((a) => a.username) },
-            public: true,
+            isPublic: true,
             status: true,
           })
           .lean(),
@@ -123,8 +123,8 @@ export class HomeService {
     }
 
     const [albumsNF, tracksNF] = await Promise.all([
-      this.albumModel.find({ public: true }).lean(),
-      this.trackModel.find({ public: true, status: true }).lean(),
+      this.albumModel.find({ isPublic: true }).lean(),
+      this.trackModel.find({ isPublic: true, status: true }).lean(),
     ]);
 
     const randomAlbumsNF = albumsNF

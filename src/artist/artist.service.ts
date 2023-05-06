@@ -90,13 +90,13 @@ export class ArtistService {
   async getArtistById(id: string) {
     const artist = await this.artistModel.findById(id).select('-password');
     const albums = await this.albumModel
-      .find({ artist: artist.username, public: true })
+      .find({ artist: artist.username, isPublic: true })
       .sort({ createdAt: 'desc' });
     const tracks = await this.trackModel
       .find({
         artist: artist.username,
         status: true,
-        public: true,
+        isPublic: true,
       })
       .sort({ createdAt: 'desc' });
     return { artist, albums, tracks };

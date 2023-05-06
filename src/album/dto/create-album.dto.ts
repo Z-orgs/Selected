@@ -10,5 +10,5 @@ export class CreateAlbumDto {
   @IsNotEmpty()
   tracks: string;
   @IsNotEmpty()
-  public: boolean;
+  isPublic: boolean;
 }

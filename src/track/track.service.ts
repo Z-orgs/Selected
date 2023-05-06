@@ -125,7 +125,7 @@ export class TrackService {
     const track = await this.trackModel.findOne({
       _id: id,
       status: true,
-      public: true,
+      isPublic: true,
     });
     const artist = await this.artistModel
       .findOne({ username: track.artist })
@@ -142,7 +142,7 @@ export class TrackService {
           client.send('This track is still waiting for approval');
           return;
         }
-        if (!track.public) {
+        if (!track.isPublic) {
           client.send('This track is in private mode.');
           return;
         }
@@ -183,7 +183,7 @@ export class TrackService {
       } catch (err) {
         const tracks = await this.trackModel.find({
           status: true,
-          public: true,
+          isPublic: true,
         });
         while (nextMessage.currentTrackId === nextTrack) {
           const randomIndex = Math.floor(Math.random() * tracks.length);
@@ -204,7 +204,7 @@ export class TrackService {
       } catch (err) {
         const tracks = await this.trackModel.find({
           status: true,
-          public: true,
+          isPublic: true,
         });
         while (nextMessage.currentTrackId === nextTrack) {
           const randomIndex = Math.floor(Math.random() * tracks.length);
@@ -214,7 +214,7 @@ export class TrackService {
     } else {
       const tracks = await this.trackModel.find({
         status: true,
-        public: true,
+        isPublic: true,
       });
       while (nextMessage.currentTrackId === nextTrack) {
         const randomIndex = Math.floor(Math.random() * tracks.length);

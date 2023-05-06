@@ -84,7 +84,7 @@ export class PlaylistService {
         return await this.trackModel.findOne({
           _id: track,
           status: true,
-          public: true,
+          isPublic: true,
         });
       }),
     );

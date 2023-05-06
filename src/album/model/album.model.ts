@@ -20,7 +20,7 @@ export class Album {
   @Prop()
   tracks: string[];
   @Prop()
-  public: boolean;
+  isPublic: boolean;
 }
 
 export const AlbumSchema = SchemaFactory.createForClass(Album);

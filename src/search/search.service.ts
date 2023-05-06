@@ -23,12 +23,12 @@ export class SearchService {
 
     const [tracks, albums, artists, playlists] = await Promise.all([
       this.trackModel
-        .find({ titleUnaccented: regex, status: true, public: true })
+        .find({ titleUnaccented: regex, status: true, isPublic: true })
         .sort({ createdAt: 'desc' })
         .select('_id title artist'),
 
       this.albumModel
-        .find({ titleUnaccented: regex, public: true })
+        .find({ titleUnaccented: regex, isPublic: true })
         .sort({ createdAt: 'desc' })
         .select('_id title artist'),
 
@@ -70,7 +70,7 @@ export class SearchService {
       .find({
         titleUnaccented: regex,
         status: true,
-        public: true,
+        isPublic: true,
         artist: user.username,
       })
       .sort({ createdAt: 'desc' })

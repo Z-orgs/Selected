@@ -24,7 +24,7 @@ export class Track {
   @Prop()
   artist: string;
   @Prop()
-  public: boolean;
+  isPublic: boolean;
   @Prop({
     default: 0,
   })

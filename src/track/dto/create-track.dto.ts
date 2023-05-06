@@ -8,7 +8,7 @@ export class CreateTrackDto {
   @IsNotEmpty()
   release?: Date;
   @IsNotEmpty()
-  public: boolean;
+  isPublic: boolean;
   //   @IsNotEmpty()
   //   duration: number;
   //   @IsNotEmpty()
