@@ -5,6 +5,9 @@
 data
 selected.env
 mongo.env
+.yarn
+.pnp.cjs
+.pnp.loader.mjs
 
 # Logs
 logs
