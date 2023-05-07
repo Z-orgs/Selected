@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Artist } from 'src/artist/model/artist.model';
+import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { Admin } from '../admin/model/admin.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -11,6 +11,8 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Artist.name)
+    private readonly artistModel: Model<ArtistDocument>,
   ) {}
   adminLogin(user: Admin) {
     const { username } = user;
@@ -19,10 +21,14 @@ export class AuthService {
       admin_token: this.jwtService.sign(payload),
     };
   }
-  artistLogin(user: Artist) {
+  async artistLogin(user: Artist) {
     const { username } = user;
     const payload = { username };
+    const artist = await await this.artistModel
+      .findOne({ username })
+      .select('-password');
     return {
+      ...artist.toObject(),
       artist_token: this.jwtService.sign(payload),
     };
   }

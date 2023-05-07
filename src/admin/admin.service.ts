@@ -141,10 +141,14 @@ export class AdminService {
     const albums = await this.albumModel.find().sort({ createdAt: 'desc' });
     return await Promise.all(
       albums.map(async (album) => {
+        const artist = await this.artistModel.findOne({
+          username: album.artist,
+        });
         return {
           _id: album._id,
           title: album.title,
           tracks: album.tracks.length,
+          artist: artist.nickName,
         };
       }),
     );
