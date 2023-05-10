@@ -151,7 +151,7 @@ export class TrackService {
           { $inc: { listens: 1 } },
         );
         await this.artistModel.updateOne(
-          { _id: track.artist },
+          { username: track.artist },
           {
             $inc: { revenue: SELECTED.UnitPrice },
           },
