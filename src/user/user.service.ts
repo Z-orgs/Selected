@@ -86,7 +86,7 @@ export class UserService {
       {
         _id: track.id,
       },
-      { $inc: { liked: -1 } },
+      { $inc: { likes: -1 } },
     );
     return new HttpException('unliked', HttpStatus.ACCEPTED);
   }
@@ -109,7 +109,7 @@ export class UserService {
       {
         _id: track.id,
       },
-      { $inc: { liked: 1 } },
+      { $inc: { likes: 1 } },
     );
     return new HttpException('liked', HttpStatus.ACCEPTED);
   }
