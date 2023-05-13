@@ -11,6 +11,7 @@ import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SocialLink } from './dto/social.links';
 import { SELECTED, normalString } from 'src/constants';
+import { User, UserDocument } from 'src/user/model/user.model';
 
 @Injectable()
 export class ArtistService {
@@ -19,6 +20,7 @@ export class ArtistService {
     private readonly artistModel: Model<ArtistDocument>,
     @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -87,8 +89,11 @@ export class ArtistService {
       HttpStatus.ACCEPTED,
     );
   }
-  async getArtistById(id: string) {
+  async getArtistById(user: User, id: string) {
     const artist = await this.artistModel.findById(id).select('-password');
+    if (!artist) {
+      return new HttpException('Artist not found.', HttpStatus.NOT_FOUND);
+    }
     const albums = await this.albumModel
       .find({ artist: artist.username, isPublic: true })
       .sort({ createdAt: 'desc' });
@@ -99,7 +104,15 @@ export class ArtistService {
         isPublic: true,
       })
       .sort({ createdAt: 'desc' });
-    return { artist, albums, tracks };
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    return {
+      artist,
+      albums,
+      tracks,
+      followed: currentUser.following.indexOf(id) !== -1,
+    };
   }
   async getAllAlbums(user: Artist) {
     const albums = await this.albumModel

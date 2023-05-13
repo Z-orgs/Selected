@@ -21,6 +21,12 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    if (currentUser.following.indexOf(artistId) !== -1) {
+      return;
+    }
     await this.userModel.findOneAndUpdate(
       { email: user.email },
       { $addToSet: { following: artistId } },
@@ -42,6 +48,12 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    if (currentUser.following.indexOf(artistId) === -1) {
+      return;
+    }
     await this.userModel.findOneAndUpdate(
       { email: user.email },
       { $pull: { following: artistId } },
@@ -56,24 +68,48 @@ export class UserService {
     );
   }
   async unlikeTrack(user: User, id: string) {
-    const track = await this.userModel.findOne({ email: user.email });
+    const track = await this.trackModel.findById(id);
     if (!track) {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    if (currentUser.liked.indexOf(track.id) === -1) {
+      return;
     }
     await this.userModel.updateOne(
       { email: user.email },
       { $pull: { liked: id } },
     );
+    await this.trackModel.updateOne(
+      {
+        _id: track.id,
+      },
+      { $inc: { liked: -1 } },
+    );
     return new HttpException('unliked', HttpStatus.ACCEPTED);
   }
   async likeTrack(user: User, id: string) {
-    const track = await this.userModel.findOne({ email: user.email });
+    const track = await this.trackModel.findById(id);
     if (!track) {
       return new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    }
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    if (currentUser.liked.indexOf(track.id) !== -1) {
+      return;
     }
     await this.userModel.updateOne(
       { email: user.email },
       { $addToSet: { liked: id } },
+    );
+    await this.trackModel.updateOne(
+      {
+        _id: track.id,
+      },
+      { $inc: { liked: 1 } },
     );
     return new HttpException('liked', HttpStatus.ACCEPTED);
   }

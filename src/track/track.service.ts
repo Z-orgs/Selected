@@ -17,6 +17,7 @@ import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 import { SELECTED, normalString } from 'src/constants';
+import { User, UserDocument } from 'src/user/model/user.model';
 
 @Injectable()
 export class TrackService {
@@ -32,6 +33,7 @@ export class TrackService {
     private readonly loggerService: LoggerService,
     @InjectModel(Playlist.name)
     private readonly playlistModel: Model<PlaylistDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
@@ -121,16 +123,24 @@ export class TrackService {
       return new HttpException('Status update successful', HttpStatus.ACCEPTED);
     }
   }
-  async getTrackById(id: string) {
+  async getTrackById(user: User, id: string) {
     const track = await this.trackModel.findOne({
       _id: id,
       status: true,
       isPublic: true,
     });
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+
     const artist = await this.artistModel
       .findOne({ username: track.artist })
       .select('-password');
-    return { ...track.toObject(), artist };
+    return {
+      ...track.toObject(),
+      liked: currentUser.liked.indexOf(id) !== -1,
+      artist,
+    };
   }
   async playTrack(client: Socket, playMessage: MessagePlayDto) {
     if (playMessage.trackId) {

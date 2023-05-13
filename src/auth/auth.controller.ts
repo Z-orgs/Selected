@@ -19,17 +19,17 @@ export class AuthController {
     private readonly jwtService: JwtService,
   ) {}
 
-  // @Get()
-  // @UseGuards(GoogleAuthGuard)
-  // async googleAuth(@Req() req) {
-  //   return 'GEN Kwzng';
-  // }
+  @Get()
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth(@Req() req) {
+    return 'GEN Kwzng';
+  }
 
-  // @Get('redirect')
-  // @UseGuards(GoogleAuthGuard)
-  // googleAuthRedirect(@Req() req) {
-  //   return this.authService.googleLogin(req);
-  // }
+  @Get('redirect')
+  @UseGuards(GoogleAuthGuard)
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
+  }
 
   @Post('/login')
   async login(@Body('token') token): Promise<any> {

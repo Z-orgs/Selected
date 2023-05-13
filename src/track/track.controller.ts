@@ -21,6 +21,7 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { FileService } from 'src/file/file.service';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 import { Admin } from 'src/admin/model/admin.model';
+import { User } from 'src/user/model/user.model';
 
 @Controller('track')
 export class TrackController {
@@ -62,7 +63,7 @@ export class TrackController {
   }
   @Get('info/:id')
   @UseGuards(JwtAuthGuard)
-  getTrackById(@Param('id') id: string) {
-    return this.trackService.getTrackById(id);
+  getTrackById(@Req() req: Request, @Param('id') id: string) {
+    return this.trackService.getTrackById(req.user as User, id);
   }
 }

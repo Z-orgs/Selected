@@ -31,6 +31,10 @@ export class Track {
   listens: number;
   @Prop()
   album: string;
+  @Prop({
+    default: 0,
+  })
+  liked: number;
 }
 
 export const TrackSchema = SchemaFactory.createForClass(Track);

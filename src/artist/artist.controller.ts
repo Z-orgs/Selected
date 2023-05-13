@@ -24,6 +24,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from 'src/file/file.service';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
+import { User } from 'src/user/model/user.model';
 
 @Controller('artist')
 export class ArtistController {
@@ -75,8 +76,8 @@ export class ArtistController {
   }
   @Get('artist/:id')
   @UseGuards(JwtAuthGuard)
-  getArtistById(@Param('id') id: string) {
-    return this.artistService.getArtistById(id);
+  getArtistById(@Req() req: Request, @Param('id') id: string) {
+    return this.artistService.getArtistById(req.user as User, id);
   }
 
   @Get('album')
