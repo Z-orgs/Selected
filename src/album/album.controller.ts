@@ -54,6 +54,8 @@ export class AlbumController {
   @UseInterceptors(FileInterceptor('image'))
   updateAlbum(
     @Param('id') id: string,
+    @Req() req: Request,
+    @Body() updateAlbum: UpdateAlbumDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -61,13 +63,12 @@ export class AlbumController {
         ],
       }),
     )
-    file: Express.Multer.File,
-    @Req() req: Request,
-    @Body() updateAlbum: UpdateAlbumDto,
+    file?: Express.Multer.File,
   ) {
+    const resultFile = this.fileService.uploadImage(file);
     return this.albumService.updateAlbum(
       id,
-      this.fileService.uploadImage(file),
+      resultFile ? resultFile : null,
       req.user as Artist,
       updateAlbum,
     );
