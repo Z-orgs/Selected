@@ -1,5 +1,3 @@
-import { SocialLink } from './social.links';
-
 export class UpdateArtistDto {
   firstName: string;
 

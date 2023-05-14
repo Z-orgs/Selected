@@ -48,14 +48,16 @@ export class ArtistController {
         validators: [
           new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif)$/ }),
         ],
+        fileIsRequired: false,
       }),
     )
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ) {
+    const resultFile = file ? this.fileService.uploadImage(file) : null;
     return this.artistService.updateArtist(
       req.user as Artist,
       updateArtist,
-      this.fileService.uploadImage(file),
+      resultFile,
     );
   }
   @Put('password')

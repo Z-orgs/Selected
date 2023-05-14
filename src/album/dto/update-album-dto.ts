@@ -5,7 +5,7 @@ export class UpdateAlbumDto {
 
   release?: Date;
 
-  tracks: string[];
+  tracks: string;
 
   isPublic: boolean;
 }

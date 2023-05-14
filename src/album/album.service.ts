@@ -42,6 +42,8 @@ export class AlbumService {
     user: Artist,
     updateAlbum: UpdateAlbumDto,
   ) {
+    console.log(updateAlbum);
+
     const album = await this.albumModel.findById(id);
     if (!album) {
       return new HttpException(
@@ -54,6 +56,7 @@ export class AlbumService {
     }
     await this.albumModel.updateOne({ _id: id }, {
       ...updateAlbum,
+      tracks: JSON.parse(updateAlbum.tracks) as string[],
       coverArtUrl: image ? image : album.coverArtUrl,
       titleUnaccented: normalString(updateAlbum.title),
     } as Album);

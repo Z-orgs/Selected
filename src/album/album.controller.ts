@@ -61,14 +61,15 @@ export class AlbumController {
         validators: [
           new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif)$/ }),
         ],
+        fileIsRequired: false,
       }),
     )
-    file?: Express.Multer.File,
+    file: Express.Multer.File,
   ) {
-    const resultFile = this.fileService.uploadImage(file);
+    const resultFile = file ? this.fileService.uploadImage(file) : null;
     return this.albumService.updateAlbum(
       id,
-      resultFile ? resultFile : null,
+      resultFile,
       req.user as Artist,
       updateAlbum,
     );
