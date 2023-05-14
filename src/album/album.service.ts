@@ -42,8 +42,6 @@ export class AlbumService {
     user: Artist,
     updateAlbum: UpdateAlbumDto,
   ) {
-    console.log(updateAlbum);
-
     const album = await this.albumModel.findById(id);
     if (!album) {
       return new HttpException(
