@@ -52,9 +52,15 @@ export class AlbumService {
     if (album.artist !== user.username) {
       return new HttpException('No permission', HttpStatus.CONFLICT);
     }
+    const tracks: string[] = [];
+    for (const trackId of JSON.parse(updateAlbum.tracks) as string[]) {
+      if (await this.trackModel.findById(trackId)) {
+        tracks.push(trackId);
+      }
+    }
     await this.albumModel.updateOne({ _id: id }, {
       ...updateAlbum,
-      tracks: JSON.parse(updateAlbum.tracks) as string[],
+      tracks,
       coverArtUrl: image ? image : album.coverArtUrl,
       titleUnaccented: normalString(updateAlbum.title),
     } as Album);
