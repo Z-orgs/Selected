@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { JwtArtistAuthGuard } from 'src/auth/artist/jwtartist-auth.guard';
 import { Artist } from 'src/artist/model/artist.model';
@@ -8,8 +8,8 @@ import { Request } from 'express';
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  @Get('home')
-  search(@Body('keyword') keyword: string) {
+  @Get()
+  search(@Query('keyword') keyword: string) {
     return this.searchService.search(keyword);
   }
   @Get('track')
