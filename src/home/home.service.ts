@@ -15,81 +15,16 @@ export class HomeService {
     @InjectModel(Album.name) private readonly albumModel: Model<AlbumDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  // async getHomePage(user: User) {
-  //   const following = (
-  //     await this.userModel.findOne({ email: user.email })
-  //   ).toObject().following;
-  //   let randomAlbums: any, randomTracks: any, albums: any[], tracks: any[];
-  //   if (following.length) {
-  //     const artists = await Promise.all(
-  //       following.map(async (artist) => {
-  //         return await this.artistModel.findById(artist).select('username');
-  //       }),
-  //     );
-  //     albums = await Promise.all(
-  //       artists.map(async (artist) => {
-  //         return await this.albumModel.find({
-  //           artist: artist.username,
-  //           isPublic: true,
-  //         });
-  //       }),
-  //     );
-  //     albums = albums.flat();
-  //     tracks = await Promise.all(
-  //       artists.map(async (artist) => {
-  //         return await this.trackModel.find({
-  //           artist: artist.username,
-  //           isPublic: true,
-  //           status: true,
-  //         });
-  //       }),
-  //     );
-  //     tracks = tracks.flat();
-  //     if (albums.length <= 5) {
-  //       randomAlbums = albums;
-  //     } else {
-  //       randomAlbums = albums.sort(() => 0.5 - Math.random()).slice(0, 5);
-  //     }
-  //     if (tracks.length <= 5) {
-  //       randomTracks = tracks;
-  //     } else {
-  //       randomTracks = tracks.sort(() => 0.5 - Math.random()).slice(0, 5);
-  //     }
-  //   }
 
-  //   const albumsNF = await this.albumModel.find({ isPublic: true });
-  //   const tracksNF = await this.trackModel.find({ isPublic: true, status: true });
-  //   let randomAlbumsNF: (Document<unknown, any, Album> &
-  //       Omit<Album & { _id: Types.ObjectId }, never> &
-  //       Required<{ _id: Types.ObjectId }>)[],
-  //     randomTracksNF: (Document<unknown, any, Track> &
-  //       Omit<Track & { _id: Types.ObjectId }, never> &
-  //       Required<{ _id: Types.ObjectId }>)[];
-  //   if (albumsNF.length <= 5) {
-  //     randomAlbumsNF = albumsNF;
-  //   } else {
-  //     randomAlbumsNF = albumsNF.sort(() => 0.5 - Math.random()).slice(0, 5);
-  //   }
-  //   if (tracksNF.length <= 5) {
-  //     randomTracksNF = tracksNF;
-  //   } else {
-  //     randomTracksNF = tracksNF.sort(() => 0.5 - Math.random()).slice(0, 5);
-  //   }
-
-  //   return {
-  //     Following: { randomAlbums, randomTracks },
-  //     NoFollowing: { randomAlbumsNF, randomTracksNF },
-  //   };
-  // }
   async getHomePage(user: User) {
     const { following } = await this.userModel
       .findOne({ email: user.email }, 'following')
       .lean();
 
-    let randomAlbums: Album[],
-      randomTracks: Track[],
-      albums: Album[],
-      tracks: Track[] = [];
+    let randomAlbums,
+      randomTracks,
+      albums,
+      tracks = [];
 
     if (following.length) {
       const artists = await this.artistModel
@@ -122,21 +57,38 @@ export class HomeService {
         .slice(0, Math.min(tracks.length, 5));
     }
 
-    const [albumsNF, tracksNF] = await Promise.all([
+    const [albumsNF, tracksNF]: any = await Promise.all([
       this.albumModel.find({ isPublic: true }).lean(),
       this.trackModel.find({ isPublic: true, status: true }).lean(),
     ]);
 
-    const randomAlbumsNF = albumsNF
+    let randomAlbumsNF = albumsNF
       .sort(() => 0.5 - Math.random())
       .slice(0, Math.min(albumsNF.length, 5));
-    const randomTracksNF = tracksNF
+    let randomTracksNF = tracksNF
       .sort(() => 0.5 - Math.random())
       .slice(0, Math.min(tracksNF.length, 5));
+
+    randomAlbums = await this.addArtistToElements(randomAlbums);
+    randomTracks = await this.addArtistToElements(randomTracks);
+    randomAlbumsNF = await this.addArtistToElements(randomAlbumsNF);
+    randomTracksNF = await this.addArtistToElements(randomTracksNF);
 
     return {
       Following: { randomAlbums, randomTracks },
       NoFollowing: { randomAlbumsNF, randomTracksNF },
     };
+  }
+  async addArtistToElements(elements) {
+    if (!elements || !elements.length) {
+      return [];
+    }
+    for (let i = 0; i < elements.length; i++) {
+      const artist = (
+        await this.artistModel.findOne({ username: elements[i].artist })
+      ).toObject();
+      elements[i].artist = artist;
+    }
+    return elements;
   }
 }
