@@ -52,7 +52,8 @@ export class AuthController {
       jwt: this.jwtService.sign({
         email,
         firstName: given_name,
-        lastName: given_name,
+        lastName: family_name,
+        picture: picture,
       }),
       message: 'success',
     };
