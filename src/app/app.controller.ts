@@ -5,8 +5,8 @@ import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from '../artist/model/artist.model';
 import { SELECTED } from 'src/constants';
 
-@Controller('Kwzng')
-export class KwzngController {
+@Controller()
+export class AppController {
   constructor(
     @InjectModel(Admin.name) private readonly adminModel: Model<AdminDocument>,
     @InjectModel(Artist.name)

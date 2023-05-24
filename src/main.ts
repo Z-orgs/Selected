@@ -1,15 +1,15 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { KwzngModule } from './Kwzng/Kwzng.module';
+import { AppModule } from './App/App.module';
 import { SELECTED } from './constants';
 
 (async () => {
-  const Kwzng = await NestFactory.create(KwzngModule);
-  Kwzng.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
-  Kwzng.enableCors({
+  const App = await NestFactory.create(AppModule);
+  App.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
+  App.enableCors({
     origin: '*',
     credentials: true,
   });
-  await Kwzng.listen(3000);
-  SELECTED.UrlServer = await Kwzng.getUrl();
+  await App.listen(3000);
+  SELECTED.UrlServer = await App.getUrl();
 })();

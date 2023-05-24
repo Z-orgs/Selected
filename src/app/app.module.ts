@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { KwzngService } from './Kwzng.service';
-import { KwzngController } from './Kwzng.controller';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
@@ -38,8 +38,8 @@ import { SELECTED } from 'src/constants';
     SearchModule,
     HomeModule,
   ],
-  controllers: [KwzngController],
-  providers: [KwzngService],
-  exports: [KwzngService],
+  controllers: [AppController],
+  providers: [AppService],
+  exports: [AppService],
 })
-export class KwzngModule {}
+export class AppModule {}
