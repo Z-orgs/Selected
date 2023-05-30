@@ -14,6 +14,7 @@ export const SELECTED = {
   Admin: 'admin',
   UnitPrice: Number(process.env.UNITPRICE),
   UrlServer: '',
+  PORT: parseInt(process.env.PORT) || 3000,
 };
 
 export const normalString = (input: string) => toLower(deburr(clean(input)));
