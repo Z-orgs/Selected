@@ -72,4 +72,9 @@ export class TrackController {
   getNextTrack(@Req() req, @Body() nextMessage: NextTrackDto) {
     return this.trackService.nextTrack(req.user as User, nextMessage);
   }
+  @Get('prev')
+  @UseGuards(JwtAuthGuard)
+  getPrevTrack(@Req() req) {
+    return this.trackService.prevTrack(req.user as User);
+  }
 }

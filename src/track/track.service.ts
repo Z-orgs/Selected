@@ -29,8 +29,6 @@ export class TrackService {
   ) {}
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
-    console.log(responses);
-
     const track = new this.trackModel({
       filename: responses[0].filename,
       uploaded: new Date(),
@@ -131,6 +129,14 @@ export class TrackService {
   }
   async nextTrack(user: User, nextMessage: NextTrackDto) {
     let nextTrack: string = nextMessage.currentTrackId;
+    await this.userModel.updateOne(
+      { email: user.email },
+      {
+        $push: {
+          prev: nextMessage.currentTrackId,
+        },
+      },
+    );
     if (nextMessage.album) {
       try {
         const album = await this.albumModel.findById(nextMessage.album);
@@ -182,5 +188,22 @@ export class TrackService {
       }
     }
     return nextTrack;
+  }
+  async prevTrack(user: User) {
+    const currentUser = (
+      await this.userModel.findOne({ email: user.email })
+    ).toObject();
+    const prevId = currentUser.prev[-1] ? currentUser.prev[-1] : undefined;
+    if (prevId) {
+      await this.userModel.updateOne(
+        { email: user.email },
+        {
+          $pop: {
+            prev: 1,
+          },
+        },
+      );
+    }
+    return prevId;
   }
 }
