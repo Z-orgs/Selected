@@ -69,7 +69,7 @@ export class TrackController {
   }
   @Get('next')
   @UseGuards(JwtAuthGuard)
-  getNextTrack(@Body() nextMessage: NextTrackDto) {
-    return this.trackService.nextTrack(nextMessage);
+  getNextTrack(@Req() req, @Body() nextMessage: NextTrackDto) {
+    return this.trackService.nextTrack(req.user as User, nextMessage);
   }
 }

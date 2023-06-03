@@ -1,11 +1,8 @@
-import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { MongoGridFS } from 'mongo-gridfs';
-import { Connection, Model } from 'mongoose';
-import { FileService } from 'src/file/file.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { UpdateInfoTrackDto } from './dto/update-info-track.dto';
 import { Track, TrackDocument } from './model/track.model';
 import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
@@ -20,11 +17,7 @@ import { NextTrackDto } from './dto/next.track.dto';
 
 @Injectable()
 export class TrackService {
-  private fileModel: MongoGridFS;
-
   constructor(
-    private readonly fileService: FileService,
-    @InjectConnection() private readonly connection: Connection,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
@@ -33,15 +26,7 @@ export class TrackService {
     @InjectModel(Playlist.name)
     private readonly playlistModel: Model<PlaylistDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {
-    this.fileModel = new MongoGridFS(this.connection.db, 'fs');
-  }
-
-  async getFile(id: string) {
-    const file = await this.fileService.findInfo(id);
-    const fileStream = await this.fileService.readStream(id);
-    return { file, fileStream };
-  }
+  ) {}
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
     console.log(responses);
@@ -144,44 +129,7 @@ export class TrackService {
       artist,
     };
   }
-  // async playTrack(client: Socket, playMessage: MessagePlayDto) {
-  //   if (playMessage.trackId) {
-  //     const track = await this.trackModel.findById({
-  //       _id: playMessage.trackId,
-  //     });
-  //     if (track) {
-  //       if (!track.status) {
-  //         client.send('This track is still waiting for approval');
-  //         return;
-  //       }
-  //       if (!track.isPublic) {
-  //         client.send('This track is in private mode.');
-  //         return;
-  //       }
-  //       await this.trackModel.updateOne(
-  //         { _id: playMessage.trackId },
-  //         { $inc: { listens: 1 } },
-  //       );
-  //       await this.artistModel.updateOne(
-  //         { username: track.artist },
-  //         {
-  //           $inc: { revenue: SELECTED.UnitPrice },
-  //         },
-  //       );
-  //       const file = await this.getFile(track.fileId);
-  //       if (file.fileStream) {
-  //         let position = 0;
-  //         file.fileStream.on('data', (data: Buffer) => {
-  //           client.send({ data, position });
-  //           position += data.length;
-  //         });
-  //       } else {
-  //         client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
-  //       }
-  //     }
-  //   }
-  // }
-  async nextTrack(nextMessage: NextTrackDto) {
+  async nextTrack(user: User, nextMessage: NextTrackDto) {
     let nextTrack: string = nextMessage.currentTrackId;
     if (nextMessage.album) {
       try {

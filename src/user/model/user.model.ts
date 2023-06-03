@@ -23,6 +23,8 @@ export class User {
   playList: [string];
   @Prop({ default: [] })
   liked: [string];
+  @Prop({ default: [] })
+  prev: [string];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
