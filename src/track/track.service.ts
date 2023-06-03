@@ -12,12 +12,11 @@ import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { Admin } from 'src/admin/model/admin.model';
 import { LoggerService } from '../logger/logger.service';
-import { MessagePlayDto } from './dto/message.play.dto';
-import { NextMessageDto } from './dto/message.next.dto';
 import { Album, AlbumDocument } from 'src/album/model/album.model';
 import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
+import { NextTrackDto } from './dto/next.track.dto';
 
 @Injectable()
 export class TrackService {
@@ -45,10 +44,13 @@ export class TrackService {
   }
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
+    console.log(responses);
+
     const track = new this.trackModel({
       filename: responses[0].filename,
       uploaded: new Date(),
-      fileId: responses[0].id,
+      fileId: responses[0].filename,
+      path: `./data/filesElected/${responses[0].filename}`,
       status: false,
       artist: user.username,
       ...createTrack,
@@ -142,44 +144,44 @@ export class TrackService {
       artist,
     };
   }
-  async playTrack(client: Socket, playMessage: MessagePlayDto) {
-    if (playMessage.trackId) {
-      const track = await this.trackModel.findById({
-        _id: playMessage.trackId,
-      });
-      if (track) {
-        if (!track.status) {
-          client.send('This track is still waiting for approval');
-          return;
-        }
-        if (!track.isPublic) {
-          client.send('This track is in private mode.');
-          return;
-        }
-        await this.trackModel.updateOne(
-          { _id: playMessage.trackId },
-          { $inc: { listens: 1 } },
-        );
-        await this.artistModel.updateOne(
-          { username: track.artist },
-          {
-            $inc: { revenue: SELECTED.UnitPrice },
-          },
-        );
-        const file = await this.getFile(track.fileId);
-        if (file.fileStream) {
-          let position = 0;
-          file.fileStream.on('data', (data: Buffer) => {
-            client.send({ data, position });
-            position += data.length;
-          });
-        } else {
-          client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
-        }
-      }
-    }
-  }
-  async nextTrack(client: Socket, nextMessage: NextMessageDto) {
+  // async playTrack(client: Socket, playMessage: MessagePlayDto) {
+  //   if (playMessage.trackId) {
+  //     const track = await this.trackModel.findById({
+  //       _id: playMessage.trackId,
+  //     });
+  //     if (track) {
+  //       if (!track.status) {
+  //         client.send('This track is still waiting for approval');
+  //         return;
+  //       }
+  //       if (!track.isPublic) {
+  //         client.send('This track is in private mode.');
+  //         return;
+  //       }
+  //       await this.trackModel.updateOne(
+  //         { _id: playMessage.trackId },
+  //         { $inc: { listens: 1 } },
+  //       );
+  //       await this.artistModel.updateOne(
+  //         { username: track.artist },
+  //         {
+  //           $inc: { revenue: SELECTED.UnitPrice },
+  //         },
+  //       );
+  //       const file = await this.getFile(track.fileId);
+  //       if (file.fileStream) {
+  //         let position = 0;
+  //         file.fileStream.on('data', (data: Buffer) => {
+  //           client.send({ data, position });
+  //           position += data.length;
+  //         });
+  //       } else {
+  //         client.send(new HttpException('Not found', HttpStatus.NOT_FOUND));
+  //       }
+  //     }
+  //   }
+  // }
+  async nextTrack(nextMessage: NextTrackDto) {
     let nextTrack: string = nextMessage.currentTrackId;
     if (nextMessage.album) {
       try {
@@ -231,6 +233,6 @@ export class TrackService {
         nextTrack = tracks[randomIndex]._id.toString();
       }
     }
-    return this.playTrack(client, { trackId: nextTrack } as MessagePlayDto);
+    return nextTrack;
   }
 }
