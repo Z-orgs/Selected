@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './App/App.module';
+import { AppModule } from './app/app.module';
 import { SELECTED } from './constants';
 
 (async () => {
