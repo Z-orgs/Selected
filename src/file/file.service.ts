@@ -1,28 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
-import { MongoGridFS } from 'mongo-gridfs';
-import { GridFSBucket, GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './file-info-vm.model';
 import { FileResponseVm } from './file-response.modal';
 import { Response } from 'express';
+import * as fs from 'fs';
 
 @Injectable()
 export class FileService {
-  private fileModel: MongoGridFS;
-  constructor(@InjectConnection() private readonly connection: Connection) {
-    this.fileModel = new MongoGridFS(this.connection.db, 'fs');
+  fileModel: any;
+  // async readStream(id: string) {
+  //   return await this.fileModel.readFileStream(id);
+  // }
+  readStream(path: string): fs.ReadStream {
+    return fs.createReadStream(path);
   }
 
-  getBucket(): GridFSBucket {
-    return this.fileModel.bucket;
-  }
-
-  async readStream(id: string): Promise<GridFSBucketReadStream> {
-    return await this.fileModel.readFileStream(id);
-  }
-
-  async findInfo(id: string): Promise<FileInfoVm> {
+  async findInfo(id: string) {
     const result = await this.fileModel
       .findById(id)
       .catch((err) => {
@@ -84,6 +76,8 @@ export class FileService {
         uploadDate: file.uploadDate,
         contentType: file.contentType,
       };
+      console.log(fileReponse);
+
       response.push(fileReponse);
     });
     return response;

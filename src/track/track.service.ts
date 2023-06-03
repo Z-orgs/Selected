@@ -45,10 +45,13 @@ export class TrackService {
   }
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
+    console.log(responses);
+
     const track = new this.trackModel({
       filename: responses[0].filename,
       uploaded: new Date(),
-      fileId: responses[0].id,
+      fileId: responses[0].filename,
+      path: `./data/filesElected/${responses[0].filename}`,
       status: false,
       artist: user.username,
       ...createTrack,
