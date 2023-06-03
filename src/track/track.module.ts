@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TrackService } from './track.service';
-import { TrackGateway } from './track.gateway';
 import { FileModule } from 'src/file/file.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Track, TrackSchema } from './model/track.model';
@@ -27,7 +26,7 @@ import { MulterModule } from '@nestjs/platform-express';
     ]),
     LoggerModule,
   ],
-  providers: [TrackGateway, TrackService],
+  providers: [TrackService],
   controllers: [TrackController],
   exports: [TrackService],
 })

@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class NextMessageDto {
+export class NextTrackDto {
   @IsNotEmpty()
   currentTrackId: string;
 

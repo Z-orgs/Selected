@@ -22,6 +22,7 @@ import { FileService } from 'src/file/file.service';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 import { Admin } from 'src/admin/model/admin.model';
 import { User } from 'src/user/model/user.model';
+import { NextTrackDto } from './dto/next.track.dto';
 
 @Controller('track')
 export class TrackController {
@@ -65,5 +66,10 @@ export class TrackController {
   @UseGuards(JwtAuthGuard)
   getTrackById(@Req() req: Request, @Param('id') id: string) {
     return this.trackService.getTrackById(req.user as User, id);
+  }
+  @Get('next')
+  @UseGuards(JwtAuthGuard)
+  getNextTrack(@Body() nextMessage: NextTrackDto) {
+    return this.trackService.nextTrack(nextMessage);
   }
 }

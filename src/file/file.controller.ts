@@ -10,7 +10,6 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileResponseVm } from './file-response.modal';
 import { FileService } from './file.service';
 import { Response } from 'express';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
@@ -23,22 +22,22 @@ export class FileController {
   upload(@UploadedFiles() files: Express.Multer.File[]) {
     return this.fileService.upload(files);
   }
-  @Get('info/:id')
-  getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
-    return this.fileService.getFileInfo(id);
-  }
+  // @Get('info/:id')
+  // getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
+  //   return this.fileService.getFileInfo(id);
+  // }
   @Get(':id')
   getFile(@Param('id') id: string, @Res() res: Response) {
     return this.fileService.getFile(id, res);
   }
-  @Get('download/:id')
-  downloadFile(@Param('id') id: string, @Res() res: Response) {
-    return this.fileService.downloadFile(id, res);
-  }
-  @Get('delete/:id')
-  deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
-    return this.fileService.deleteFile(id);
-  }
+  // @Get('download/:id')
+  // downloadFile(@Param('id') id: string, @Res() res: Response) {
+  //   return this.fileService.downloadFile(id, res);
+  // }
+  // @Get('delete/:id')
+  // deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
+  //   return this.fileService.deleteFile(id);
+  // }
   @Post('uploadImage')
   @UseInterceptors(FileInterceptor('image'))
   uploadImage(

@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-
+import { HydratedDocument } from 'mongoose';
+export type FileDocument = HydratedDocument<File>;
 @Schema()
-export class File extends Document {
+export class File {
   @Prop({ required: true })
   originalname: string;
 
@@ -20,6 +20,14 @@ export class File extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+  @Prop()
+  contentType: string;
+
+  setContentType(this: any) {
+    if (this.mimetype) {
+      this.contentType = this.mimetype;
+    }
+  }
 }
 
 export const FileSchema = SchemaFactory.createForClass(File);
