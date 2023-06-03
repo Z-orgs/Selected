@@ -12,6 +12,7 @@ import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SocialLink } from './dto/social.links';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
+import { compare, genSalt, hash } from 'bcrypt';
 
 @Injectable()
 export class ArtistService {
@@ -36,6 +37,8 @@ export class ArtistService {
       followers: 0,
       nickNameUnaccented: normalString(createArtist.nickName),
     } as Artist);
+    artist.salt = await genSalt();
+    artist.password = await hash(artist.password, artist.salt);
     artist.save();
     this.loggerService.createLogger({
       level: SELECTED.Admin,
@@ -67,7 +70,10 @@ export class ArtistService {
 
   async changePassword(user: Artist, changePassword: ChangePasswordDto) {
     const artist = await this.artistModel.findOne({ username: user.username });
-    if (artist.password !== changePassword.password) {
+    if (!artist) {
+      return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    }
+    if (!(await compare(changePassword.password, artist.password))) {
       return new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST);
     }
     if (changePassword.newPassword !== changePassword.confirmNewPassword) {
@@ -77,7 +83,7 @@ export class ArtistService {
       );
     }
     await this.artistModel.updateOne({ username: user.username }, {
-      password: changePassword.newPassword,
+      password: await hash(changePassword.newPassword, artist.salt),
     } as Artist);
     this.loggerService.createLogger({
       level: SELECTED.Artist,
@@ -163,7 +169,7 @@ export class ArtistService {
       return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
     await this.artistModel.findByIdAndUpdate(id, {
-      password: SELECTED.DefaultPassword,
+      password: await hash(SELECTED.DefaultPassword, artist.salt),
     });
     this.loggerService.createLogger({
       level: SELECTED.Admin,

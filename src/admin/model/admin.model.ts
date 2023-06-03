@@ -13,6 +13,8 @@ export class Admin {
   username: string;
   @Prop()
   password: string;
+  @Prop()
+  salt: string;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);

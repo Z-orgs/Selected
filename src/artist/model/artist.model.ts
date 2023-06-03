@@ -56,6 +56,8 @@ export class Artist {
     default: 0,
   })
   revenue: number;
+  @Prop()
+  salt: string;
 }
 
 export const ArtistSchema = SchemaFactory.createForClass(Artist);

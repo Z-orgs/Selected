@@ -12,6 +12,7 @@ import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
 import { SELECTED } from 'src/constants';
+import { compare, genSalt, hash } from 'bcrypt';
 
 @Injectable()
 export class AdminService {
@@ -34,7 +35,12 @@ export class AdminService {
       username: createAdmin.username,
     });
     if (!admin) {
-      await new this.adminModel({ ...createAdmin } as Admin).save();
+      const newAdmin = new this.adminModel({ ...createAdmin } as Admin);
+
+      newAdmin.salt = await genSalt();
+
+      newAdmin.password = await hash(createAdmin.password, newAdmin.salt);
+      await newAdmin.save();
       this.loggerService.createLogger({
         level: SELECTED.Admin,
         username: user.username,
@@ -54,18 +60,20 @@ export class AdminService {
     }
     const admin = await this.adminModel.findOne({
       username: user.username,
-      password: changePassword.password,
     });
     if (!admin) {
+      return new HttpException(`Admin not found.`, HttpStatus.BAD_REQUEST);
+    }
+    if (!(await compare(changePassword.password, admin.password))) {
       return new HttpException(
-        `The old password is incorrect`,
+        `The old password is incorrect.`,
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.adminModel.findOneAndUpdate(
-      { username: user.username },
-      { password: changePassword.newPassword },
-    );
+    await this.adminModel.updateOne({
+      username: admin.username,
+      password: await hash(changePassword.newPassword, admin.salt),
+    });
     this.loggerService.createLogger({
       level: SELECTED.Admin,
       username: user.username,
@@ -85,9 +93,15 @@ export class AdminService {
         HttpStatus.NOT_FOUND,
       );
     }
-    await this.adminModel.findByIdAndUpdate(id, {
-      password: SELECTED.DefaultPassword,
-    });
+    // await this.adminModel.findByIdAndUpdate(id, {
+    //   password: SELECTED.DefaultPassword,
+    // });
+    await this.adminModel.updateOne(
+      { _id: id },
+      {
+        password: await hash(SELECTED.DefaultPassword, admin.salt),
+      },
+    );
     this.loggerService.createLogger({
       level: SELECTED.Admin,
       username: user.username,

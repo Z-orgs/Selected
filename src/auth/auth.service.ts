@@ -24,7 +24,7 @@ export class AuthService {
   async artistLogin(user: Artist) {
     const { username } = user;
     const payload = { username };
-    const artist = await await this.artistModel
+    const artist = await this.artistModel
       .findOne({ username })
       .select('-password');
     return {

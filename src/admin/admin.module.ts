@@ -29,5 +29,6 @@ import { Playlist, PlaylistSchema } from '../playlist/model/playlist.model';
   ],
   controllers: [AdminController],
   providers: [AdminService],
+  exports: [AdminService],
 })
 export class AdminModule {}

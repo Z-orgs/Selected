@@ -4,6 +4,7 @@ import { Admin, AdminDocument } from '../admin/model/admin.model';
 import { Model } from 'mongoose';
 import { Artist, ArtistDocument } from '../artist/model/artist.model';
 import { SELECTED } from 'src/constants';
+import { genSalt, hash } from 'bcrypt';
 
 @Controller()
 export class AppController {
@@ -19,21 +20,14 @@ export class AppController {
       username: SELECTED.Admin,
     });
     if (!admin) {
-      const initAdmin = new this.adminModel({
+      const newAdmin = new this.adminModel({
         username: SELECTED.Admin,
-        password: SELECTED.Password,
-      });
-      initAdmin.save();
-    }
-    const artist = await this.artistModel.findOne({
-      username: SELECTED.Artist,
-    });
-    if (!artist) {
-      const initArtist = new this.artistModel({
-        username: SELECTED.Artist,
-        password: SELECTED.Password,
-      });
-      initArtist.save();
+      } as Admin);
+
+      newAdmin.salt = await genSalt();
+
+      newAdmin.password = await hash(SELECTED.Password, newAdmin.salt);
+      await newAdmin.save();
     }
   }
 }
