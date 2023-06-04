@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "up": "docker-compose up -d",
     "down": "docker-compose down",
-    "kwzng": "docker build -t selected . && docker tag selected vuongsyhanh/selected && docker push vuongsyhanh/selected"
+    "docker": "docker build -t selected . && docker tag selected vuongsyhanh/selected && docker push vuongsyhanh/selected"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

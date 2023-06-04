@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { File, FileDocument } from './model/file.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
@@ -7,20 +6,10 @@ import { createReadStream } from 'fs';
 
 @Injectable()
 export class FileService {
-  findInfo(id: string) {
-    throw new Error('Method not implemented.');
-  }
-  readStream(id: string) {
-    throw new Error('Method not implemented.');
-  }
-  constructor(
-    @InjectModel(File.name) private readonly fileModel: Model<FileDocument>,
-  ) {}
-
   upload(files: Express.Multer.File[]) {
     const response = [];
     files.forEach((file) => {
-      const fileReponse = {
+      const fileResponse = {
         originalname: file.originalname,
         encoding: file.encoding,
         mimetype: file.mimetype,
@@ -35,7 +24,7 @@ export class FileService {
         contentType: file.contentType,
       };
 
-      response.push(fileReponse);
+      response.push(fileResponse);
     });
     return response;
   }
