@@ -7,9 +7,13 @@ import { FileModule } from 'src/file/file.module';
 import { LoggerModule } from '../logger/logger.module';
 import { Track, TrackSchema } from 'src/track/model/track.model';
 import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: './data/filesElected',
+    }),
     MongooseModule.forFeature([
       { name: Album.name, schema: AlbumSchema },
       {
