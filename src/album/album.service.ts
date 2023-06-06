@@ -8,7 +8,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SELECTED, normalString } from 'src/constants';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class AlbumService {
@@ -18,7 +17,6 @@ export class AlbumService {
     @InjectModel(Artist.name)
     private readonly artistModel: Model<ArtistDocument>,
     private readonly loggerService: LoggerService,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   createAlbum(imageId: string, user: Artist, createAlbum: CreateAlbumDto) {
@@ -36,7 +34,6 @@ export class AlbumService {
       log: `${user.username} has created album ${album._id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return album;
   }
 
@@ -74,7 +71,6 @@ export class AlbumService {
       log: `${user.username} has updated the information of album ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Updated album', HttpStatus.ACCEPTED);
   }
   async getAlbumsById(id: string) {
@@ -135,7 +131,6 @@ export class AlbumService {
       log: `${user.username} has added track ${trackId} to album ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Added', HttpStatus.ACCEPTED);
   }
   async deleteTrackToAlbum(id: string, trackId: string, user: Artist) {
@@ -171,7 +166,6 @@ export class AlbumService {
       log: `${user.username} has deleted track ${trackId} from album ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('deleted', HttpStatus.ACCEPTED);
   }
 }

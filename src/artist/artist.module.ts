@@ -27,7 +27,6 @@ import { NotificationModule } from 'src/notification/notification.module';
     ]),
     FileModule,
     LoggerModule,
-    NotificationModule,
   ],
   controllers: [ArtistController],
   providers: [ArtistService],

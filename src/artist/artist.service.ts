@@ -24,7 +24,6 @@ export class ArtistService {
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly loggerService: LoggerService,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   async createArtist(user: Admin, createArtist: CreateArtistDto) {
@@ -48,7 +47,6 @@ export class ArtistService {
       log: `${user.username} has created artist ${artist.username}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Created artist.', HttpStatus.ACCEPTED);
   }
 
@@ -70,7 +68,6 @@ export class ArtistService {
       log: `${user.username} has updated information`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Updated', HttpStatus.ACCEPTED);
   }
 
@@ -97,7 +94,6 @@ export class ArtistService {
       log: `${user.username} has changed password`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException(
       'Password changed successfully',
       HttpStatus.ACCEPTED,
@@ -185,7 +181,6 @@ export class ArtistService {
       log: `${user.username} has reset password for artist ${artist.username}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Reset', HttpStatus.ACCEPTED);
   }
 }

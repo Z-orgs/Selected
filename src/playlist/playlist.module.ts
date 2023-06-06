@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Playlist, PlaylistSchema } from './model/playlist.model';
 import { LoggerModule } from '../logger/logger.module';
 import { Track, TrackSchema } from 'src/track/model/track.model';
-import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { NotificationModule } from 'src/notification/notification.module';
       { name: Track.name, schema: TrackSchema },
     ]),
     LoggerModule,
-    NotificationModule,
   ],
   controllers: [PlaylistController],
   providers: [PlaylistService],

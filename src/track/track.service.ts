@@ -14,7 +14,6 @@ import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { NextTrackDto } from './dto/next.track.dto';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class TrackService {
@@ -27,7 +26,6 @@ export class TrackService {
     @InjectModel(Playlist.name)
     private readonly playlistModel: Model<PlaylistDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
@@ -48,7 +46,6 @@ export class TrackService {
       log: `${user.username} has uploaded track ${track._id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return track;
   }
 
@@ -72,7 +69,6 @@ export class TrackService {
         log: `${user.username} has updated the information of track ${id}`,
       };
       this.loggerService.createLogger(log);
-      this.notificationGateway.sendNotification(log);
       return new HttpException(`Updated track ${id}`, HttpStatus.ACCEPTED);
     } catch (err) {
       return new HttpException(
@@ -102,7 +98,6 @@ export class TrackService {
         } to ${!track.status}`,
       };
       this.loggerService.createLogger(log);
-      this.notificationGateway.sendNotification(log);
       return new HttpException('Status update successful', HttpStatus.ACCEPTED);
     } else {
       await this.trackModel.findByIdAndUpdate({ _id: id }, { status: false });
@@ -114,7 +109,6 @@ export class TrackService {
         } to ${!track.status}`,
       };
       this.loggerService.createLogger(log);
-      this.notificationGateway.sendNotification(log);
       return new HttpException('Status update successful', HttpStatus.ACCEPTED);
     }
   }

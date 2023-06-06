@@ -13,7 +13,6 @@ import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
 import { SELECTED } from 'src/constants';
 import { compare, genSalt, hash } from 'bcrypt';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class AdminService {
@@ -29,7 +28,6 @@ export class AdminService {
     @InjectModel(Logger.name)
     private readonly loggerModel: Model<LoggerDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   async createAdmin(user: Admin, createAdmin: CreateAdminDto) {
@@ -49,7 +47,6 @@ export class AdminService {
         log: `${user.username} created admin ${createAdmin.username}`,
       };
       this.loggerService.createLogger(log);
-      this.notificationGateway.sendNotification(log);
       return new HttpException('Created admin', HttpStatus.ACCEPTED);
     }
     return new HttpException('Admin already exist', HttpStatus.BAD_REQUEST);
@@ -84,7 +81,6 @@ export class AdminService {
       log: `${user.username} changed password.`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException(
       `Password changed successfully`,
       HttpStatus.ACCEPTED,
@@ -114,7 +110,6 @@ export class AdminService {
       log: `${user.username} reset password for ${admin.username}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException(`Password reset successful`, HttpStatus.ACCEPTED);
   }
 
@@ -246,7 +241,6 @@ export class AdminService {
       log: `${user.username} paid artist ${artist.username} ${artist.revenue}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Paid', HttpStatus.ACCEPTED);
   }
 }

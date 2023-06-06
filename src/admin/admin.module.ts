@@ -10,7 +10,6 @@ import { Logger, LoggerSchema } from '../logger/model/logger.model';
 import { Track, TrackSchema } from '../track/model/track.model';
 import { Album, AlbumSchema } from '../album/model/album.model';
 import { Playlist, PlaylistSchema } from '../playlist/model/playlist.model';
-import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { NotificationModule } from 'src/notification/notification.module';
       { name: Playlist.name, schema: PlaylistSchema },
     ]),
     LoggerModule,
-    NotificationModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

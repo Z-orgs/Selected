@@ -7,7 +7,6 @@ import { Model } from 'mongoose';
 import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { normalString } from 'src/constants';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class PlaylistService {
@@ -16,7 +15,6 @@ export class PlaylistService {
     private readonly playlistModel: Model<PlaylistDocument>,
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     private readonly loggerService: LoggerService,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   createPlaylist(user: User, createPlaylist: CreatePlaylistDto) {
@@ -33,7 +31,6 @@ export class PlaylistService {
       log: `${user.email} has created playlist ${playlist._id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Created playlist', HttpStatus.ACCEPTED);
   }
 
@@ -60,7 +57,6 @@ export class PlaylistService {
       log: `${user.email} has added track ${trackId} to playlist ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Added', HttpStatus.ACCEPTED);
   }
 
@@ -82,7 +78,6 @@ export class PlaylistService {
       log: `${user.email} has deleted playlist ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Deleted', HttpStatus.ACCEPTED);
   }
   async getPlaylistById(id: string) {
@@ -121,7 +116,6 @@ export class PlaylistService {
       log: `${user.email} has added track ${trackId} to playlist ${id}`,
     };
     this.loggerService.createLogger(log);
-    this.notificationGateway.sendNotification(log);
     return new HttpException('Deleted', HttpStatus.ACCEPTED);
   }
   async getAllPlaylistAsUser(user: User) {

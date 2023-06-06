@@ -26,7 +26,6 @@ import { NotificationModule } from 'src/notification/notification.module';
       { name: User.name, schema: UserSchema },
     ]),
     LoggerModule,
-    NotificationModule,
   ],
   providers: [TrackService],
   controllers: [TrackController],
