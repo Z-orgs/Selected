@@ -36,6 +36,8 @@ npx yarn install
 npm start
 ```
 
+That's it! You have successfully completed the installation of Selected.
+
 ## Documentation
 
 - API: [v1](https://documenter.getpostman.com/view/20764163/2s93RWMq5a)
@@ -91,5 +93,3 @@ MONGO_INITDB_ROOT_USERNAME=admin
 MONGO_INITDB_ROOT_PASSWORD=example
 MONGO_INITDB_DATABASE=selected
 ```
-
-That's it! You have successfully completed the installation of Selected.
