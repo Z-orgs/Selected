@@ -13,6 +13,7 @@ import { SocialLink } from './dto/social.links';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { compare, genSalt, hash } from 'bcrypt';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class ArtistService {
@@ -23,6 +24,7 @@ export class ArtistService {
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly loggerService: LoggerService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   async createArtist(user: Admin, createArtist: CreateArtistDto) {
@@ -40,11 +42,13 @@ export class ArtistService {
     artist.salt = await genSalt();
     artist.password = await hash(artist.password, artist.salt);
     artist.save();
-    this.loggerService.createLogger({
+    const log = {
       level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} has created artist ${artist.username}`,
-    });
+    };
+    this.loggerService.createLogger(log);
+    this.notificationGateway.sendNotification(log);
     return new HttpException('Created artist.', HttpStatus.ACCEPTED);
   }
 
@@ -60,11 +64,13 @@ export class ArtistService {
       profileImage: imageId ? imageId : artist.profileImage,
       nickNameUnaccented: normalString(updateArtist.nickName),
     } as Artist);
-    this.loggerService.createLogger({
+    const log = {
       level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has updated information`,
-    });
+    };
+    this.loggerService.createLogger(log);
+    this.notificationGateway.sendNotification(log);
     return new HttpException('Updated', HttpStatus.ACCEPTED);
   }
 
@@ -85,11 +91,13 @@ export class ArtistService {
     await this.artistModel.updateOne({ username: user.username }, {
       password: await hash(changePassword.newPassword, artist.salt),
     } as Artist);
-    this.loggerService.createLogger({
+    const log = {
       level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has changed password`,
-    });
+    };
+    this.loggerService.createLogger(log);
+    this.notificationGateway.sendNotification(log);
     return new HttpException(
       'Password changed successfully',
       HttpStatus.ACCEPTED,
@@ -171,11 +179,13 @@ export class ArtistService {
     await this.artistModel.findByIdAndUpdate(id, {
       password: await hash(SELECTED.DefaultPassword, artist.salt),
     });
-    this.loggerService.createLogger({
+    const log = {
       level: SELECTED.Admin,
       username: user.username,
       log: `${user.username} has reset password for artist ${artist.username}`,
-    });
+    };
+    this.loggerService.createLogger(log);
+    this.notificationGateway.sendNotification(log);
     return new HttpException('Reset', HttpStatus.ACCEPTED);
   }
 }

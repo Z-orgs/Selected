@@ -17,6 +17,7 @@ import { LoggerModule } from '../logger/logger.module';
 import { SearchModule } from '../search/search.module';
 import { HomeModule } from 'src/home/home.module';
 import { SELECTED } from 'src/constants';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { SELECTED } from 'src/constants';
     LoggerModule,
     SearchModule,
     HomeModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

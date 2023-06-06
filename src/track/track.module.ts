@@ -10,6 +10,7 @@ import { Album, AlbumSchema } from 'src/album/model/album.model';
 import { Playlist, PlaylistSchema } from 'src/playlist/model/playlist.model';
 import { User, UserSchema } from 'src/user/model/user.model';
 import { MulterModule } from '@nestjs/platform-express';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MulterModule } from '@nestjs/platform-express';
       { name: User.name, schema: UserSchema },
     ]),
     LoggerModule,
+    NotificationModule,
   ],
   providers: [TrackService],
   controllers: [TrackController],
