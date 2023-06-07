@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { createReadStream } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 
 @Injectable()
 export class FileService {
@@ -32,12 +32,20 @@ export class FileService {
   }
 
   getFile(id: string, res: Response<any, Record<string, any>>) {
+    const filePath = `./data/filesElected/${id}`;
     try {
-      // res.setHeader('Content-Type', 'image/jpeg');
-      const fileStream = createReadStream(`./data/filesElected/${id}`);
+      if (!existsSync(filePath)) {
+        res.setHeader('Content-Type', 'text/plain');
+        res.status(404).send('File not found');
+        return;
+      }
+      res.setHeader('Content-Type', 'image/jpeg');
+      const fileStream = createReadStream(filePath);
       fileStream.pipe(res);
     } catch (error) {
       console.log(error);
+      res.setHeader('Content-Type', 'text/plain');
+      res.status(500).send('Internal Server Error');
     }
   }
 }
