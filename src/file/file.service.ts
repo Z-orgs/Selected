@@ -34,8 +34,12 @@ export class FileService {
   }
 
   getFile(id: string, res: Response<any, Record<string, any>>) {
-    // res.setHeader('Content-Type', 'image/jpeg');
-    const fileStream = createReadStream(`./data/filesElected/${id}`);
-    fileStream.pipe(res);
+    try {
+      // res.setHeader('Content-Type', 'image/jpeg');
+      const fileStream = createReadStream(`./data/filesElected/${id}`);
+      fileStream.pipe(res);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
