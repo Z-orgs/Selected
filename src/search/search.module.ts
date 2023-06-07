@@ -17,7 +17,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       { name: Playlist.name, schema: PlaylistSchema },
     ]),
     CacheModule.register({
-      ttl: 24 * 60 * 60 * 1000,
+      ttl: 8 * 60 * 60 * 1000,
     }),
   ],
   controllers: [SearchController],
