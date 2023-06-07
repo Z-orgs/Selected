@@ -78,6 +78,7 @@ export class AlbumService {
     if (!album) {
       return new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
+
     const tracks = await Promise.all(
       album.tracks.map(async (track) => {
         return await this.trackModel.findOne({
@@ -88,8 +89,10 @@ export class AlbumService {
       }),
     );
     const artist = await this.artistModel
-      .findOne({ artist: album.artist })
+      .findOne({ username: album.artist })
       .select('-password');
+    console.log(artist);
+
     return { ...album.toObject(), tracks, artist };
   }
   async addTrackToAlbum(id: string, trackId: string, user: Artist) {
