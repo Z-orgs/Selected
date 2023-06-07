@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
 
