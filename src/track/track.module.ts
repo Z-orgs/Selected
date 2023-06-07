@@ -11,6 +11,7 @@ import { Playlist, PlaylistSchema } from 'src/playlist/model/playlist.model';
 import { User, UserSchema } from 'src/user/model/user.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { NotificationModule } from 'src/notification/notification.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -26,6 +27,9 @@ import { NotificationModule } from 'src/notification/notification.module';
       { name: User.name, schema: UserSchema },
     ]),
     LoggerModule,
+    CacheModule.register({
+      ttl: 24 * 60 * 60 * 1000,
+    }),
   ],
   providers: [TrackService],
   controllers: [TrackController],

@@ -13,8 +13,10 @@ import {
 import { FileService } from './file.service';
 import { Response } from 'express';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('file')
+@UseInterceptors(CacheInterceptor)
 export class FileController {
   constructor(private fileService: FileService) {}
   @Post('')

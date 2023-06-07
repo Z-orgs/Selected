@@ -6,6 +6,7 @@ import {
   Put,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common/decorators';
 import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 import { AdminService } from './admin.service';
@@ -13,8 +14,10 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { Request } from 'express';
 import { Admin } from './model/admin.model';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('admin')
+@UseInterceptors(CacheInterceptor)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

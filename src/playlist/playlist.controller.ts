@@ -8,14 +8,17 @@ import {
   Put,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 import { Request } from 'express';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { User } from 'src/user/model/user.model';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('playlist')
+@UseInterceptors(CacheInterceptor)
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 

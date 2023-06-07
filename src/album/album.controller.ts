@@ -21,8 +21,10 @@ import { UpdateAlbumDto } from './dto/update-album-dto';
 import { FileService } from 'src/file/file.service';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('album')
+@UseInterceptors(CacheInterceptor)
 export class AlbumController {
   constructor(
     private readonly albumService: AlbumService,

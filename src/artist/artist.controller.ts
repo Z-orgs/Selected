@@ -25,8 +25,10 @@ import { FileService } from 'src/file/file.service';
 import { ChangePasswordDto } from 'src/admin/dto/change-password.dto';
 import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 import { User } from 'src/user/model/user.model';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('artist')
+@UseInterceptors(CacheInterceptor)
 export class ArtistController {
   constructor(
     private readonly artistService: ArtistService,

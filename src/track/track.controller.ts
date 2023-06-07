@@ -23,8 +23,10 @@ import { JwtAdminAuthGuard } from 'src/auth/admin/jwtadmin-auth.guard';
 import { Admin } from 'src/admin/model/admin.model';
 import { User } from 'src/user/model/user.model';
 import { NextTrackDto } from './dto/next.track.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('track')
+@UseInterceptors(CacheInterceptor)
 export class TrackController {
   constructor(
     private readonly trackService: TrackService,

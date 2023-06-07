@@ -8,6 +8,7 @@ import { LoggerModule } from '../logger/logger.module';
 import { Track, TrackSchema } from 'src/track/model/track.model';
 import { Artist, ArtistSchema } from 'src/artist/model/artist.model';
 import { MulterModule } from '@nestjs/platform-express';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -27,6 +28,9 @@ import { MulterModule } from '@nestjs/platform-express';
     ]),
     FileModule,
     LoggerModule,
+    CacheModule.register({
+      ttl: 24 * 60 * 60 * 1000,
+    }),
   ],
   controllers: [AlbumController],
   providers: [AlbumService],

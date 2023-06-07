@@ -23,6 +23,7 @@
     "docker": "docker build -t selected . && docker tag selected vuongsyhanh/selected && docker push vuongsyhanh/selected"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
@@ -31,10 +32,12 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.3.9",
+    "@nestjs/schedule": "^2.2.2",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/websockets": "^9.3.9",
     "audio-decode": "^2.1.1",
     "bcrypt": "^5.1.0",
+    "cache-manager": "^5.2.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "diacritic": "^0.0.2",

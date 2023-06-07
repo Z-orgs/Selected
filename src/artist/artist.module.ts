@@ -10,6 +10,7 @@ import { Album, AlbumSchema } from 'src/album/model/album.model';
 import { User, UserSchema } from 'src/user/model/user.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { NotificationModule } from 'src/notification/notification.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -27,6 +28,9 @@ import { NotificationModule } from 'src/notification/notification.module';
     ]),
     FileModule,
     LoggerModule,
+    CacheModule.register({
+      ttl: 24 * 60 * 60 * 1000,
+    }),
   ],
   controllers: [ArtistController],
   providers: [ArtistService],
