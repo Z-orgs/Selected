@@ -39,7 +39,6 @@ export class FileService {
         res.status(404).send('File not found');
         return;
       }
-      res.setHeader('Content-Type', 'image/jpeg');
       const fileStream = createReadStream(filePath);
       fileStream.pipe(res);
     } catch (error) {

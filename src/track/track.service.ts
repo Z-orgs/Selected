@@ -14,6 +14,8 @@ import { Playlist, PlaylistDocument } from 'src/playlist/model/playlist.model';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { NextTrackDto } from './dto/next.track.dto';
+import getAudioDurationInSeconds from 'get-audio-duration';
+import { existsSync } from 'fs';
 
 @Injectable()
 export class TrackService {
@@ -118,6 +120,10 @@ export class TrackService {
       status: true,
       isPublic: true,
     });
+    let duration;
+    if (existsSync(track.toObject().path)) {
+      duration = await getAudioDurationInSeconds(track.toObject().path);
+    }
     const currentUser = (
       await this.userModel.findOne({ email: user.email })
     ).toObject();
@@ -127,6 +133,7 @@ export class TrackService {
       .select('-password');
     return {
       ...track.toObject(),
+      duration,
       liked: currentUser.liked.indexOf(id) !== -1,
       artist,
     };
