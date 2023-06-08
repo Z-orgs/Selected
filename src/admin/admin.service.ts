@@ -166,6 +166,7 @@ export class AdminService {
           title: album.title,
           tracks: album.tracks.length,
           artist: artist.nickName,
+          coverArtUrl: album.coverArtUrl,
         };
       }),
     );
@@ -177,10 +178,12 @@ export class AdminService {
       .sort({ createdAt: 'desc' });
     return await Promise.all(
       playlists.map(async (playlist) => {
+        const user = await this.userModel.findOne({ email: playlist.owner });
         return {
           _id: playlist._id,
           title: playlist.title,
           owner: playlist.owner,
+          picture: user.picture,
         };
       }),
     );

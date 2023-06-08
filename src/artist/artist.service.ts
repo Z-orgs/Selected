@@ -134,6 +134,7 @@ export class ArtistService {
           _id: album._id,
           title: album.title,
           tracks: album.tracks.length,
+          coverArtUrl: album.coverArtUrl,
         };
       }),
     );

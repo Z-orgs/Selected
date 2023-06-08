@@ -20,6 +20,8 @@ export class Track {
   @Prop()
   fileId: string;
   @Prop()
+  duration: number;
+  @Prop()
   status: boolean;
   @Prop()
   artist: string;

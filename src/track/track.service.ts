@@ -30,7 +30,7 @@ export class TrackService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
+  async upload(user: Artist, responses: any[], createTrack: CreateTrackDto) {
     const track = new this.trackModel({
       filename: responses[0].filename,
       uploaded: new Date(),
@@ -41,13 +41,23 @@ export class TrackService {
       ...createTrack,
       titleUnaccented: normalString(createTrack.title),
     } as Track);
-    track.save();
+    await track.save();
     const log = {
       level: SELECTED.Artist,
       username: user.username,
       log: `${user.username} has uploaded track ${track._id}`,
     };
     this.loggerService.createLogger(log);
+    if (existsSync(`./data/filesElected/${responses[0].filename}`)) {
+      await this.trackModel.updateOne(
+        { fileId: responses[0].filename },
+        {
+          duration: await getAudioDurationInSeconds(
+            `./data/filesElected/${responses[0].filename}`,
+          ),
+        },
+      );
+    }
     return track;
   }
 
@@ -120,10 +130,6 @@ export class TrackService {
       status: true,
       isPublic: true,
     });
-    let duration;
-    if (existsSync(track.toObject().path)) {
-      duration = await getAudioDurationInSeconds(track.toObject().path);
-    }
     const currentUser = (
       await this.userModel.findOne({ email: user.email })
     ).toObject();
@@ -133,7 +139,6 @@ export class TrackService {
       .select('-password');
     return {
       ...track.toObject(),
-      duration,
       liked: currentUser.liked.indexOf(id) !== -1,
       artist,
     };
