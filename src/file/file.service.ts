@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { createReadStream, existsSync } from 'fs';
+import { Model } from 'mongoose';
+import { Track, TrackDocument } from 'src/track/model/track.model';
 
 @Injectable()
 export class FileService {
+  constructor(
+    @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+  ) {}
   upload(files: Express.Multer.File[]) {
     const response = [];
     files.forEach((file) => {
@@ -31,7 +37,7 @@ export class FileService {
     return file.filename;
   }
 
-  getFile(id: string, res: Response<any, Record<string, any>>) {
+  async getFile(id: string, res: Response<any, Record<string, any>>) {
     const filePath = `./data/filesElected/${id}`;
     try {
       if (!existsSync(filePath)) {
@@ -41,6 +47,16 @@ export class FileService {
       }
       const fileStream = createReadStream(filePath);
       fileStream.pipe(res);
+      if (await this.trackModel.findOne({ fileId: id })) {
+        await this.trackModel.updateOne(
+          { fileId: id },
+          {
+            $inc: {
+              listens: 1,
+            },
+          },
+        );
+      }
     } catch (error) {
       console.log(error);
       res.setHeader('Content-Type', 'text/plain');

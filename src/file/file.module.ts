@@ -2,16 +2,15 @@ import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
-import { CacheModule } from '@nestjs/cache-manager';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Track, TrackSchema } from 'src/track/model/track.model';
 
 @Module({
   imports: [
     MulterModule.register({
       dest: './data/filesElected',
     }),
-    CacheModule.register({
-      ttl: 8 * 60 * 60 * 1000,
-    }),
+    MongooseModule.forFeature([{ name: Track.name, schema: TrackSchema }]),
   ],
   controllers: [FileController],
   providers: [FileService],

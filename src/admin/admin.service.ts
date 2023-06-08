@@ -216,12 +216,13 @@ export class AdminService {
   }
   async getPlaylistById(id: string) {
     const playlist = await this.playlistModel.findById(id);
+    const user = await this.userModel.findOne({ email: playlist.owner });
     const tracks = await Promise.all(
       playlist.tracks.map((track) => {
         return this.getTrackById(track);
       }),
     );
-    return { ...playlist.toObject(), tracks };
+    return { ...playlist.toObject(), picture: user.picture, tracks };
   }
   async getAdminById(id: string) {
     const admin = await this.adminModel.findById(id);
