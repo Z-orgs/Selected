@@ -3,12 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { createReadStream, existsSync } from 'fs';
 import { Model } from 'mongoose';
+import { Artist, ArtistDocument } from 'src/artist/model/artist.model';
+import { SELECTED } from 'src/constants';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 
 @Injectable()
 export class FileService {
   constructor(
     @InjectModel(Track.name) private readonly trackModel: Model<TrackDocument>,
+    @InjectModel(Artist.name)
+    private readonly artistModel: Model<ArtistDocument>,
   ) {}
   upload(files: Express.Multer.File[]) {
     const response = [];
@@ -47,12 +51,21 @@ export class FileService {
       }
       const fileStream = createReadStream(filePath);
       fileStream.pipe(res);
-      if (await this.trackModel.findOne({ fileId: id })) {
+      const track = await this.trackModel.findOne({ fileId: id });
+      if (track) {
         await this.trackModel.updateOne(
           { fileId: id },
           {
             $inc: {
               listens: 1,
+            },
+          },
+        );
+        await this.artistModel.updateOne(
+          { username: track.artist },
+          {
+            $inc: {
+              revenue: SELECTED.UnitPrice,
             },
           },
         );
