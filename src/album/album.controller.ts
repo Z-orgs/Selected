@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   Param,
@@ -102,5 +103,10 @@ export class AlbumController {
   @UseGuards(JwtAuthGuard)
   getAlbumById(@Param('id') id: string) {
     return this.albumService.getAlbumsById(id);
+  }
+  @Delete(':id')
+  @UseGuards(JwtArtistAuthGuard)
+  deleteAlbum(@Req() req: Request, @Param('id') id: string) {
+    return this.albumService.deleteAlbum(req.user as Artist, id);
   }
 }

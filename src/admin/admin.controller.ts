@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import {
   Body,
+  Delete,
   Param,
   Post,
   Put,
@@ -111,5 +112,15 @@ export class AdminController {
   @UseGuards(JwtAdminAuthGuard)
   paymentArtist(@Req() req: Request, @Param('id') id: string) {
     return this.adminService.paymentArtist(req.user as Admin, id);
+  }
+  @Delete('track/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  deleteTrack(@Req() req: Request, @Param('id') id: string) {
+    return this.adminService.deleteTrack(req.user as Admin, id);
+  }
+  @Delete('album/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  deleteAlbum(@Req() req: Request, @Param('id') id: string) {
+    return this.adminService.deleteAlbum(req.user as Admin, id);
   }
 }

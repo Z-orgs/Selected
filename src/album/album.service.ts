@@ -171,4 +171,22 @@ export class AlbumService {
     this.loggerService.createLogger(log);
     return new HttpException('deleted', HttpStatus.ACCEPTED);
   }
+  async deleteAlbum(artist: Artist, id: string) {
+    const album = await this.albumModel.findById(id);
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.BAD_REQUEST);
+    }
+    if (album.artist === artist.username) {
+      await this.albumModel.findByIdAndDelete(id);
+      const log = {
+        level: SELECTED.Artist,
+        username: artist.username,
+        log: `${artist.username} has deleted album ${id}`,
+      };
+      this.loggerService.createLogger(log);
+      return { success: true };
+    } else {
+      return { success: false, message: 'Unauthorized' };
+    }
+  }
 }

@@ -15,7 +15,7 @@ import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { NextTrackDto } from './dto/next.track.dto';
 import getAudioDurationInSeconds from 'get-audio-duration';
-import { existsSync } from 'fs';
+import { existsSync, unlinkSync } from 'fs';
 
 @Injectable()
 export class TrackService {
@@ -221,5 +221,33 @@ export class TrackService {
       );
     }
     return prevId;
+  }
+  async deleteTrack(artist: Artist, id: string) {
+    const track = await this.trackModel.findById(id);
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.BAD_REQUEST);
+    }
+    if (track.artist !== artist.username) {
+      return new HttpException('No permission', HttpStatus.BAD_REQUEST);
+    }
+    await this.albumModel.updateMany(
+      { tracks: { $in: [id] } },
+      { $pull: { tracks: id } },
+    );
+    await this.playlistModel.updateMany(
+      { tracks: { $in: [id] } },
+      { $pull: { tracks: id } },
+    );
+    if (existsSync(track.path)) {
+      unlinkSync(track.path);
+    }
+    await this.trackModel.deleteOne({ _id: id });
+    const log = {
+      level: SELECTED.Artist,
+      username: artist.username,
+      log: `${artist.username} has deleted track ${id}`,
+    };
+    this.loggerService.createLogger(log);
+    return new HttpException('Deleted', HttpStatus.ACCEPTED);
   }
 }

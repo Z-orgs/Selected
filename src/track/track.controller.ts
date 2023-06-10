@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -78,5 +79,10 @@ export class TrackController {
   @UseGuards(JwtAuthGuard)
   getPrevTrack(@Req() req) {
     return this.trackService.prevTrack(req.user as User);
+  }
+  @Delete(':id')
+  @UseGuards(JwtArtistAuthGuard)
+  deleteTrack(@Req() req: Request, @Param('id') id: string) {
+    return this.trackService.deleteTrack(req.user as Artist, id);
   }
 }

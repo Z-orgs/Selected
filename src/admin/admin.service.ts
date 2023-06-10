@@ -13,6 +13,7 @@ import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
 import { SELECTED } from 'src/constants';
 import { compare, genSalt, hash } from 'bcrypt';
+import { existsSync, unlinkSync } from 'fs';
 
 @Injectable()
 export class AdminService {
@@ -246,5 +247,45 @@ export class AdminService {
     };
     this.loggerService.createLogger(log);
     return new HttpException('Paid', HttpStatus.ACCEPTED);
+  }
+  async deleteTrack(admin: Admin, id: string) {
+    const track = await this.trackModel.findById(id);
+    if (!track) {
+      return new HttpException('Track not found', HttpStatus.BAD_REQUEST);
+    }
+    await this.albumModel.updateMany(
+      { tracks: { $in: [id] } },
+      { $pull: { tracks: id } },
+    );
+    await this.playlistModel.updateMany(
+      { tracks: { $in: [id] } },
+      { $pull: { tracks: id } },
+    );
+    if (existsSync(track.path)) {
+      unlinkSync(track.path);
+    }
+    await this.trackModel.deleteOne({ _id: id });
+    const log = {
+      level: SELECTED.Admin,
+      username: admin.username,
+      log: `${admin.username} has deleted track ${id}`,
+    };
+    this.loggerService.createLogger(log);
+    return new HttpException('Deleted', HttpStatus.ACCEPTED);
+  }
+  async deleteAlbum(admin: Admin, id: string) {
+    const album = await this.albumModel.findById(id);
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.BAD_REQUEST);
+    }
+
+    await this.albumModel.findByIdAndDelete(id);
+    const log = {
+      level: SELECTED.Admin,
+      username: admin.username,
+      log: `${admin.username} has deleted album ${id}`,
+    };
+    this.loggerService.createLogger(log);
+    return { success: true };
   }
 }

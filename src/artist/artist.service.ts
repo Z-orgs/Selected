@@ -68,7 +68,13 @@ export class ArtistService {
       log: `${user.username} has updated information`,
     };
     this.loggerService.createLogger(log);
-    return new HttpException('Updated', HttpStatus.ACCEPTED);
+    return {
+      ...(
+        await this.artistModel
+          .findOne({ username: user.username })
+          .select('-password')
+      ).toObject(),
+    };
   }
 
   async changePassword(user: Artist, changePassword: ChangePasswordDto) {
