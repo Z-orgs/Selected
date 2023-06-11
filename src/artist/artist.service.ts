@@ -139,7 +139,7 @@ export class ArtistService {
         return {
           _id: album._id,
           title: album.title,
-          tracks: album.tracks.length,
+          tracks: album.tracks ? album.tracks.length : 0,
           coverArtUrl: album.coverArtUrl,
         };
       }),

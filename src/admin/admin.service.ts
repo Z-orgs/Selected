@@ -165,7 +165,7 @@ export class AdminService {
         return {
           _id: album._id,
           title: album.title,
-          tracks: album.tracks.length,
+          tracks: album.tracks ? album.tracks.length : 0,
           artist: artist.nickName,
           coverArtUrl: album.coverArtUrl,
         };
