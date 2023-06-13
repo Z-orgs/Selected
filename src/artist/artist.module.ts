@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { ArtistController } from './artist.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,6 +11,7 @@ import { User, UserSchema } from 'src/user/model/user.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { NotificationModule } from 'src/notification/notification.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CacheResetMiddleware } from 'src/reset.cache.middleware';
 
 @Module({
   imports: [
@@ -36,4 +37,10 @@ import { CacheModule } from '@nestjs/cache-manager';
   providers: [ArtistService],
   exports: [ArtistService],
 })
-export class ArtistModule {}
+export class ArtistModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CacheResetMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

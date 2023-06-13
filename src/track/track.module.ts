@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { FileModule } from 'src/file/file.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,6 +11,7 @@ import { Playlist, PlaylistSchema } from 'src/playlist/model/playlist.model';
 import { User, UserSchema } from 'src/user/model/user.model';
 import { MulterModule } from '@nestjs/platform-express';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CacheResetMiddleware } from 'src/reset.cache.middleware';
 
 @Module({
   imports: [
@@ -34,4 +35,10 @@ import { CacheModule } from '@nestjs/cache-manager';
   controllers: [TrackController],
   exports: [TrackService],
 })
-export class TrackModule {}
+export class TrackModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CacheResetMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

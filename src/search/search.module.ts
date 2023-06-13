@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -7,6 +7,7 @@ import { Track, TrackSchema } from '../track/model/track.model';
 import { Album, AlbumSchema } from '../album/model/album.model';
 import { Playlist, PlaylistSchema } from '../playlist/model/playlist.model';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CacheResetMiddleware } from 'src/reset.cache.middleware';
 
 @Module({
   imports: [
@@ -23,4 +24,10 @@ import { CacheModule } from '@nestjs/cache-manager';
   controllers: [SearchController],
   providers: [SearchService],
 })
-export class SearchModule {}
+export class SearchModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CacheResetMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
