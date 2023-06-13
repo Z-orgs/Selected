@@ -24,18 +24,17 @@ export class SearchService {
     const [tracks, albums, artists, playlists] = await Promise.all([
       this.trackModel
         .find({ titleUnaccented: regex, status: true, isPublic: true })
-        .sort({ createdAt: 'desc' })
-        .select('_id title artist'),
+        .sort({ createdAt: 'desc' }),
 
       this.albumModel
         .find({ titleUnaccented: regex, isPublic: true })
         .sort({ createdAt: 'desc' })
-        .select('_id title artist'),
+        .select('_id title artist coverArtUrl'),
 
       this.artistModel
         .find({ nickNameUnaccented: regex })
         .sort({ createdAt: 'desc' })
-        .select('_id nickName'),
+        .select('_id nickName profileImage'),
 
       this.playlistModel
         .find({ titleUnaccented: regex })
@@ -44,19 +43,17 @@ export class SearchService {
     ]);
 
     return {
-      tracks: tracks.map((track) => ({
-        _id: track._id,
-        title: track.title,
-        artist: track.artist,
-      })),
+      tracks,
       albums: albums.map((album) => ({
         _id: album._id,
         title: album.title,
         artist: album.artist,
+        coverArtUrl: album.coverArtUrl,
       })),
       artists: artists.map((artist) => ({
         _id: artist._id,
         nickName: artist.nickName,
+        profileImage: artist.profileImage,
       })),
       playlists: playlists.map((playlist) => ({
         _id: playlist._id,
