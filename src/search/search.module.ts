@@ -18,7 +18,7 @@ import { CacheResetMiddleware } from 'src/reset.cache.middleware';
       { name: Playlist.name, schema: PlaylistSchema },
     ]),
     CacheModule.register({
-      ttl: 30 * 60 * 1000,
+      ttl: 24 * 60 * 60 * 1000,
     }),
   ],
   controllers: [SearchController],
