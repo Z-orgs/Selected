@@ -4,7 +4,6 @@ import { JwtAuthGuard } from 'src/auth/google/jwt-auth.guard';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import { User } from './model/user.model';
-import { GoogleAuthGuard } from 'src/auth/google/google-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -37,6 +36,6 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req: Request) {
-    return req.user;
+    return this.userService.getCurrentUser(req.user as User);
   }
 }
