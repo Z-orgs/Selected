@@ -6,7 +6,11 @@ import { Cache } from 'cache-manager';
 export class CacheResetMiddleware implements NestMiddleware {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
   async use(req: Request, res: Response, next: () => void) {
-    if (req.method === 'POST' || req.method === 'PUT') {
+    if (
+      req.method === 'POST' ||
+      req.method === 'PUT' ||
+      req.method === 'DELETE'
+    ) {
       await this.cacheManager.reset();
     }
     next();
