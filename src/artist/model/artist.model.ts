@@ -58,6 +58,14 @@ export class Artist {
   revenue: number;
   @Prop()
   salt: string;
+  @Prop({
+    default: 0,
+  })
+  totalListens: number;
+  @Prop({
+    default: 0,
+  })
+  totalLikes: number;
 }
 
 export const ArtistSchema = SchemaFactory.createForClass(Artist);

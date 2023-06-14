@@ -69,6 +69,24 @@ export class FileService {
             },
           },
         );
+        await this.trackModel
+          .aggregate([
+            { $match: { artist: track.artist } },
+            {
+              $group: {
+                _id: null,
+                totalListens: { $sum: '$listens' },
+                totalLikes: { $sum: '$likes' },
+              },
+            },
+            { $project: { _id: 0, totalListens: 1, totalLikes: 1 } },
+          ])
+          .then(([{ totalListens, totalLikes }]) => {
+            return this.artistModel.updateOne(
+              { username: track.artist },
+              { totalListens, totalLikes },
+            );
+          });
       }
     } catch (error) {
       console.log(error);
