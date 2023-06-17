@@ -4,7 +4,7 @@
 
 # Selected
 
-Welcome to Selected, the online music streaming website developed by [Kwzng](https://github.com/kwzng). With this application, you can stream and enjoy your favorite music from all around the world.
+Welcome to Selected, the online music streaming website developed by [710](https://github.com/710x). With this application, you can stream and enjoy your favorite music from all around the world.
 
 ## Contributing
 
