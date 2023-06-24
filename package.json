@@ -5,6 +5,9 @@
   "author": "710",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": "^18.16.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
