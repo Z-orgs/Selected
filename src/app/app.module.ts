@@ -18,7 +18,6 @@ import { SearchModule } from '../search/search.module';
 import { HomeModule } from 'src/home/home.module';
 import { SELECTED } from 'src/constants';
 import { NotificationModule } from 'src/notification/notification.module';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -40,7 +39,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     SearchModule,
     HomeModule,
     NotificationModule,
-    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

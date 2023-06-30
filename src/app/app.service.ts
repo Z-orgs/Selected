@@ -1,7 +1,4 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {Cron, CronExpression} from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AppService {
-
-}
+export class AppService {}
