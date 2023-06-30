@@ -51,10 +51,10 @@ export class HomeService {
 
       randomAlbums = albums
         .sort(() => 0.5 - Math.random())
-        .slice(0, Math.min(albums.length, 5));
+        .slice(0, Math.min(albums.length, 15));
       randomTracks = tracks
         .sort(() => 0.5 - Math.random())
-        .slice(0, Math.min(tracks.length, 5));
+        .slice(0, Math.min(tracks.length, 15));
     }
 
     const [albumsNF, tracksNF]: any = await Promise.all([
@@ -64,10 +64,10 @@ export class HomeService {
 
     let randomAlbumsNF = albumsNF
       .sort(() => 0.5 - Math.random())
-      .slice(0, Math.min(albumsNF.length, 5));
+      .slice(0, Math.min(albumsNF.length, 15));
     let randomTracksNF = tracksNF
       .sort(() => 0.5 - Math.random())
-      .slice(0, Math.min(tracksNF.length, 5));
+      .slice(0, Math.min(tracksNF.length, 15));
 
     randomAlbums = await this.addArtistToElements(randomAlbums);
     randomTracks = await this.addArtistToElements(randomTracks);
