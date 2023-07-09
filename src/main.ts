@@ -2,9 +2,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { SELECTED } from './constants';
+import { readFileSync } from 'fs';
+
+const httpsOptions = {
+  key: readFileSync('/.secret/private.key.pem'),
+  cert: readFileSync('/.secret/domain.cert.pem'),
+};
 
 (async () => {
-  const App = await NestFactory.create(AppModule);
+  const App = await NestFactory.create(AppModule, { httpsOptions });
   App.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
   App.enableCors({
     origin: '*',
