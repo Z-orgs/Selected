@@ -11,5 +11,4 @@ import { SELECTED } from './constants';
     credentials: true,
   });
   await App.listen(SELECTED.PORT);
-  SELECTED.UrlServer = await App.getUrl();
 })();

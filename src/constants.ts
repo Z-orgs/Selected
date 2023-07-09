@@ -13,7 +13,7 @@ export const SELECTED = {
   Artist: 'artist',
   Admin: 'admin',
   UnitPrice: Number(process.env.UNITPRICE),
-  UrlServer: '',
+  UrlServer: `${process.env.HOST_SERVER}:${process.env.PORT || '3000'}`,
   PORT: parseInt(process.env.PORT) || 3000,
 };
 
