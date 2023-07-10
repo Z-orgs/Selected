@@ -5,12 +5,7 @@ import { SELECTED } from './constants';
 import { readFileSync } from 'fs';
 
 (async () => {
-  const App = await NestFactory.create(AppModule, {
-    httpsOptions: {
-      // key: readFileSync('./pem/private.key.pem', { encoding: 'ascii' }),
-      // cert: readFileSync('./pem/domain.cert.pem', { encoding: 'ascii' }),
-    },
-  });
+  const App = await NestFactory.create(AppModule);
   App.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
   App.enableCors({
     origin: '*',
