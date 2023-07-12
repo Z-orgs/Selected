@@ -16,7 +16,7 @@ export class User {
   @Prop()
   picture: string;
   @Prop()
-  jwt: string;
+  refreshToken: string;
   @Prop({ default: [] })
   following: [string];
   @Prop({ default: [] })

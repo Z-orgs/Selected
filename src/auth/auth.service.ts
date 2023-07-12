@@ -5,6 +5,8 @@ import { Admin } from '../admin/model/admin.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
+import { Request, Response } from 'express';
+import { SELECTED } from '../constants';
 
 @Injectable()
 export class AuthService {
@@ -32,13 +34,12 @@ export class AuthService {
       artist_token: this.jwtService.sign(payload),
     };
   }
-  async googleLogin(req) {
+  async googleLogin(req: Request, res: Response) {
     if (!req.user) {
       return 'No user from google.';
     }
-    return {
-      user: req.user,
-    };
+    res.cookie('accessToken', (req.user as User & { jwt: string }).jwt);
+    res.redirect(SELECTED.FE_URL);
   }
   async login({
     email,

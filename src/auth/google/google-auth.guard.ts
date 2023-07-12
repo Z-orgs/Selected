@@ -1,6 +1,6 @@
 import { AuthGuard } from '@nestjs/passport';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -27,7 +27,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   async validate(
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: Profile,
     done: VerifyCallback,
   ): Promise<any> {
     const { name, emails, photos } = profile;
@@ -40,8 +40,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     };
     const { email, firstName, lastName, picture } = user;
     const payload = { email, firstName, lastName, picture };
-    const jwt = this.jwtService.sign(payload);
-    user.jwt = jwt;
+    user.jwt = this.jwtService.sign(payload);
     const result = await this.userModel.findOne({ email: email });
     if (!result) {
       const newUser = new this.userModel({
@@ -49,18 +48,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         firstName,
         lastName,
         picture,
-        jwt,
         following: [],
         playList: [],
       });
-      newUser.save();
-    } else {
-      await this.userModel.findOneAndUpdate(
-        { email: email },
-        {
-          jwt: jwt,
-        },
-      );
+      await newUser.save();
     }
     done(null, user);
   }

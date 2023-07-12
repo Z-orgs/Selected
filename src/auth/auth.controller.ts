@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Admin } from 'src/admin/model/admin.model';
 import { Artist } from 'src/artist/model/artist.model';
 import { AdminAuthGuard } from './admin/admin-auth.guard';
@@ -9,6 +9,7 @@ import { GoogleAuthGuard } from './google/google-auth.guard';
 import { OAuth2Client } from 'google-auth-library';
 import { SELECTED } from 'src/constants';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '../user/model/user.model';
 
 const client = new OAuth2Client(SELECTED.ClientId, SELECTED.ClientSecret);
 
@@ -21,43 +22,46 @@ export class AuthController {
 
   @Get()
   @UseGuards(GoogleAuthGuard)
-  async googleAuth(@Req() req) {
-    return 'GEN Kwzng';
+  async googleAuth(@Req() req: Request) {
+    return '710';
   }
 
   @Get('redirect')
   @UseGuards(GoogleAuthGuard)
-  googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  googleAuthRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.googleLogin(req, res);
   }
 
-  @Post('/login')
-  async login(@Body('token') token): Promise<any> {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: SELECTED.ClientId,
-    });
-    // console.log(ticket.getPayload(), 'ticket');
-    const { email, name, picture, given_name, family_name } =
-      ticket.getPayload();
-    const data = await this.authService.login({
-      email,
-      name,
-      picture,
-      given_name,
-      family_name,
-    });
-    return {
-      data,
-      jwt: this.jwtService.sign({
-        email,
-        firstName: given_name,
-        lastName: family_name,
-        picture: picture,
-      }),
-      message: 'success',
-    };
-  }
+  // @Post('/login')
+  // async login(@Body('token') token): Promise<any> {
+  //   const ticket = await client.verifyIdToken({
+  //     idToken: token,
+  //     audience: SELECTED.ClientId,
+  //   });
+  //   // console.log(ticket.getPayload(), 'ticket');
+  //   const { email, name, picture, given_name, family_name } =
+  //     ticket.getPayload();
+  //   const data = await this.authService.login({
+  //     email,
+  //     name,
+  //     picture,
+  //     given_name,
+  //     family_name,
+  //   });
+  //   return {
+  //     data,
+  //     jwt: this.jwtService.sign({
+  //       email,
+  //       firstName: given_name,
+  //       lastName: family_name,
+  //       picture: picture,
+  //     }),
+  //     message: 'success',
+  //   };
+  // }
 
   @Post('admin/login')
   @UseGuards(AdminAuthGuard)

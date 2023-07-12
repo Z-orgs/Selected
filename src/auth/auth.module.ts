@@ -20,7 +20,7 @@ import { SELECTED } from 'src/constants';
     PassportModule,
     JwtModule.register({
       secret: SELECTED.ClientSecret,
-      signOptions: { expiresIn: SELECTED.ExpiresIn },
+      signOptions: { expiresIn: 15 * 60 },
     }),
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },

@@ -3,6 +3,6 @@ import { Artist } from './artist/model/artist.model';
 import { User } from './user/model/user.model';
 declare module 'express' {
   export interface Request {
-    user: User | Admin | Artist;
+    user: (User & { jwt: string }) | Admin | Artist;
   }
 }
