@@ -1,0 +1,14 @@
+services:
+  mongo:
+    env_file:
+      - selected.env
+    image: mongo:focal
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo:/data/db
+    networks:
+      - selected
+networks:
+  selected:
