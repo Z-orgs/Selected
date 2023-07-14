@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -37,7 +38,7 @@ export class AuthController {
   }
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  logout(@Req() req: Request, @Param('all') all = false) {
+  logout(@Req() req: Request, @Query('all') all = false) {
     return this.authService.logout(req.user, all);
   }
   @Post('refresh')

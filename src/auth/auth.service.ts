@@ -76,7 +76,7 @@ export class AuthService {
       await this.userModel.updateOne(
         { email: payload.email },
         {
-          $set: {
+          $addToSet: {
             refreshTokens: newRefreshToken,
           },
         },

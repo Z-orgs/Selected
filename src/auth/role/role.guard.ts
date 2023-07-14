@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ROLES_KEY } from './roles.decorator';
 import { Role } from './role.enum';
+import { SELECTED } from '../../constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -21,7 +22,9 @@ export class RolesGuard implements CanActivate {
     if (!bearerToken) {
       return false;
     }
-    const payload = this.jwtService.verify(bearerToken);
+    const payload = this.jwtService.verify(bearerToken, {
+      secret: SELECTED.Secret,
+    });
     const userRoles = payload.roles as Role[];
 
     return requiredRoles.some((role) => userRoles.includes(role));

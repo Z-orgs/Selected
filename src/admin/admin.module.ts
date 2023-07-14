@@ -11,7 +11,8 @@ import { Playlist, PlaylistSchema } from '../playlist/model/playlist.model';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CacheResetMiddleware } from 'src/reset.cache.middleware';
 import { AuthModule } from '../auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
+import { BossController } from './boss/boss.controller';
+import { BossService } from './boss/boss.service';
 
 @Module({
   imports: [
@@ -28,8 +29,8 @@ import { JwtModule } from '@nestjs/jwt';
       ttl: 24 * 60 * 60 * 1000,
     }),
   ],
-  controllers: [AdminController],
-  providers: [AdminService],
+  controllers: [AdminController, BossController],
+  providers: [AdminService, BossService],
   exports: [AdminService],
 })
 export class AdminModule {

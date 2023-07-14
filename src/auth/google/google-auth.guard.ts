@@ -1,5 +1,4 @@
-import { AuthGuard } from '@nestjs/passport';
-import { PassportStrategy } from '@nestjs/passport';
+import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -39,14 +38,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         firstName: name.givenName,
         lastName: name.familyName,
         picture: photos[0].value,
-        accessToken: '',
-        refreshToken: '',
-      }).save();
+      } as User).save();
       if (email === SELECTED.EmailBoss) {
         await this.userModel.updateOne(
           { email },
           {
-            $set: {
+            $addToSet: {
               roles: Role.Boss,
             },
           },
@@ -67,8 +64,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     await this.userModel.updateOne(
       { email },
       {
-        $set: {
-          refreshToken,
+        $addToSet: {
+          refreshTokens: refreshToken,
         },
       },
     );
