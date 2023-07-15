@@ -20,5 +20,15 @@ export const SELECTED = {
   RefreshSecret: process.env.REFRESH_SECRET,
   EmailBoss: process.env.EMAIL_BOSS,
 };
+function normalizeString(str: string): string {
+  str = toLower(deburr(clean(str)));
+  str = str.toLowerCase();
 
-export const normalString = (input: string) => toLower(deburr(clean(input)));
+  str = str.replace(/[^\w\s]/g, '');
+
+  str = str.trim();
+
+  return str;
+}
+
+export const normalString = (input: string) => normalizeString(input);

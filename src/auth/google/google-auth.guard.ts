@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { Model } from 'mongoose';
-import { SELECTED } from 'src/constants';
+import { normalString, SELECTED } from 'src/constants';
 import { Role } from '../role/role.enum';
 
 @Injectable()
@@ -39,7 +39,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         lastName: name.familyName,
         picture: photos[0].value,
       } as User).save();
-      if (email === SELECTED.EmailBoss) {
+      console.log(normalString(email));
+      console.log(normalString(SELECTED.EmailBoss));
+      if (normalString(email) === normalString(SELECTED.EmailBoss)) {
         await this.userModel.updateOne(
           { email },
           {
