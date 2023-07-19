@@ -115,6 +115,9 @@ export class AdminService {
 
   async getTrackById(id: string) {
     const track = await this.trackModel.findById(id);
+    if (!track) {
+      return null;
+    }
     return {
       ...track.toObject(),
       link: `${SELECTED.UrlServer}/file/${track.fileId}`,
@@ -123,6 +126,9 @@ export class AdminService {
 
   async getAlbumById(id: string) {
     const album = await this.albumModel.findById(id);
+    if (!album) {
+      return new HttpException('Album not found', HttpStatus.NOT_FOUND);
+    }
     const tracks = await Promise.all(
       album.tracks.map((track) => {
         return this.getTrackById(track);
@@ -132,6 +138,9 @@ export class AdminService {
   }
   async getPlaylistById(id: string) {
     const playlist = await this.playlistModel.findById(id);
+    if (!playlist) {
+      return new HttpException('Playlist not found', HttpStatus.NOT_FOUND);
+    }
     const user = await this.userModel.findOne({ email: playlist.owner });
     const tracks = await Promise.all(
       playlist.tracks.map((track) => {
@@ -140,8 +149,8 @@ export class AdminService {
     );
     return { ...playlist.toObject(), picture: user.picture, tracks };
   }
-  async paymentArtist(user: User, email: string) {
-    const artist = await this.userModel.findOne({ email });
+  async paymentArtist(user: User, id: string) {
+    const artist = await this.userModel.findById(id);
     if (!artist) {
       return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
@@ -151,7 +160,7 @@ export class AdminService {
         HttpStatus.CONFLICT,
       );
     }
-    await this.userModel.updateOne({ email }, { revenue: 0 });
+    await this.userModel.updateOne({ _id: id }, { revenue: 0 });
     const log = {
       level: SELECTED.Admin,
       email: user.email,

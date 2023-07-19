@@ -15,7 +15,8 @@ import { BossService } from './boss.service';
 export class BossController {
   constructor(private readonly bossService: BossService) {}
   @Put('user/:id')
-  updateRole(@Param('id') id: string, @Body('role') role: Role) {
-    return this.bossService.updateRole(id, role);
+  updateRole(@Param('id') id: string, @Body('roles') roles: string) {
+    const inputRoles = JSON.parse(roles);
+    return this.bossService.updateRole(id, inputRoles);
   }
 }
