@@ -11,5 +11,7 @@ import { readFileSync } from 'fs';
     origin: '*',
     credentials: true,
   });
+  console.log("test ssh");
+  
   await App.listen(SELECTED.PORT);
 })();
