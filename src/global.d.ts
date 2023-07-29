@@ -1,6 +1,10 @@
-import { User } from './user/model/user.model';
+import { Role } from './auth/role/role.enum';
 declare module 'express' {
   export interface Request {
-    user: User & { accessToken: string } & { refreshToken: string };
+    user: ReqUser;
   }
+}
+declare interface ReqUser {
+  email: string;
+  roles: Role[];
 }

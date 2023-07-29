@@ -8,9 +8,9 @@ import { SocialLink } from '../user/model/social.links';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { UpdateArtistDto } from './update.artist.dto';
-import { AwsClient } from 'google-auth-library';
 import { Role } from '../auth/role/role.enum';
 import { Request } from 'express';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class ArtistService {
@@ -22,7 +22,7 @@ export class ArtistService {
   ) {}
 
   async updateArtist(
-    user: User,
+    user: ReqUser,
     updateArtist: UpdateArtistDto,
     imageId: string,
   ) {
@@ -44,7 +44,7 @@ export class ArtistService {
     };
   }
 
-  async getArtistById(user: User, id: string) {
+  async getArtistById(user: ReqUser, id: string) {
     const artist = await this.userModel.findById(id);
     if (!artist) {
       return new HttpException('Artist not found.', HttpStatus.NOT_FOUND);
@@ -69,7 +69,7 @@ export class ArtistService {
       followed: currentUser.following.indexOf(id) !== -1,
     };
   }
-  async getAllAlbums(user: User) {
+  async getAllAlbums(user: ReqUser) {
     const albums = await this.albumModel
       .find({ artist: user.email })
       .sort({ createdAt: 'desc' });
@@ -100,7 +100,7 @@ export class ArtistService {
       link: `${SELECTED.UrlServer}/file/${track.fileId}`,
     };
   }
-  async getAllTracks(user: User) {
+  async getAllTracks(user: ReqUser) {
     const tracks = await this.trackModel
       .find({ artist: user.email })
       .sort({ createdAt: 'desc' });

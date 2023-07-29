@@ -1,9 +1,11 @@
 services:
   mongo:
-    env_file:
-      - selected.env
     image: mongo:focal
     restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_DATABASE=selected
     ports:
       - 27017:27017
     volumes:

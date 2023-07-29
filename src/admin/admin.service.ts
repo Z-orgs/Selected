@@ -9,6 +9,7 @@ import { Logger, LoggerDocument } from '../logger/model/logger.model';
 import { User, UserDocument } from '../user/model/user.model';
 import { SELECTED } from 'src/constants';
 import { existsSync, unlinkSync } from 'fs';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class AdminService {
@@ -149,7 +150,7 @@ export class AdminService {
     );
     return { ...playlist.toObject(), picture: user.picture, tracks };
   }
-  async paymentArtist(user: User, id: string) {
+  async paymentArtist(user: ReqUser, id: string) {
     const artist = await this.userModel.findById(id);
     if (!artist) {
       return new HttpException('Artist not found', HttpStatus.NOT_FOUND);
@@ -169,7 +170,7 @@ export class AdminService {
     this.loggerService.createLogger(log);
     return new HttpException('Paid', HttpStatus.ACCEPTED);
   }
-  async deleteTrack(admin: User, id: string) {
+  async deleteTrack(admin: ReqUser, id: string) {
     const track = await this.trackModel.findById(id);
     if (!track) {
       return new HttpException('Track not found', HttpStatus.BAD_REQUEST);
@@ -194,7 +195,7 @@ export class AdminService {
     this.loggerService.createLogger(log);
     return new HttpException('Deleted', HttpStatus.ACCEPTED);
   }
-  async deleteAlbum(admin: User, id: string) {
+  async deleteAlbum(admin: ReqUser, id: string) {
     const album = await this.albumModel.findById(id);
     if (!album) {
       return new HttpException('Album not found', HttpStatus.BAD_REQUEST);

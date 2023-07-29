@@ -9,6 +9,7 @@ mongo.env
 .yarn
 .pnp.cjs
 .pnp.loader.mjs
+package-lock.json
 
 # Logs
 logs

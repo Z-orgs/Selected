@@ -7,7 +7,6 @@ export const SELECTED = {
   MongoURI: process.env.MONGO_URI,
   ClientId: process.env.GOOGLE_CLIENT_ID,
   ClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  CallbackURL: process.env.CALLBACK_URL,
   Password: process.env.PASSWORD,
   DefaultPassword: process.env.DEFAULTPASSWORD,
   Artist: 'artist',
@@ -19,7 +18,11 @@ export const SELECTED = {
   Secret: process.env.SECRET,
   RefreshSecret: process.env.REFRESH_SECRET,
   EmailBoss: process.env.EMAIL_BOSS,
+  CallbackURL: `${process.env.HOST_SERVER}:${process.env.PORT || '3000'}${
+    process.env.CALLBACK_URL
+  }`,
 };
+
 function normalizeString(str: string): string {
   str = toLower(deburr(clean(str)));
   str = str.toLowerCase();

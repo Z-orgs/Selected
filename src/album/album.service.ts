@@ -8,6 +8,7 @@ import { LoggerService } from '../logger/logger.service';
 import { Track, TrackDocument } from 'src/track/model/track.model';
 import { SELECTED, normalString } from 'src/constants';
 import { User, UserDocument } from '../user/model/user.model';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class AlbumService {
@@ -18,7 +19,7 @@ export class AlbumService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  createAlbum(imageId: string, user: User, createAlbum: CreateAlbumDto) {
+  createAlbum(imageId: string, user: ReqUser, createAlbum: CreateAlbumDto) {
     const album = new this.albumModel({
       coverArtUrl: imageId.toString(),
       author: user.email,
@@ -39,7 +40,7 @@ export class AlbumService {
   async updateAlbum(
     id: string,
     image: string,
-    user: User,
+    user: ReqUser,
     updateAlbum: UpdateAlbumDto,
   ) {
     const album = await this.albumModel.findById(id);
@@ -92,7 +93,7 @@ export class AlbumService {
 
     return { ...album.toObject(), tracks, artist };
   }
-  async deleteAlbum(artist: User, id: string) {
+  async deleteAlbum(artist: ReqUser, id: string) {
     const album = await this.albumModel.findById(id);
     if (!album) {
       return new HttpException('Album not found', HttpStatus.BAD_REQUEST);

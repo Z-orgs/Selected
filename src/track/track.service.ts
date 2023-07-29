@@ -14,6 +14,7 @@ import { User, UserDocument } from 'src/user/model/user.model';
 import { NextTrackDto } from './dto/next.track.dto';
 import getAudioDurationInSeconds from 'get-audio-duration';
 import { existsSync, unlinkSync } from 'fs';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class TrackService {
@@ -26,7 +27,7 @@ export class TrackService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async upload(user: User, responses: any[], createTrack: CreateTrackDto) {
+  async upload(user: ReqUser, responses: any[], createTrack: CreateTrackDto) {
     const track = new this.trackModel({
       filename: responses[0].filename,
       uploaded: new Date(),
@@ -58,7 +59,7 @@ export class TrackService {
   }
 
   async updateInfoTrack(
-    user: User,
+    user: ReqUser,
     id: string,
     updateInfoTrack: UpdateInfoTrackDto,
   ) {
@@ -86,7 +87,7 @@ export class TrackService {
     }
   }
 
-  async updateStatusTrack(id: string, user: User) {
+  async updateStatusTrack(id: string, user: ReqUser) {
     const track = await this.trackModel.findById({
       _id: id,
     });
@@ -216,7 +217,7 @@ export class TrackService {
     }
     return prevId;
   }
-  async deleteTrack(artist: User, id: string) {
+  async deleteTrack(artist: ReqUser, id: string) {
     const track = await this.trackModel.findById(id);
     if (!track) {
       return new HttpException('Track not found', HttpStatus.BAD_REQUEST);

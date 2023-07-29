@@ -6,6 +6,7 @@ import { Album, AlbumDocument } from '../album/model/album.model';
 import { Playlist, PlaylistDocument } from '../playlist/model/playlist.model';
 import { normalString } from 'src/constants';
 import { User, UserDocument } from '../user/model/user.model';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class SearchService {
@@ -60,7 +61,7 @@ export class SearchService {
       })),
     };
   }
-  async searchTrack(user: User, keyword: string) {
+  async searchTrack(user: ReqUser, keyword: string) {
     const regex = new RegExp(normalString(keyword), 'gi');
     const tracks = await this.trackModel
       .find({

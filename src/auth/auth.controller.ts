@@ -2,9 +2,10 @@ import {
   Body,
   Controller,
   Get,
-  Param,
+  HttpException,
+  HttpStatus,
   Post,
-  Query,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -12,15 +13,16 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './google/google-auth.guard';
-import { OAuth2Client } from 'google-auth-library';
-import { SELECTED } from 'src/constants';
 import { JwtAuthGuard } from './google/jwt-auth.guard';
-
-const client = new OAuth2Client(SELECTED.ClientId, SELECTED.ClientSecret);
+import { SELECTED } from 'src/constants';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Get()
   @UseGuards(GoogleAuthGuard)
@@ -34,12 +36,32 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.googleLogin(req, res);
+    try {
+      if (!req.user) {
+        return 'No user from google.';
+      }
+      const accessToken = this.jwtService.sign(req.user, {
+        secret: SELECTED.Secret,
+      });
+      const refreshToken = this.jwtService.sign(req.user, {
+        secret: SELECTED.RefreshSecret,
+      });
+      res
+        .cookie('accessToken', accessToken, { domain: 'localhost' })
+        .cookie('refreshToken', refreshToken, { domain: 'localhost' });
+      res.redirect(SELECTED.FE_URL);
+    } catch (e) {
+      console.log(e);
+      return new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  logout(@Req() req: Request, @Query('all') all = false) {
-    return this.authService.logout(req.user, all);
+  logout(@Req() req: Request, @Body('refreshToken') refreshToken: string) {
+    return this.authService.logout(req.user, refreshToken);
   }
   @Post('refresh')
   @UseGuards(JwtAuthGuard)

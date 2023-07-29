@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
-import { Request, Response } from 'express';
 import { SELECTED } from '../constants';
+import { ReqUser } from 'src/global';
 
 @Injectable()
 export class AuthService {
@@ -12,26 +12,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async googleLogin(req: Request, res: Response) {
-    if (!req.user) {
-      return 'No user from google.';
-    }
-    res.cookie(
-      'accessToken',
-      (req.user as User & { accessToken: string }).accessToken,
-    );
-    res.cookie(
-      'refreshToken',
-      (req.user as User & { refreshToken: string }).refreshToken,
-    );
-    res.redirect(SELECTED.FE_URL);
-  }
 
-  async logout(
-    user: User & { accessToken: string } & { refreshToken: string },
-    all: boolean,
-  ) {
-    if (!all) {
+  async logout(user: ReqUser, refreshToken?: string) {
+    if (!refreshToken) {
       await this.userModel.updateOne(
         { email: user.email },
         { refreshTokens: [] },
@@ -44,7 +27,7 @@ export class AuthService {
       },
       {
         $pull: {
-          refreshTokens: user.refreshToken,
+          refreshTokens: refreshToken,
         },
       },
     );
