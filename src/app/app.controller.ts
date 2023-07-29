@@ -1,4 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
+import { SELECTED } from 'src/constants';
 
 @Controller()
-export class AppController {}
+export class AppController {
+  @Get()
+  devIp(@Query('ip') ip: string) {
+    SELECTED.DevIp = `http://${ip}`;
+    console.log(SELECTED);
+
+    return;
+  }
+}

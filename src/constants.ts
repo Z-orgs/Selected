@@ -21,6 +21,7 @@ export const SELECTED = {
   CallbackURL: `${process.env.HOST_SERVER}:${process.env.PORT || '3000'}${
     process.env.CALLBACK_URL
   }`,
+  DevIp: '',
 };
 
 function normalizeString(str: string): string {

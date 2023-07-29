@@ -46,10 +46,11 @@ export class AuthController {
       const refreshToken = this.jwtService.sign(req.user, {
         secret: SELECTED.RefreshSecret,
       });
-      res
-        .cookie('accessToken', accessToken, { domain: 'localhost' })
-        .cookie('refreshToken', refreshToken, { domain: 'localhost' });
-      res.redirect(SELECTED.FE_URL);
+      // res
+      //   .cookie('accessToken', accessToken, { domain: SELECTED.DevIp })
+      //   .cookie('refreshToken', refreshToken, { domain: SELECTED.DevIp })
+      //   .redirect(`${SELECTED.DevIp}:3001`);
+      return { accessToken, refreshToken };
     } catch (e) {
       console.log(e);
       return new HttpException(
