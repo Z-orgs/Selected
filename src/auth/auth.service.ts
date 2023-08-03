@@ -7,7 +7,6 @@ import { SELECTED } from '../constants';
 import { ReqUser } from 'src/global';
 import { Request, Response } from 'express';
 import * as crypto from 'crypto';
-import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
