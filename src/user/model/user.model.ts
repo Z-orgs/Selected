@@ -18,10 +18,10 @@ export class User {
   name: string;
   @Prop()
   picture: string;
-  @Prop()
-  refreshToken: string;
   @Prop({ default: [] })
   following: [string];
+  @Prop()
+  code: string;
   @Prop({ default: [] })
   playList: [string];
   @Prop({ default: [] })

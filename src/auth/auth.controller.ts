@@ -2,10 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Post,
-  Redirect,
   Req,
   Res,
   UseGuards,
@@ -14,7 +11,6 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './google/google-auth.guard';
 import { JwtAuthGuard } from './google/jwt-auth.guard';
-import { SELECTED } from 'src/constants';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
@@ -36,28 +32,12 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      if (!req.user) {
-        return 'No user from google.';
-      }
-      const accessToken = this.jwtService.sign(req.user, {
-        secret: SELECTED.Secret,
-      });
-      const refreshToken = this.jwtService.sign(req.user, {
-        secret: SELECTED.RefreshSecret,
-      });
-      // res
-      //   .cookie('accessToken', accessToken, { domain: SELECTED.DevIp })
-      //   .cookie('refreshToken', refreshToken, { domain: SELECTED.DevIp })
-      //   .redirect(`${SELECTED.DevIp}:3001`);
-      return { accessToken, refreshToken };
-    } catch (e) {
-      console.log(e);
-      return new HttpException(
-        'Internal server error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return this.authService.googleRedirect(req, res);
+  }
+
+  @Post('login')
+  login(@Body('code') code: string) {
+    return this.authService.login(code);
   }
   @Post('logout')
   @UseGuards(JwtAuthGuard)

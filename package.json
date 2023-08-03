@@ -23,7 +23,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "up": "docker-compose up -d",
     "down": "docker-compose down",
-    "docker": "docker build -t selected . && docker tag selected vuongsyhanh/selected && docker push vuongsyhanh/selected"
+    "docker": "docker build -t vuongsyhanh/selected . && docker push vuongsyhanh/selected"
   },
   "dependencies": {
     "@fastify/cookie": "^8.3.0",

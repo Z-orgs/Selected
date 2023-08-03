@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/user/model/user.model';
 import { SELECTED } from '../constants';
 import { ReqUser } from 'src/global';
+import { Request, Response } from 'express';
+import * as crypto from 'crypto';
+import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -69,5 +72,51 @@ export class AuthService {
         refreshToken: newRefreshToken,
       };
     }
+  }
+
+  async googleRedirect(req: Request, res: Response) {
+    try {
+      if (!req.user) {
+        return 'No user from google.';
+      }
+      const existUser = await this.userModel.findOne({ email: req.user.email });
+      const code = crypto.randomBytes(32).toString('hex').slice(0, 16);
+      existUser.code = `${code}${SELECTED.FE_KEY}`;
+      await existUser.save();
+      res.redirect(`${SELECTED.FE_URL}/auth?code=${code}`);
+    } catch (e) {
+      console.log(e);
+      return new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async login(code: string) {
+    const user = await this.userModel.findOne({
+      code: `${code}${SELECTED.FE_KEY}`,
+    });
+    if (!user) {
+      return new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const accessToken = this.jwtService.sign(
+      {
+        email: user.email,
+        roles: user.roles,
+      },
+      { secret: SELECTED.Secret },
+    );
+    const refreshToken = this.jwtService.sign(
+      {
+        email: user.email,
+        roles: user.roles,
+      },
+      { secret: SELECTED.RefreshSecret },
+    );
+    user.refreshTokens.push(refreshToken);
+    user.code = '';
+    await user.save();
+    return { accessToken, refreshToken };
   }
 }
