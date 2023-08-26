@@ -50,7 +50,7 @@ export class ArtistService {
       return new HttpException('Artist not found.', HttpStatus.NOT_FOUND);
     }
     const albums = await this.albumModel
-      .find({ artist: artist.email, isPublic: true })
+      .find({ author: artist.email, isPublic: true })
       .sort({ createdAt: 'desc' });
     const tracks = await this.trackModel
       .find({
