@@ -54,7 +54,7 @@ export class ArtistService {
       .sort({ createdAt: 'desc' });
     const tracks = await this.trackModel
       .find({
-        artist: artist.email,
+        author: artist.email,
         status: true,
         isPublic: true,
       })
