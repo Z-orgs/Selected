@@ -94,7 +94,7 @@ export class AuthService {
 
   async login(code: string) {
     const user = await this.userModel.findOne({
-      code: `${code}${SELECTED.FE_KEY}`,
+      code: `${code}`,
     });
     if (!user) {
       return new HttpException('User not found', HttpStatus.NOT_FOUND);
