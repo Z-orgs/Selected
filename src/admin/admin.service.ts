@@ -60,7 +60,6 @@ export class AdminService {
           email: track.author,
           roles: { $in: ['artist'] },
         });
-        delete artist.refreshTokens;
         return {
           _id: track._id,
           artist: artist.nickName,
@@ -79,7 +78,6 @@ export class AdminService {
           email: album.author,
           roles: { $in: 'artist' },
         });
-        delete artist.refreshTokens;
         return {
           _id: album._id,
           title: album.title,
@@ -98,7 +96,6 @@ export class AdminService {
     return await Promise.all(
       playlists.map(async (playlist) => {
         const user = await this.userModel.findOne({ email: playlist.owner });
-        delete user.refreshTokens;
         return {
           _id: playlist._id,
           title: playlist.title,
@@ -116,7 +113,7 @@ export class AdminService {
   async getALlUsers() {
     const users = await this.userModel.find().sort({ createdAt: 'desc' });
     for (const user of users) {
-      delete user.refreshTokens;
+      user.refreshTokens = undefined;
     }
     return users;
   }
@@ -150,7 +147,6 @@ export class AdminService {
       return new HttpException('Playlist not found', HttpStatus.NOT_FOUND);
     }
     const user = await this.userModel.findOne({ email: playlist.owner });
-    delete user.refreshTokens;
     const tracks = await Promise.all(
       playlist.tracks.map((track) => {
         return this.getTrackById(track);

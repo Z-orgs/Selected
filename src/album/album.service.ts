@@ -90,7 +90,7 @@ export class AlbumService {
     );
     const artist = await this.userModel.findOne({ email: album.author });
 
-    delete artist.refreshTokens;
+    artist.refreshTokens = undefined;
 
     return { ...album.toObject(), tracks, artist };
   }
