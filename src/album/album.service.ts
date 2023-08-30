@@ -89,7 +89,8 @@ export class AlbumService {
       }),
     );
     const artist = await this.userModel.findOne({ email: album.author });
-    console.log(artist);
+
+    delete artist.refreshTokens;
 
     return { ...album.toObject(), tracks, artist };
   }

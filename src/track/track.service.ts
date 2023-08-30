@@ -135,7 +135,10 @@ export class TrackService {
     return {
       ...track.toObject(),
       liked: currentUser.liked.indexOf(id) !== -1,
-      artist,
+      artist: {
+        ...artist,
+        refreshTokens: undefined,
+      },
     };
   }
   async nextTrack(user: User, nextMessage: NextTrackDto) {

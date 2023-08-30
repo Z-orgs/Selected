@@ -84,7 +84,7 @@ export class HomeService {
       const artist = (
         await this.userModel.findOne({ email: elements[i].author })
       ).toObject();
-      elements[i].artist = artist;
+      elements[i].artist = { ...artist, refreshTokens: undefined };
     }
     return elements;
   }

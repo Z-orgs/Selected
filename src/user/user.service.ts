@@ -122,6 +122,7 @@ export class UserService {
   }
   async getCurrentUser(user: User) {
     const currentUser = await this.userModel.findOne({ email: user.email });
+    delete currentUser.refreshTokens;
     return currentUser.toObject();
   }
 }

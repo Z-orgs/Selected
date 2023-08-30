@@ -41,6 +41,7 @@ export class ArtistService {
     this.loggerService.createLogger(log);
     return {
       ...(await this.userModel.findOne({ email: user.email })).toObject(),
+      refreshTokens: undefined,
     };
   }
 
@@ -63,7 +64,7 @@ export class ArtistService {
       await this.userModel.findOne({ email: user.email })
     ).toObject();
     return {
-      artist,
+      artist: { ...artist, refreshTokens: undefined },
       albums,
       tracks,
       followed: currentUser.following.indexOf(id) !== -1,
