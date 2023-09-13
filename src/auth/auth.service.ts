@@ -16,35 +16,43 @@ export class AuthService {
   ) {}
 
   async logout(user: ReqUser, refreshToken?: string) {
-    if (!refreshToken) {
+    try {
+      if (!refreshToken) {
+        await this.userModel.updateOne(
+          { email: user.email },
+          { refreshTokens: [] },
+        );
+        return new HttpException('OK', HttpStatus.ACCEPTED);
+      }
+      const userDb = await this.userModel.findOne({ email: user.email });
+      if (
+        userDb.refreshTokens.findIndex(
+          (refreshTokenDb) => refreshTokenDb === refreshToken,
+        ) === -1
+      ) {
+        return new HttpException(
+          'Refresh token does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       await this.userModel.updateOne(
-        { email: user.email },
-        { refreshTokens: [] },
+        {
+          email: user.email,
+        },
+        {
+          $pull: {
+            refreshTokens: refreshToken,
+          },
+        },
       );
       return new HttpException('OK', HttpStatus.ACCEPTED);
-    }
-    const userDb = await this.userModel.findOne({ email: user.email });
-    if (
-      userDb.refreshTokens.findIndex(
-        (refreshTokenDb) => refreshTokenDb === refreshToken,
-      ) === -1
-    ) {
+    } catch (error) {
+      console.log(error);
       return new HttpException(
-        'Refresh token does not exist',
-        HttpStatus.NOT_FOUND,
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    await this.userModel.updateOne(
-      {
-        email: user.email,
-      },
-      {
-        $pull: {
-          refreshTokens: refreshToken,
-        },
-      },
-    );
-    return new HttpException('OK', HttpStatus.ACCEPTED);
   }
 
   async refreshToken(refreshToken: string) {
