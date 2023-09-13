@@ -27,7 +27,7 @@ export class AuthService {
     if (
       userDb.refreshTokens.findIndex(
         (refreshTokenDb) => refreshTokenDb === refreshToken,
-      ) !== -1
+      ) === -1
     ) {
       return new HttpException(
         'Refresh token does not exist',
