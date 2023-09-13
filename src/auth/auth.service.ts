@@ -17,6 +17,17 @@ export class AuthService {
 
   async logout(user: ReqUser, refreshToken?: string) {
     if (!refreshToken) {
+      const userDb = await this.userModel.findOne({ email: user.email });
+      if (
+        userDb.refreshTokens.findIndex(
+          (refreshTokenDb) => refreshTokenDb === refreshToken,
+        ) !== -1
+      ) {
+        return new HttpException(
+          'Refresh token does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       await this.userModel.updateOne(
         { email: user.email },
         { refreshTokens: [] },
