@@ -21,7 +21,7 @@ export class AuthService {
         { email: user.email },
         { refreshTokens: [] },
       );
-      return;
+      return new HttpException('OK', HttpStatus.ACCEPTED);
     }
     const userDb = await this.userModel.findOne({ email: user.email });
     if (
@@ -44,6 +44,7 @@ export class AuthService {
         },
       },
     );
+    return new HttpException('OK', HttpStatus.ACCEPTED);
   }
 
   async refreshToken(refreshToken: string) {
